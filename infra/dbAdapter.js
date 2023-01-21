@@ -72,10 +72,18 @@ module.exports = (table) => {
         }
 
         if (!hasWhere) {
-          query += ` where ${key} ${symbol} '${value}'`;
+          if (typeof value === 'string') {
+            query += ` where ${key} ${symbol} '${value}'`;
+          } else {
+            query += ` where ${key} ${symbol} ${value}`;
+          }
           hasWhere = true;
         } else {
-          query += ` or ${key} ${symbol} '${value}'`;
+          if (typeof value === 'string') {
+            query += ` or ${key} ${symbol} '${value}'`;
+          } else {
+            query += ` or ${key} ${symbol} ${value}`;
+          }
         }
       }
 
