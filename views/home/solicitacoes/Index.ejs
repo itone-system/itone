@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head', { title: 'Acompanhar' } ) %>
+
+  <script src="../../public/main.js"></script>
+  <script src="/public/acompanhar/acompanhar.js"></script>
+  <link rel="stylesheet" href="../../public/acompanhar/acompanhar.css">
+
+  <body>
+
+    <%- include('../components/menu') %>
+
+      <section class="home">
+        <%- include('../components/navbar') %>
+
+          <main class="text">
+
+            <div id="alterar-solicitacoes">
+              <h2 style="border-bottom: 1px solid #120947; margin-bottom: 25px; padding: 13px 0">
+                Solicitações de Compra
+              </h2>
+            </div>
+
+            <p> </p>
+
+            <form action="/solicitacoes/listar" method="get">
+
+              <div class="row g-3">
+                <div class="col">
+                  <input name="Descricao" id="Descricao" for="Descricao" type="text" class="form-control"
+                    placeholder="Descricao Item" aria-label="First name" style="font-size: 13px"
+                    value="<%=filtros.Descricao%>">
+                </div>
+                <div class="col">
+                  <input readonly name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control"
+                    placeholder="Solicitante" aria-label="Last name" style="font-size: 13px"
+                    value="<%=filtros.Solicitante%>" />
+                  <input name="pagina" type="text" id="pagina" hidden value="<%=paginas.corrente%>" />
+                  <input name="paginas" type="text" id="paginas" hidden value="<%=paginas.total%>" />
+                </div>
+
+              </div>
+
+              <p> </p>
+
+              <div class="row g-3">
+                <div class="col">
+                  <select name="statusItem" class="form-control" id="Status" style="font-size: 13px">
+                    <option selected value="<%=filtros.statusItem%>">Status</option>
+                    <option value="P">Pendente Aprovação</option>
+                    <option value="A">Aguardando Compra</option>
+                    <option value="C">Compra Finalizado</option>
+
+                  </select>
+                </div>
+
+                <div class="col">
+                  <select name="centroCustoFiltro" class="form-control" id="CentroCusto" style="font-size: 13px">
+                    <option selected value="<%=filtros.centroCustoNormal%>">Centro de Custo</option>
+
+                  </select>
+                </div>
+              </div>
+              <br>
+
+              <button class="button button2" type="submit" role="button" id="buscar" onclick="listar()">🔍
+                Buscar</button>
+
+
+
+
+
+
+              <p> </p>
+
+
+              <div class="table-responsive">
+
+
+                <table class="table table-sm table-hover" id="myTable">
+
+                  <thead style="background-color: #e7e9f5; color: rgb(36, 26, 9);   font-size: 13px">
+
+                    <th class="center"> N° da Solicitação</th>
+                    <th> Descrição</th>
+                    <th> Solicitante</th>
+                    <th> Quantidade</th>
+                    <th> Data da Solicitação </th>
+                    <th> Comprador </th>
+                    <th> Status </th>
+                    <th> Ações </th>
+                  </thead>
+
+
+
+                  <tbody style="font-size: 13px" class="table-line" id="tbody">
+                    <% solicitacoes.forEach(socilitacao=> { %>
+                      <tr>
+                        <td>
+                          <%=socilitacao.Codigo%>
+                        </td>
+                        <td>
+                          <%=socilitacao.Descricao%>
+                        </td>
+                        <td>
+                          <%=socilitacao.Solicitante%>
+                        </td>
+                        <td>
+                          <%=socilitacao.Quantidade%>
+                        </td>
+                        <td>
+                          <%=socilitacao.DataAtualizacao%>
+                        </td>
+                        <td>
+                          <%=socilitacao.Comprador || 'Pollyanna' %>
+                        </td>
+                        <td>
+                          <%=socilitacao.Status_Compra%>
+                        </td>
+                        <td>
+                          <a href="/solicitacoes/<%=socilitacao.Codigo%>/edit"> <i class='bx bx-edit iconEdit'></i></a>
+                        </td>
+                      </tr>
+                      <% }) %>
+
+
+                  </tbody>
+
+
+                </table>
+
+
+
+
+                <button id="openModal" data-toggle="modal" data-target="#myModal" class=" button2"
+                  hidden>Próxima</button>
+
+
+              </div>
+
+              <div class="row g-2" style="margin-top: 1.5%; margin-left: 4%">
+                <div>
+                  <button id="prev" onclick="prevPage()" class=" button2">Anterior</button>
+                </div>
+                <div>
+                  <button id="prox" onclick="proxPage()" class=" button2">Próxima</button>
+                </div>
+
+
+              </div>
+            </form>
+
+
+          </main>
+          <button id="detalhamento" hidden></button>
+
+
+
+
+
+
+      </section>
+
+  </body>
+
+</html>

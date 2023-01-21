@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head', { title: 'Nota Fiscal' } ) %>
+
+    <script src="/public/notaFiscal/notaFiscal.js"></script>
+    <link rel="stylesheet" href="../../public/notaFiscal/notaFiscal.css">
+
+    <body>
+
+        <%- include('../components/menu', { solicitacoes, permissoes } ) %>
+
+            <section class="home">
+                <%- include('../components/navbar', { usuario: 'Gustavo' } ) %>
+                   
+
+
+                <main class="text">
+
+            
+                    <h2 style="border-bottom: 1px solid #120947; margin-bottom: 20px; margin-top: 40px; padding: 13px 0">Envio de Documentos</h2>
+                    <p> </p>
+                    <h5 style="margin-bottom: 0px; padding: 13px 0">Dados do Solicitante</h5>
+                    <div class="row g-3">
+                      <div class="col Solicitante">
+                        <label>Solicitante:</label>
+                        <input id="Solicitante" for="Solicitante" type="text" class="form-control" readonly>
+                
+                      </div>
+                
+                      <div class="col CentroCusto">
+                        <label>Centro de Custo:</label>
+                        <select id="CentroCusto" class="form-control">
+                          <option selected>Selecionar...</option>
+                        </select>
+                      </div>
+                
+                      <p> </p>
+                
+                    </div>
+                
+                    <h5 style="margin-bottom: 0px; margin-top: 40px">Dados do Serviço:</h5>
+                
+                    <p> </p>
+                
+                    <div class="row g-3">
+                      <div class="col Fornecedor">
+                        <label>Fornecedor:</label>
+                        <input id="Fornecedor" for="Fornecedor" type="text" class="form-control" placeholder="Fornecedor">
+                      </div>
+                
+                      <p> </p>
+                      <div class="col DescServico">
+                        <label>Descrição do Serviço:</label>
+                        <input id="DescServico" for="DescServico" type="text" class="form-control" placeholder="Descrição Serviço">
+                      </div>
+                
+                      <p> </p>
+                      <div class="col TipoContrato">
+                        <label>Tipo Contrato:</label>
+                        <select id="TipoContrato" class="form-control">
+                          <option selected>Pagamento Único</option>
+                          <option>Recorrente</option>
+                        </select>
+                      </div>
+                    </div>
+                    </div>
+                    </div>
+                
+                    <p> </p>
+                
+                    <h5 style="margin-bottom: 0px; margin-top: 40px">Dados de Pagamento:</h5>
+                
+                    <p> </p>
+                
+                
+                
+                    <div class="row g-3">
+                      <div class="col DadosPagamento">
+                        <label>Tipo:</label>
+                        <select id="DadosPagamento" class="form-control">
+                          <option selected>Boleto</option>
+                          <option>Pix</option>
+                          <option>Transfêrencia</option>
+                          <option>Cartão de Crédito</option>
+                        </select>
+                      </div>
+                
+                      <p> </p>
+                      <div class="col DadosBanc">
+                        <label>Dados Bancários:</label>
+                        <input id="DadosBanc" for="DadosBanc" type="text" class="form-control" placeholder="Dados Bancários">
+                      </div>
+                
+                      <p> </p>
+                      <div class="col DataPagamento" style="width: 200px" ;>
+                        <label>Data de Pagamento:</label>
+                        <input id="DataPagamento" for="DataPagamento" type="date" class="form-control">
+                      </div>
+                
+                
+                      <p> </p>
+                      <div class="col Deal">
+                        <label>Deal:</label>
+                        <input id="Deal" for="Deal" type="number" class="form-control" placeholder="Deal">
+                      </div>
+                    </div>
+                
+                
+                    <p> </p>
+                    <div class="row g-3">
+                    <div class="col Observações">
+                      <label>Observações:</label>
+                      <input id="Observações" type="text" class="form-control" placeholder="Observações" aria-label="First name">
+                    </div>
+                  </div>
+                
+                    <p> </p>
+                
+                   
+                      
+                          <label>Vincular algum colaborador?</label>
+                          <form>
+                            <input onclick="adicionarCampoColaborador()"  type="radio" id="Sim" name="fav_language" value="Sim">
+                            <label for="Sim">Sim</label><br>
+                            <input onclick="removerCampoColaborador()" type="radio" id="Não" name="fav_language" value="Não" checked>
+                            <label for="Não">Não</label><br>
+                          </form>
+                          
+                    <div id="aprov">
+                
+                    </div>
+                
+                    <p></p>
+                
+                    <form>
+                      <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+                        <label for="exampleFormControlFile1">Anexar Arquivo</label>
+                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                      </div>
+                    </form>
+                
+                    
+    
+                      <button class="button button2" onclick="validarCampos()" type="submit"  role="button" id="botao-solicitar" style="margin-left: 0%;">Solicitar</button>
+                
+                    </div>
+                  </main>
+            </section>
+
+    </body>
+
+</html>
