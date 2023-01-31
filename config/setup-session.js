@@ -7,7 +7,7 @@ module.exports = (app) => {
       secret: session.key,
       resave: false,
       saveUninitialized: true,
-      cookie: {
+        cookie: {
         maxAge: session.age,
         secure: isProd
       }

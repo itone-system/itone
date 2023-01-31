@@ -1,4 +1,4 @@
-// const db = require('../../config/connection');
+// const { db } = require('../../config/env');
 // const sql = require('mssql');
 
 exports.obterDadosUser = async (codigo) => {

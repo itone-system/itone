@@ -1,4 +1,4 @@
-<form action="<%=locals.endpoints.Comprar%>" method="get"></form>
+<form action="/compras/comprar" method="get"></form>
 <div class="row g-3">
   <div class="col DtCompra">
     <label for="fname">Data da Compra:</label>
@@ -18,6 +18,9 @@
   <div class="col Valor">
     <label for="fname">Valor:</label>
     <input id="valorDaCompra" class="form-control" type="number">
+    <!-- <label for="fname">Anexo:</label>
+    <input id="valorDaCompra" class="form-control" type="number"> -->
+
   </div>
 
   <div class="col metPagamento">
@@ -27,6 +30,8 @@
       <option value="Boleto">Boleto</option>
       <option value="Pix">Pix</option>
     </select>
+
+
 
 
   </div>
@@ -44,9 +49,9 @@
 <div id="divParcela"></div>
 
 
-<% if(retornoUser.compras.comprar && solicitacao.Status_Compra=='A' ) { %>
+<% if(retornoUser.RETORNAR && solicitacao.Status_Compra=='A' ) { %>
 
-  <button type="submit" name="inserir" id="botao-solicitar" class="btn btn-outline-success" onclick="insertCompra('<%= solicitacao.Codigo  %>')">Salvar Compra</button>
+  <button type="submit" name="inserir" id="botao-solicitar" class="button2" onclick="insertCompra('<%= solicitacao.Codigo  %>')">Salvar Compra</button>
 
   <% } %>
 

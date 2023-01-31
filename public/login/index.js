@@ -36,7 +36,6 @@ const TrocarSenha = () => {
 };
 
 const verificarLogin = () => {
-  console.log('entrou');
   const email = document.getElementById('email').value;
   const senhaPadrao = document.getElementById('password').value;
 
@@ -71,7 +70,6 @@ const verificarLogin = () => {
     localStorage.setItem('codigo', dados.dadosUserSolicitacao.codigo);
 
     const qs = '?' + new URLSearchParams(dados.dadosUserSolicitacao);
-    console.log(`/home${qs}`);
 
     window.location.assign(`/home${qs}`);
   });

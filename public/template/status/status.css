@@ -1,8 +1,3 @@
-/* @font-face {
-    font-family: pop;
-    src: url(./Fonts/Poppins-Medium.ttf);
-} */
-
 .mainn {
     margin: auto;
   width: 40%;
@@ -64,7 +59,6 @@
     height: 5px;
     background-color: rgba(20, 17, 172, 0.322);
     right: 29px;
-    
     /* left: px; */
 }
 .three{
@@ -95,7 +89,7 @@
     background-color: #27417B;
     display: grid;
     place-items: center;
-    
+
 }
 .li .active::after{
     background-color: #27417B;
@@ -142,4 +136,19 @@
         font-size: 16px;
     }
 }
+/* body.dark .mudar-icon-status{
+    color:#4a66a1;
+}
+body.dark .alterar-after:after{
+    background-color: #4a66a1;
+}
+body.dark .alterar-after{
+    background-color: #4a66a1;
 
+}
+body.dark .alterar-numero{
+    color: black;
+}
+body.dark .alterar-check{
+    color: black;
+} */

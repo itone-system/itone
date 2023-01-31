@@ -1,19 +1,18 @@
-// const db = require('../../config/connection');
-// const sql = require('mssql');
 const { renderJson } = require('../../helpers/render');
-const SolicitacaoService = require('./service')
+const SolicitacaoService = require('./service');
 
 module.exports = {
 
   async List (request) {
+    const user = request.session.get('user');
 
-    console.log(request)
-  
-    const { centro_custo } = request;
+    const aprovadores = await SolicitacaoService.getAprovadores(user.codigo)
 
-    const usuarios = await SolicitacaoService.getAprovadores(centro_custo)
+    const codigosAprovadores = aprovadores.recordset[0].COD_APROVADOR.split(',');
 
-    return renderJson(usuarios)
+    const nomes = await SolicitacaoService.getNameAprovadores(codigosAprovadores)
+
+    return renderJson(nomes);
   }
 
 };

@@ -4,7 +4,7 @@ module.exports = (app) => {
     login: '/',
     ListarSolicitacoes: '/listar',
     Comprar: '/compras/',
-    NotaFiscal: '/notafiscal',
+    NotaFiscal: '/notafiscal/incluirNota',
     ListarNotas: '/listarnotas',
     NovaSolicitacao: '/solicitacoes/criar',
     AtualizarNF: '/atualizarStatusNota',

@@ -4,7 +4,18 @@ const body = document.querySelector('body'),
     searchBtn = body.querySelector(".search-box"),
     modeSwitch = body.querySelector(".toggle-switch"),
     modeText = body.querySelector(".mode-text"),
-    mudarDark = body.querySelector("#mudarDark")
+    mudarDark = body.querySelector("#mudarDark"),
+    mudarTituloTabela = body.querySelector('.topo-tabela'),
+    mudarIcon = body.querySelector('.alterar-icon')
+    mudarIconStatus = body.querySelector('.mudar-icon-status'),
+    alterarAfter = body.querySelector('.alterar-after'),
+    alterarNumero = body.querySelector('.alterar-numero'),
+    alterarCheck =body.querySelector( '.alterar-check'),
+    alterarBolinha = body.querySelector('.alterar-bolinha'),
+    alterarBodyModal = body.querySelector('.modal-body'),
+    modalHeader = body.querySelector('.modal-header'),
+    modalfooter = body.querySelector('.modal-footer')
+
 
 toggle.addEventListener("click", () => {
     sidebar.classList.toggle("fechado");
@@ -25,16 +36,22 @@ modeSwitch.addEventListener("click", () => {
     body.classList.toggle("dark");
     if (body.classList.contains("dark")) {
         localStorage.setItem("darkMode", "true");
+
+
     } else {
         localStorage.setItem("darkMode", "false");
+
+
     }
 
 
 
     if (body.classList.contains("dark")) {
+
         mudarDark.innerHTML = ` <span class="mode-text text " style="color: white;">Light mode</span>`
     } else {
         mudarDark.innerHTML = ` <span class="mode-text text " style="color: black;">Dark mode</span>`
+
     }
 });
 
@@ -44,13 +61,11 @@ if (localStorage.getItem("darkMode") === "true") {
 }
 
 const paginaHome = () => {
-    const codigo = localStorage.getItem('codigo')
-    window.location.assign(`/home?codigo=${codigo}`)
+    window.location.assign(`/home`)
 }
 
 const paginaAcompanhar = () => {
-    const codigo = localStorage.getItem('codigo')
-    window.location.assign(`/solicitacoes/listar?codigo=${codigo}`)
+    window.location.assign(`/solicitacoes/listar`)
 }
 
 const paginaNovaSolicitacao = () => {
@@ -58,14 +73,14 @@ const paginaNovaSolicitacao = () => {
 }
 
 const incluirNota = () => {
-    window.location.assign(`/incluirNota`)
+    window.location.assign(`/notafiscal/incluirNota`)
 }
 
 const buscarNotas = () => {
-    window.location.assign(`/buscarNotas`)
+    window.location.assign(`/notafiscal/buscarNotas`)
 }
 
 const sair = () => {
     localStorage.removeItem("dados")
-    window.location.assign(`/login`)
+    window.location.assign(`/`)
 }

@@ -4,5 +4,5 @@ const UsuarioController = require('../Usuarios/controller');
 
 const UsuarioRouter = Router();
 
-UsuarioRouter.post('/listar', expressAdapter(UsuarioController.List));
+UsuarioRouter.get('/listar', expressAdapter(UsuarioController.List));
 module.exports = UsuarioRouter;

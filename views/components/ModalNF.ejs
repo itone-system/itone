@@ -1,0 +1,123 @@
+<div class="modal fade" id="myModal" style="font-size:14px">
+                    
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Detalhamento</h4>
+      </div>
+
+      <!-- Modal body -->
+      <div id="modalBody" class="modal-body">
+        <div>
+     
+          <div class="row g-3">
+          <div class="col Solicitacao">
+            <label>N° Solicitação: </label>
+            <input id="NumeroSolicitacaoModal" type="text" name="NumeroSolicitacaoModal" for="NumeroSolicitacao" value="<%= notaUnica[0].Codigo %> " style="margin-bottom: 10%; font-size:13px" type="text" class="form-control" readonly>
+      
+          </div>
+      
+          <div class="col Solicitante">
+              <label>Solicitante: </label>
+              <input id="ModSolicitante" type="text" name="ModSolicitante"  for="Solicitante" value="<%= notaUnica[0].Solicitante %> " style="margin-bottom: 10%; font-size:13px" type="text" class="form-control" readonly>
+              </div>
+        </div>
+        <div class="row g-3">
+        <div class="col Fornecedor">
+          <label>N° Fornecedor:</label>
+          <input id="ModFornecedor" name="ModFornecedor"  for="Fornecedor" style="margin-bottom: 10%; font-size:13px" type="text" class="form-control" value="<%= notaUnica[0].Fornecedor %> " readonly>
+      
+        </div>
+      
+        <div class="col Descricao">
+            <label>Descricao:</label>
+            <input id="ModDescricao" name="ModDescricao"  for="Descricao" style="margin-bottom: 10%; font-size:13px"  type="text" class="form-control" value="<%= notaUnica[0].Descricao %> " readonly>
+            </div>
+      </div>
+      
+      <div class="row g-3">
+      <div class="col TipoContrato">
+        <label>Tipo do Contrato:</label>
+        <input id="TipoContrato" for="TipoContrato" style="margin-bottom: 10%; font-size:13px" type="text" class="form-control" value="<%= notaUnica[0].TipoContrato %> " readonly>
+      
+      </div>
+      
+      <div class="col Deal">
+          <label>Deal:</label>
+          <input id="Deal" for="Deal" style="margin-bottom: 10%; font-size:13px"  type="text" class="form-control" value="<%= notaUnica[0].Deal %> "  readonly>
+          </div>
+      </div>
+      
+      <div class="row g-3">
+      <div class="col TipoPagamento">
+      <label>Tipo do Pagamento:</label>
+      <input id="TipoPagamento" for="TipoPagamento" style="margin-bottom: 10%; font-size:13px"  type="text" class="form-control" value="<%= notaUnica[0].TipoPagamento %> "  readonly>
+      
+      </div>
+      
+      <div class="col DataPagamento">
+        <label>Data do Pagamento:</label>
+        <input id="DataPagamento" for="DataPagamento" style="margin-bottom: 10%; font-size:13px" type="text" class="form-control" value="<%= notaUnica[0].DataPagamento %> "  readonly>
+        </div>
+      </div>
+      
+      
+      <label>Observação:</label>
+      <input id="Observacao" for="Observacao" style="margin-bottom: 5%; font-size:13px"  type="text" class="form-control" value="<%= notaUnica[0].Observacao %> " readonly>
+      
+      <label>Colaborador:</label>
+      <input id="Colaborador" for="Colaborador" style="margin-bottom: 5%; font-size:13px"  type="text" class="form-control" value="<%= notaUnica[0].Colaborador %> "  readonly>
+      </div>
+      <div  style="margin-left: 70%; margin-top: 3%;  font-size:13px">
+        <i class='bx bx-download bx-flip-horizontal' undefined ></i>
+
+              <label id="NomeAnexo"></label>
+
+              <a id="baixar" download><button id="baixararq" href="google.com" class="btn btn-secondary" style="margin-left: 10%; font-size:12px"> Baixar Anexo</button></a>
+
+    </div>
+
+      <div id="RetornoStatusNF" style="margin-left: 20%; margin-top: 0%; margin-right: 25%; font-size:13px" >
+      <label>Status:</label>
+      
+      <!-- <% if (retornoUser.RETORNAR){%> 
+      <select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >
+        <option selected>Aguardando envio para pagamento</option>
+        <option>Enviado para pagamento</option>
+      </select>
+
+      <% } else {%> 
+        <select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="width: 320px; font-size:13px" disabled>
+          <option selected>Aguardando envio para pagamento</option>
+          <option>Enviado para pagamento</option>
+        </select>
+        <% } %> -->
+      </div>
+
+      
+      
+      </div>
+
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button> -->
+       
+          <div class="col">
+            <% if( notaUnica[0].StatusNF == "A" && retornoUser.RETORNAR) {%>
+              <button id="salvarCompra" onclick="atualizarStatusNF()" value="Salvar" type="submit" class="btn btn-success" style="margin-right: 100%; ">Salvar</button>
+              <% } %> 
+
+      </div>
+
+      <div class="col">
+        <button data-dismiss="modal" class=" button2"  style="margin-left: 65%; " >Fechar</button>
+      </div>
+
+
+    </div>
+  </div>
+</div> 
+

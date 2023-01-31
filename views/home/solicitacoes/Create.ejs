@@ -2,116 +2,108 @@
 <html lang="en">
 <%- include('../../partials/head', { title: 'Nova Solicitação' } ) %>
 
-    <script src="/public/novaSolicitacao/novaSolicitacao.js"></script>
-    <script src="/public/main.js"></script>
-    <link rel="stylesheet" href="../../public/novaSolicitacao/novaSolicitacao.css">
+  <script src="/public/novaSolicitacao/novaSolicitacao.js"></script>
+  <script src="/public/main.js"></script>
+  <link rel="stylesheet" href="../../../public/global.css">
+  <link rel="stylesheet" href="../../public/novaSolicitacao/novaSolicitacao.css">
 
-    <body>
+  <body>
 
-        <%- include('../../components/menu') %>
+    <%- include('../../components/menu') %>
 
-            <section class="home">
-                <%- include('../../components/navbar') %>
-                   
+      <section class="home">
+        <%- include('../../components/navbar') %>
+
+          <div class="d-flex flex-column-reverse">
+            <%- include('../../components/flash', message) %>
+          </div>
 
 
-                <main class="text">
-          
-                    <h2 style="border-bottom: 1px solid #120947; margin-bottom: 25px; margin-top: 25px;  padding: 13px 0">Nova Solicitação de Compra</h2>
-                    <p> </p>
-              <!-- <form action="/solicitacoes/inserir" method="get"> -->
-                    <div class="row g-3">
-                      <div class="col Descricao">
-                        <label>Item Solicitado:</label>
-                        <input id="Descricao" for="Descricao" type="text" class="form-control" placeholder="Descricao Item" name="descricao">
-              
-                      </div>
-                      <div class="col Quantidade">
-                        <label>Quantidade:</label>
-                        <input id="Quantidade" for="Quantidade" type="text" class="form-control" placeholder="N°" name="quantidade">
-                      </div>
-              
-                    </div>
-                    <p> </p>
-                    <div class="row g-3">
-                      <div class="col CentroCusto">
-                        <label>Centro de Custo:</label>
-                        <select id="CentroCusto" class="form-control" name="centroCusto">
-                            <option selected>Selecionar...</option>
-    
-                        </select>
-                      </div>
-              
-              
-              
-              
-                      <div class="col Deal">
-                        <label>Deal:</label>
-                        <input id="Deal" for="Quantidade" type="text" class="form-control" placeholder="Deal" name="deal">
-                      </div>
-                    </div>
-                    <p> </p>
-       
-              
-              
-              
-                        <label  id="MotivoLabel">Motivo da Compra:</label>
-                        <input id="Observações" type="text" class="form-control emailText" placeholder="Observações"
-                          aria-label="First name" name="observacao">
-       
-                    </div>
-                    <p> </p>
-                    <div class="row g-3" id="aprovacao" name="aprovadores">
-                 
-                        <div id="aprov">
-                          <label id="aprovaLabel">Aprovações:</label>
-              
-                        </div>
-              
-                        <div id="adicionar" >
-                          <button id="addAprovador" onclick="listar()" class="btn btn-outline-success">+</button>
-                        </div>
-                        <div id="remover" >
-                          <button onclick="removerEmail()" class="btn btn-outline-success">-</button>
-                        </div>
-                        <datalist id="browsers">
-                          <option value="Edge">
-                          <option value="Firefox">
-                          <option value="Chrome">
-                          <option value="Opera">
-                          <option value="Safari">
-                        </datalist>
-              
-                 
-                    </div>
-                    <input type="text" name="solicitante" id="nomeUser" value="<%=nome %>" placeholder="<%=nome %> " hidden>
-              
-                   
-              
-                    </div>
-              
-                    <p></p>
-              
-                    <!-- <form> -->
-                      <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
-                        <label for="exampleFormControlFile1">Anexar Arquivo</label>
-                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
-                      </div>
-                    <!-- </form> -->
-              
-              
-              
-                    <button onclick="validarCampos()" type="submit" name="inserir" id="botao-solicitar"
-                    class=" button2">Solicitar</button>
+          <main class="text">
 
-                    
-              <!-- </form> -->
+            <h2 style="border-bottom: 1px solid #27417B; margin-bottom: 25px; margin-top: 25px;  padding: 13px 0">Nova
+              Solicitação de Compra</h2>
+            <p> </p>
+            <!-- <form action="/solicitacoes/inserir" method="get"> -->
+            <div class="row g-3">
+              <div class="col Descricao">
+                <label>Item Solicitado:</label>
+                <input id="Descricao" for="Descricao" type="text" class="form-control" placeholder="Descricao Item"
+                  name="descricao">
 
-              
-                    </div>
-                  </main>
-            </section>
+              </div>
+              <div class="col Quantidade">
+                <label>Quantidade:</label>
+                <input id="Quantidade" for="Quantidade" type="text" class="form-control" placeholder="N°"
+                  name="quantidade">
+              </div>
 
-    </body>
+            </div>
+            <p> </p>
+            <div class="row g-3">
+              <div class="col CentroCusto">
+                <label>Centro de Custo:</label>
+                <select id="CentroCusto" class="form-control" name="centroCusto">
+                  <option selected>Selecionar...</option>
+
+                </select>
+              </div>
+
+
+
+
+              <div class="col Deal">
+                <label>Deal:</label>
+                <input id="Deal" for="Quantidade" type="text" class="form-control" placeholder="Deal" name="deal">
+              </div>
+            </div>
+            <p> </p>
+
+
+
+
+            <label id="MotivoLabel">Motivo da Compra:</label>
+            <input id="Observações" type="text" class="form-control emailText" placeholder="Observações"
+              aria-label="First name" name="observacao">
+
+            </div>
+            <p> </p>
+            <div class="row g-3" id="aprovacao" name="aprovadores">
+
+              <div id="aprov">
+                <label id="aprovaLabel">Aprovações:</label>
+
+              </div>
+
+
+            <input type="text" name="solicitante" id="nomeUser" value="<%=nome %>" placeholder="<%=nome %> " hidden>
+
+
+
+            </div>
+
+            <p></p>
+
+            <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+              <label for="exampleFormControlFile1">Anexar Arquivo</label>
+              <input type="file" class="form-control-file" id="fileInput">
+            </div>
+
+
+
+
+
+            <button onclick="validarCampos()" type="submit" name="inserir" id="botao-solicitar"
+              class=" button2">Solicitar</button>
+
+
+            <!-- </form> -->
+
+
+            </div>
+          </main>
+      </section>
+
+  </body>
 
 </html>

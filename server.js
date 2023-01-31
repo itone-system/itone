@@ -14,7 +14,7 @@ setupViews(app);
 setupPublic(app);
 setupRoutes(app);
 
-const port = process.env.PORT || 5050;
+const port = process.env.PORT || 5051;
 
 app.listen(port, () => {
   console.log(`Aplicação rodando na porta ${port}`);

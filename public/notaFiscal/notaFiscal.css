@@ -539,11 +539,15 @@ img#foto {
     }
 }
 
-#Descricao, #Quantidade, #CentroCusto, #Deal, #Solicitante, #Fornecedor, #DescServico, #TipoContrato, #DadosBanc, #DataPagamento, #DadosPagamento, #Tipo, #Observações, #Colaborador{
+#Descricao, #Quantidade, #CentroCusto, #Deal, #Solicitante, #Fornecedor, #DescServico, #TipoContrato, #DadosBanc, #DataPagamento, #DadosPagamento, #Tipo, #Observacao, #Colaborador{
     font-size: 12px;
   }
 
   Label{
     font-size: 14px;
 
+  }
+
+  #obrigatorio{
+    color: rgb(223, 24, 24);
   }

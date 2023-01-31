@@ -1,26 +1,20 @@
 const model = require('../../infra/dbAdapter');
 const TableSolicitacao = model('Solicitacao_Item');
-const enviarEmail = require('../../infra/enviarEmail');
-const db = require('../../config/connection');
+// const emailAdapter = require('../../infra/emailAdapter');
+const { db } = require('../../config/env');
 const sql = require('mssql');
 
-exports.buscarSolicitacoesPorFiltro = async ({
-  data,
-  pagina = {}
-}) => {
-  const { Descricao, Solicitante, statusItem, centroCustoFiltro } = data;
 
-  TableSolicitacao.select('Codigo, Descricao, DataCriacao, FORMAT(DataAtualizacao, \'dd/mm/yyyy\') as DataAtualizacao, Quantidade, Status_Compra, Solicitante');
+exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
+  const { Descricao, Solicitante, statusItem, centroCustoFiltro, User } = data;
+
+  TableSolicitacao.select(
+    "Codigo, Descricao, DataCriacao, FORMAT(DataAtualizacao, 'dd/MM/yyyy') as DataAtualizacao, Quantidade, Status_Compra, Solicitante"
+  );
 
   if (Descricao) {
     TableSolicitacao.andWhere({
-      Descricao: `like ${Descricao}`
-    });
-  }
-
-  if (Solicitante) {
-    TableSolicitacao.andWhere({
-      Solicitante: `like ${Solicitante}`
+      Descricao: `like %${Descricao}%`
     });
   }
 
@@ -30,13 +24,38 @@ exports.buscarSolicitacoesPorFiltro = async ({
     });
   }
 
-  if (centroCustoFiltro) {
+  // comprador ou aprovador
+  if (User.Perfil === 1 || User.Perfil === 3) {
+    if (Solicitante) {
+      TableSolicitacao.andWhere({
+        Solicitante: `like %${Solicitante}%`
+      });
+    }
+
+    if (centroCustoFiltro) {
+      TableSolicitacao.andWhere({
+        Centro_de_Custo: centroCustoFiltro
+      });
+    }
+  }
+
+  // solicitante
+  if (User.Perfil === 2) {
     TableSolicitacao.andWhere({
-      Centro_de_Custo: centroCustoFiltro
+      Solicitante: User.nome
     });
   }
 
-  TableSolicitacao.orderBy('Codigo');
+  // aprovador
+  if (User.Perfil === 3) {
+    TableSolicitacao.innnerJoin('Aprovacoes', 'Codigo_Solicitacao', 'Codigo')
+
+    TableSolicitacao.andWhere({
+      'Aprovacoes.Codigo_Aprovador': User.codigo
+    });
+  }
+
+  TableSolicitacao.orderBy('Codigo', 'desc');
 
   if (pagina.limite) {
     TableSolicitacao.paginate(pagina.offset, pagina.limite);
@@ -65,8 +84,7 @@ exports.enviarEmail = async (email, token) => {
 exports.buscarProximoAprovador = async (codigo) => {
   const conexao = await sql.connect(db);
 
-  const busca = await conexao.request()
-    .query(`select top 1
+  const busca = await conexao.request().query(`select top 1
         t1.EMAIL_USUARIO, t1.COD_USUARIO
     from
         Aprovacoes t0
@@ -80,17 +98,22 @@ exports.buscarProximoAprovador = async (codigo) => {
 
   if (busca.recordsets[0].length == 0) {
     console.log('todos aprovaram');
-    const alterarStatus = await conexao.request()
-      .query(`update Solicitacao_Item set Aprovado = 'Y' where Codigo = ${codigo}`);
+    const alterarStatus = await conexao
+      .request()
+      .query(
+        `update Solicitacao_Item set Aprovado = 'Y' where Codigo = ${codigo}`
+      );
 
-    const alterarStatus2 = await conexao.request().query(`update Solicitacao_Item set Status_Compra = 'A' where Codigo = ${codigo}`);
+    const alterarStatus2 = await conexao
+      .request()
+      .query(
+        `update Solicitacao_Item set Status_Compra = 'A' where Codigo = ${codigo}`
+      );
     return;
   }
 
   const email = busca.recordset[0].EMAIL_USUARIO;
-  console.log('foi aqui', busca.recordset[0]);
   const codigoUsuario = busca.recordset[0].COD_USUARIO;
-  console.log('não chegou aqui');
 
   return {
     email,
@@ -101,7 +124,8 @@ exports.buscarProximoAprovador = async (codigo) => {
 exports.obterDadosUser = async (codigo) => {
   const conexao = await sql.connect(db);
 
-  const query = await conexao.request().query(`SELECT Usuarios.COD_USUARIO, Usuarios.LOGIN_USUARIO, Usuarios.VALIDACAO_SENHA, Usuarios.NOME_USUARIO, Usuarios.EMAIL_USUARIO, Usuarios.ID_DEPARTAMENTO, Usuarios.Perfil, TIPO_PERMISSAO.PERMISSAO, MODULOS.MODULO
+  const query = await conexao.request()
+    .query(`SELECT Usuarios.COD_USUARIO, Usuarios.LOGIN_USUARIO, Usuarios.VALIDACAO_SENHA, Usuarios.NOME_USUARIO, Usuarios.EMAIL_USUARIO, Usuarios.ID_DEPARTAMENTO, Usuarios.Perfil, TIPO_PERMISSAO.PERMISSAO, MODULOS.MODULO
     FROM Usuarios
     LEFT JOIN PERMISSOES ON Usuarios.COD_USUARIO = PERMISSOES.COD_USUARIO
     LEFT JOIN TIPO_PERMISSAO ON TIPO_PERMISSAO.ID = PERMISSOES.COD_PERMISSAO
@@ -111,13 +135,13 @@ exports.obterDadosUser = async (codigo) => {
   const dadosUserSolicitacao = {};
 
   if (query.recordset) {
-    dadosUserSolicitacao.codigo = query.recordset[0].COD_USUARIO,
-    dadosUserSolicitacao.loginUsuario = query.recordset[0].LOGIN_USUARIO,
-    dadosUserSolicitacao.nome = query.recordset[0].NOME_USUARIO,
-    dadosUserSolicitacao.email = query.recordset[0].EMAIL_USUARIO,
-    dadosUserSolicitacao.departamento = query.recordset[0].ID_DEPARTAMENTO,
-    dadosUserSolicitacao.Perfil = query.recordset[0].Perfil,
-    dadosUserSolicitacao.permissao = '';
+    (dadosUserSolicitacao.codigo = query.recordset[0].COD_USUARIO),
+      (dadosUserSolicitacao.loginUsuario = query.recordset[0].LOGIN_USUARIO),
+      (dadosUserSolicitacao.nome = query.recordset[0].NOME_USUARIO),
+      (dadosUserSolicitacao.email = query.recordset[0].EMAIL_USUARIO),
+      (dadosUserSolicitacao.departamento = query.recordset[0].ID_DEPARTAMENTO),
+      (dadosUserSolicitacao.Perfil = query.recordset[0].Perfil),
+      (dadosUserSolicitacao.permissao = '');
     dadosUserSolicitacao.permissoesNotaFiscal = '';
     dadosUserSolicitacao.validacao = query.recordset[0].VALIDACAO_SENHA;
 
@@ -135,9 +159,89 @@ exports.obterDadosUser = async (codigo) => {
     dadosUserSolicitacao
   };
 
-  return (dados);
+  return dados;
 };
 
-exports.inserirSolicitacao = async () => {
-  
+exports.create = async (data, returnField = null) => {
+  try {
+    return await TableSolicitacao.insert(data, returnField);
+  } catch (error) {
+    throw new Error('Ocorreu uma excecao');
+  }
+};
+
+exports.createSolicitacao = async (
+  descricao,
+  quantidade,
+  deal,
+  observacao,
+  solicitante,
+  dataCriacao,
+  dataAtualizacao,
+  statusCompra,
+  aprovadores,
+  centroCusto
+) => {
+  const conexao = await sql.connect(db);
+
+  let result = await conexao
+    .request()
+
+    .input('descricao', sql.NVarChar, descricao)
+    .input('quantidade', sql.Int, quantidade)
+    .input('centroCusto', sql.VarChar, centroCusto)
+    .input('deal', sql.VarChar, deal)
+    .input('observacao', sql.VarChar, observacao)
+    .input('solicitante', sql.VarChar, solicitante)
+    .input('dataCriacao', sql.DateTimeOffset, dataCriacao)
+    .input('dataAtualizacao', sql.DateTimeOffset, dataAtualizacao)
+    .input('statusCompra', sql.Char, statusCompra)
+    .query(
+      `INSERT INTO Solicitacao_Item ( Descricao, Quantidade, Centro_de_Custo,deal, observacao, solicitante, DataCriacao,DataAtualizacao, Status_Compra) OUTPUT Inserted.Codigo VALUES (@descricao, @quantidade, @centroCusto, @deal, @observacao, @solicitante, @dataCriacao, @dataAtualizacao, @statusCompra)`
+    );
+
+  const codigo = result.recordset[0].Codigo;
+
+  const ordemAprovadores = aprovadores.split(',');
+
+  for (let index = 0; index < ordemAprovadores.length; index++) {
+    let resultado = await conexao
+      .request()
+      .query(
+        `INSERT INTO Aprovacoes ( Codigo_Solicitacao, Codigo_Aprovador, Ordem) VALUES (${codigo}, ${
+          ordemAprovadores[index]
+        }, ${index + 1})`
+      );
+  }
+
+  return codigo;
+};
+
+exports.filterAprovador = async (codigoAprovador, codigoSolicitacao) => {
+
+  const conexao = await sql.connect(db);
+  const result = await conexao.request().query(`select Ordem from Aprovacoes where Codigo_Solicitacao = ${codigoSolicitacao} and Codigo_Aprovador = ${codigoAprovador}`)
+
+  if (result.recordset[0]) {
+    return true
+  } else {
+    return false
+  }
 }
+
+exports.verificaData = async (date1, date2) => {
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const diff = Math.abs(new Date(date2) - new Date(date1));
+  const result = Math.floor(diff / millisecondsPerDay);
+
+  if (result <= 15) {
+    return false
+  } else
+  {
+    return true
+  }
+}
+// const result = filterAprovador(4, 5)
+
+
+

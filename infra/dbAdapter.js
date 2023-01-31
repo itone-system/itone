@@ -15,13 +15,16 @@ module.exports = (table) => {
   let hasWhere = false;
   return {
     select (columns = '*') {
-      // console.log(columns)
       if (Array.isArray(columns)) {
         columns = columns.join(', ');
       }
       query = `select ${columns} from ${table}`;
       queryToCount = query;
       return this;
+    },
+    innnerJoin (tableJoin, fieldJoin, fieldTable) {
+      query += ` INNER JOIN ${tableJoin} ON ${tableJoin}.${fieldJoin} = ${table}.${fieldTable}`;
+      return this
     },
     andWhere (filter) {
       const symbolRegex = /[<>]|like/gm;
@@ -91,6 +94,45 @@ module.exports = (table) => {
 
       return this;
     },
+    async insert (params = {}, returnField = null) {
+      const keys = Object.keys(params);
+
+      if (keys.length === 0) {
+        throw new Error('Não é possível fazer inserção sem parâmetros!');
+      }
+
+      const values = Object.values(params);
+
+      let query = `INSERT INTO ${table} (`;
+
+      for (let index = 0; index < keys.length; index++) {
+        const key = keys[index];
+        const comma = (index + 1) === keys.length ? ')' : ',';
+        query += `${key}${comma}`;
+      }
+
+      if (returnField) {
+        query += ` OUTPUT Inserted.${returnField}`;
+      }
+
+      query += ' VALUES (';
+
+      for (let index = 0; index < values.length; index++) {
+        const value = values[index];
+        const comma = (index + 1) === values.length ? ')' : ',';
+        query += `'${value}'${comma}`;
+      }
+
+      const instance = await initDb();
+      const result = await instance.query(query);
+
+      if (!returnField) {
+        return result?.rowsAffected[0] === 1
+      }
+
+
+      return result?.recordset[0]
+    },
     orderBy (byField, sort = 'asc') {
       query += ` ORDER BY ${byField} ${sort}`;
       return this;
@@ -105,8 +147,6 @@ module.exports = (table) => {
       return result.recordsets[0] ? result.recordsets[0][0] : null;
     },
     async execute () {
-      // console.log('query ', query)
-
       const instance = await initDb();
       const result = await instance.query(query);
       query = null;

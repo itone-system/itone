@@ -33,5 +33,8 @@ module.exports = {
   session: {
     key: SESSION_SECRET,
     age: 60000 * 10 // 10 min
+  },
+  Keytoken: {
+    secret: SECRET
   }
 };

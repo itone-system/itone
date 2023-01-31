@@ -1,15 +1,15 @@
 const { renderView, redirect } = require('../../helpers/render');
-const SolicitacaoService = require('./service')
+const solicitacaoRouter = require('../Solicitacao/router');
+const SolicitacaoService = require('./service');
 
 module.exports = {
-
-  async Index (request) {
+  async Index(request) {
     const message = await request.session.message();
     return renderView('login/Index', { message });
   },
 
-  async Auth (request) {
-    const { usuario, senha } = request;
+  async Auth(request) {
+    const { usuario = 'gustavo.costa', senha = 'abc*123' } = request;
 
     const type = 'warning';
 
@@ -29,12 +29,7 @@ module.exports = {
       return redirect('/');
     }
 
-    // request.session.set('user', {
-    //   name: 'Marcos Soares',
-    //   age: 29
-    // });
-
-    const user = await SolicitacaoService.verifyUser(usuario, senha)
+    const user = await SolicitacaoService.verifyUser(usuario, senha);
 
     if (!user.recordset[0]) {
       request.session.message({
@@ -44,39 +39,66 @@ module.exports = {
       return redirect('/');
     }
 
-    const dadosUsuario = await SolicitacaoService.obterDadosUser(user.recordset[0].COD_USUARIO)
+    const dadosUsuario = await SolicitacaoService.obterDadosUser(
+      user.recordset[0].COD_USUARIO
+    );
 
-    request.session.set('user', dadosUsuario.dadosUserSolicitacao );
- 
-
+    request.session.set('user', dadosUsuario.dadosUserSolicitacao);
 
     return redirect('/home');
   },
 
-  async ChangePass (request) {
-    // const { usuario, senha } = request;
+  async ChangePass(request) {
+    const { confirmacao, senha, usuario } = request;
 
-    // const conexao = await sql.connect(db);
-    // const query = `declare
-    //     @pwd1 varchar(20),
-    //     @pwd2 varbinary(100),
-    //     @pwd3 varchar(1)
+    const validate = await SolicitacaoService.simpleUserVerification(usuario);
 
-    //     set @pwd1 = '${senha}'
+    if (validate == 'Y') {
+      request.session.message({
+        title: 'Mudança de Senha',
+        text: 'Este não é o seu primeiro acesso, Entre na plataforma com seu usuário e senha ou contacte o time de sistemas!',
+        type: 'warning'
+      });
+      return redirect('/');
+    }
 
-    //     set @pwd2 = Convert(varbinary(100), pwdEncrypt(@pwd1))
+    if (validate == 'error') {
+      request.session.message({
+        title: 'Mudança de Senha',
+        text: 'Usuário inválido!',
+        type: 'danger'
+      });
+      return redirect('/');
+    }
 
-    //     set @pwd3 = 'Y'
+    if (!senha || !confirmacao) {
+      request.session.message({
+        title: 'Mudança de Senha',
+        text: 'Necessário o preenchimento de todos os campos!',
+        type: 'warning'
+      });
+      return redirect('/');
+    }
 
-    //     update Usuarios
-    //     set SENHA = @pwd2, VALIDACAO_SENHA = @pwd3
-    //     WHERE LOGIN_USUARIO = '${usuario}'`;
+    if (senha != confirmacao) {
+      request.session.message({
+        title: 'Mudança de Senha',
+        text: 'As senhas não conferem!',
+        type: 'danger'
+      });
+      return redirect('/');;
+    }
 
-    // const result = await conexao.request()
+    if (senha.length <= 6) {
+      request.session.message({
+        title: 'Mudança de Senha',
+        text: 'Sua senha deve conter no mínimo 7 caracteres!',
+        type: 'warning'
+      });
+      return redirect('/');;
+    }
 
-    //   .query(query);
-
-    // return renderJson({ menssagem: 'Usuário editado com sucesso' });
+    await SolicitacaoService.changePass(usuario, senha)
 
     request.session.message({
       title: 'Mudança de Senha',

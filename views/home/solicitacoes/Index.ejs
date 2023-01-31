@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('../partials/head', { title: 'Acompanhar' } ) %>
+<%- include('../../partials/head', { title: 'Acompanhar' } ) %>
 
-  <script src="../../public/main.js"></script>
+  <script src="/public/main.js"></script>
   <script src="/public/acompanhar/acompanhar.js"></script>
+  <link rel="stylesheet" href="../../../public/global.css">
   <link rel="stylesheet" href="../../public/acompanhar/acompanhar.css">
 
   <body>
 
-    <%- include('../components/menu') %>
+    <%- include('../../components/menu') %>
 
       <section class="home">
-        <%- include('../components/navbar') %>
+        <%- include('../../components/navbar') %>
 
           <main class="text">
 
             <div id="alterar-solicitacoes">
-              <h2 style="border-bottom: 1px solid #120947; margin-bottom: 25px; padding: 13px 0">
+              <h2 style="border-bottom: 1px solid #27417B; margin-bottom: 25px; padding: 13px 0">
                 Solicitações de Compra
               </h2>
             </div>
@@ -34,7 +35,7 @@
                 <div class="col">
                   <input readonly name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control"
                     placeholder="Solicitante" aria-label="Last name" style="font-size: 13px"
-                    value="<%=filtros.Solicitante%>" />
+                    value="" />
                   <input name="pagina" type="text" id="pagina" hidden value="<%=paginas.corrente%>" />
                   <input name="paginas" type="text" id="paginas" hidden value="<%=paginas.total%>" />
                 </div>
@@ -55,7 +56,7 @@
                 </div>
 
                 <div class="col">
-                  <select name="centroCustoFiltro" class="form-control" id="CentroCusto" style="font-size: 13px">
+                  <select name="centroCustoFiltro" class="form-control" id="CentroCusto" style="font-size: 13px;">
                     <option selected value="<%=filtros.centroCustoNormal%>">Centro de Custo</option>
 
                   </select>
@@ -63,8 +64,8 @@
               </div>
               <br>
 
-              <button class="button button2" type="submit" role="button" id="buscar" onclick="listar()">🔍
-                Buscar</button>
+              <button class="button" type="submit" role="button" id="buscar" onclick="listar()"><i class='bx bx-search'></i>
+                 Buscar</button>
 
 
 
@@ -79,46 +80,56 @@
 
                 <table class="table table-sm table-hover" id="myTable">
 
-                  <thead style="background-color: #e7e9f5; color: rgb(36, 26, 9);   font-size: 13px">
+                  <thead class="topo-tabela">
 
-                    <th class="center"> N° da Solicitação</th>
-                    <th> Descrição</th>
-                    <th> Solicitante</th>
-                    <th> Quantidade</th>
-                    <th> Data da Solicitação </th>
-                    <th> Comprador </th>
-                    <th> Status </th>
-                    <th> Ações </th>
+                    <th class="center" style="text-align: center;"> N° da Solicitação</th>
+                    <th style="text-align: center;"> Descrição</th>
+                    <th style="text-align: center;"> Solicitante</th>
+                    <th style="text-align: center;"> Quantidade</th>
+                    <th style="text-align: center;"> Data da Solicitação </th>
+                    <th style="text-align: center;"> Comprador </th>
+                    <th style="text-align: center;"> Status </th>
+                    <th style="text-align: center;"> Ações </th>
                   </thead>
 
 
 
                   <tbody style="font-size: 13px" class="table-line" id="tbody">
                     <% solicitacoes.forEach(socilitacao=> { %>
-                      <tr>
-                        <td>
+                      <tr  style="text-align: center;">
+                        <td class="linhas">
                           <%=socilitacao.Codigo%>
                         </td>
-                        <td>
+                        <td class="linhas">
                           <%=socilitacao.Descricao%>
                         </td>
-                        <td>
+                        <td class="linhas">
                           <%=socilitacao.Solicitante%>
                         </td>
-                        <td>
+                        <td class="linhas">
                           <%=socilitacao.Quantidade%>
                         </td>
-                        <td>
+                        <td class="linhas">
                           <%=socilitacao.DataAtualizacao%>
                         </td>
-                        <td>
+                        <td class="linhas">
                           <%=socilitacao.Comprador || 'Pollyanna' %>
                         </td>
-                        <td>
-                          <%=socilitacao.Status_Compra%>
+                        <td class="linhas">
+                          <% if(socilitacao.Status_Compra == 'A') { %>
+                            <a class="btn btn-primary text-white buttonStatus" style=" height: 27px; font-size: 11px">Aguardando Compra</a>
+                            <% } %>
+                            <% if(socilitacao.Status_Compra == 'P') { %>
+                              <a class="btn btn-warning text-white buttonStatus" style=" height: 27px; font-size: 11px">Pendente Aprovação</a>
+                              <% } %>
+                              <% if(socilitacao.Status_Compra == 'C') { %>
+                                <a class="btn btn-success text-white buttonStatus" style=" height: 27px; font-size: 11px">Comprado</a>
+                                <% } %>
+
+
                         </td>
-                        <td>
-                          <a href="/solicitacoes/<%=socilitacao.Codigo%>/edit"> <i class='bx bx-edit iconEdit'></i></a>
+                        <td class="linhas">
+                          <a href="/solicitacoes/<%=socilitacao.Codigo%>/edit"> <i class='bx bx-edit iconEdit alterar-icon'></i></a>
                         </td>
                       </tr>
                       <% }) %>
@@ -138,15 +149,13 @@
 
               </div>
 
-              <div class="row g-2" style="margin-top: 1.5%; margin-left: 4%">
+              <div class="row g-2" style="margin-top: 1.5%; margin-left: 0%">
                 <div>
-                  <button id="prev" onclick="prevPage()" class=" button2">Anterior</button>
+                  <button id="prev" onclick="prevPage()" class=" button-anterior">Anterior</button>
                 </div>
                 <div>
-                  <button id="prox" onclick="proxPage()" class=" button2">Próxima</button>
+                  <button id="prox" onclick="proxPage()" class=" button-proximo">Próxima</button>
                 </div>
-
-
               </div>
             </form>
 
@@ -162,5 +171,5 @@
       </section>
 
   </body>
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </html>

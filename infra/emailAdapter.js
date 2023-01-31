@@ -4,9 +4,7 @@ const { emailProvider } = require('../config/env');
 
 // module.exports = async ({ to, subject = 'fkdflksjflkdjf', text = 'dfkfvjsddfjsdfljk', isHtlm = false}) => {
 module.exports = async (body, token) => {
-  // console.log('ola')
 
-  // console.log('token',token)
 
   // const link = `http://localhost:5050/solicitacoes/AprovarSolicitacao?token=${token}`
 
@@ -14,7 +12,7 @@ module.exports = async (body, token) => {
 
   // quando clicar, chamar uma rota que decodifica um token informado anteriormente com os dados da solicitação em questão e envia para a página de aprovação passando os dados da solicitação
 
-  const link = `http://localhost:5050/solicitacoes/:Codigo/edit?token=${token}`;
+  const link = `http://itonerdp06:5051/solicitacoes/:Codigo/edit?token=${token}`;
   const html = `<body style="margin: 0; padding:0; font-family: Arial, Helvetica, sans-serif;" >
     <table border="0" width="100%" cellpadding="0" cellspacing="0">
         <tr>
