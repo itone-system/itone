@@ -1,9 +1,9 @@
 const model = require('../../infra/dbAdapter');
 const TableSolicitacao = model('Solicitacao_Item');
-// const emailAdapter = require('../../infra/emailAdapter');
+const enviarEmail = require('../../infra/emailAdapter');
 const { db } = require('../../config/env');
 const sql = require('mssql');
-
+const solicitacaoAprovada = require('../../template-email/solicitacao_aprovada');
 
 exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
   const { Descricao, Solicitante, statusItem, centroCustoFiltro, User } = data;
@@ -11,6 +11,15 @@ exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
   TableSolicitacao.select(
     "Codigo, Descricao, DataCriacao, FORMAT(DataAtualizacao, 'dd/MM/yyyy') as DataAtualizacao, Quantidade, Status_Compra, Solicitante"
   );
+
+  // aprovador
+  if (User.Perfil === 3) {
+    TableSolicitacao.innnerJoin('Aprovacoes', 'Codigo_Solicitacao', 'Codigo');
+
+    TableSolicitacao.andWhere({
+      'Aprovacoes.Codigo_Aprovador': User.codigo
+    });
+  }
 
   if (Descricao) {
     TableSolicitacao.andWhere({
@@ -43,15 +52,6 @@ exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
   if (User.Perfil === 2) {
     TableSolicitacao.andWhere({
       Solicitante: User.nome
-    });
-  }
-
-  // aprovador
-  if (User.Perfil === 3) {
-    TableSolicitacao.innnerJoin('Aprovacoes', 'Codigo_Solicitacao', 'Codigo')
-
-    TableSolicitacao.andWhere({
-      'Aprovacoes.Codigo_Aprovador': User.codigo
     });
   }
 
@@ -109,6 +109,27 @@ exports.buscarProximoAprovador = async (codigo) => {
       .query(
         `update Solicitacao_Item set Status_Compra = 'A' where Codigo = ${codigo}`
       );
+
+    const query = await conexao.request().query(`SELECT usuarios.EMAIL_USUARIO
+        FROM usuarios
+        INNER Join Solicitacao_Item
+        ON Usuarios.NOME_USUARIO = Solicitacao_Item.Solicitante
+        WHERE Codigo = ${codigo}`);
+
+    const queryDesc = await conexao.request().query(`select Descricao from Solicitacao_Item where Codigo =${codigo}`)
+
+    const email = query.recordset[0].EMAIL_USUARIO;
+
+    const emailOptions = {
+      to: email,
+      subject: 'Solicitção Aprovada',
+      content: solicitacaoAprovada({
+        descricao: queryDesc.recordset[0].Descricao,
+        codigo
+      }),
+      isHtlm: true
+    };
+    enviarEmail(emailOptions);
     return;
   }
 
@@ -218,16 +239,19 @@ exports.createSolicitacao = async (
 };
 
 exports.filterAprovador = async (codigoAprovador, codigoSolicitacao) => {
-
   const conexao = await sql.connect(db);
-  const result = await conexao.request().query(`select Ordem from Aprovacoes where Codigo_Solicitacao = ${codigoSolicitacao} and Codigo_Aprovador = ${codigoAprovador}`)
+  const result = await conexao
+    .request()
+    .query(
+      `select Ordem from Aprovacoes where Codigo_Solicitacao = ${codigoSolicitacao} and Codigo_Aprovador = ${codigoAprovador}`
+    );
 
   if (result.recordset[0]) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
-}
+};
 
 exports.verificaData = async (date1, date2) => {
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
@@ -235,13 +259,9 @@ exports.verificaData = async (date1, date2) => {
   const result = Math.floor(diff / millisecondsPerDay);
 
   if (result <= 15) {
-    return false
-  } else
-  {
-    return true
+    return false;
+  } else {
+    return true;
   }
-}
+};
 // const result = filterAprovador(4, 5)
-
-
-

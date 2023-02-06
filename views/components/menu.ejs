@@ -20,6 +20,8 @@
             </li> -->
 
             <ul class="menu-links">
+
+
                 <li class="navbar-link" id="botaoHome">
                     <a onclick="paginaHome()">
                         <i class='bx bx-home-alt icon'></i>
@@ -27,33 +29,53 @@
                     </a>
                 </li>
 
-                <li class="navbar-link">
-                    <a onclick="paginaAcompanhar()">
-                        <i class='bx bx-bar-chart-alt-2 icon'></i>
-                        <span class="text nav-text">Solicitações</span>
-                    </a>
-                </li>
 
                 <li class="navbar-link">
-                    <a href="<%=locals.endpoints.NovaSolicitacao%>">
-                        <i class='bx bx-cart icon'></i>
-                        <span class="text nav-text">Nova Solicitação</span>
+                  <a href="<%=locals.endpoints.NovaSolicitacao%>">
+                    <i class='bx bx-cart icon'></i>
+
+                      <span class="text nav-text">Nova Solicitação</span>
+                  </a>
+              </li>
+
+                <li class="navbar-link">
+                    <a onclick="paginaAcompanhar()">
+                      <i class='bx bx-bar-chart-alt-2 icon'></i>
+
+                        <span class="text nav-text">Acompanhar Pedidos</span>
                     </a>
+                    <!-- <i class='bx bxs-chevron-down arrow'></i> -->
+
                 </li>
+
 
                 <li class="navbar-link">
                     <a onclick="incluirNota()">
                         <i class='bx bx-briefcase icon'></i>
-                        <span class="text nav-text">Incluir Nota</span>
+                        <span class="text nav-text">Enviar NF</span>
                     </a>
                 </li>
 
                 <li class="navbar-link">
                     <a onclick="buscarNotas()">
                         <i class='bx bx-archive icon'></i>
-                        <span class="text nav-text">Buscar Notas</span>
+                        <span class="text nav-text">Consultar NF</span>
                     </a>
                 </li>
+
+                <!-- <li class="navbar-link">
+                      <a href="#">
+                          <i class='bx bx-plug icon'></i>
+                          <span class="text nav-text">Plugins</span>
+                      </a>
+                      <i class='bx bxs-chevron-down arrow'></i>
+                  <ul class="sub-menu">
+                      <li><a class="link_name" href="#">Plugins</a></li>
+                      <li><a href="#">UI Face</a></li>
+                      <li><a href="#">Pigments</a></li>
+                      <li><a href="#">Box Icons</a></li>
+                  </ul>
+              </li> -->
 
             </ul>
         </div>
@@ -85,5 +107,4 @@
     </div>
 </nav>
 
-<link rel="stylesheet" href="/public/template/menu/index.css">
 <script src="/public/template/menu/index.js"></script>

@@ -1,18 +1,33 @@
-const { renderJson } = require('../../helpers/render');
+const { renderJson, redirect } = require('../../helpers/render');
 const SolicitacaoService = require('./service');
 
 module.exports = {
 
   async List (request) {
-    const user = request.session.get('user');
 
-    const aprovadores = await SolicitacaoService.getAprovadores(user.codigo)
+    // try {
+      const user = request.session.get('user');
 
-    const codigosAprovadores = aprovadores.recordset[0].COD_APROVADOR.split(',');
+      const aprovadores = await SolicitacaoService.getAprovadores(user.codigo)
 
-    const nomes = await SolicitacaoService.getNameAprovadores(codigosAprovadores)
+      console.log(aprovadores)
 
-    return renderJson(nomes);
+      const codigosAprovadores = aprovadores.recordset[0].aprovadores.split(',');
+
+      const nomes = await SolicitacaoService.getNameAprovadores(codigosAprovadores)
+
+      return renderJson(nomes);
+    // } catch (error) {
+    //   console.log('error ', error);
+    //   request.session.message({
+    //     title: 'Ops!',
+    //     text: error.message,
+    //     type: 'danger'
+    //   });
+
+    //   return redirect('/');
+    // }
+
   }
 
 };

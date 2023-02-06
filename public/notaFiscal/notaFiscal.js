@@ -7,29 +7,36 @@ let tipoContrato = '';
 let dadosPagamento = '';
 let arquivoAnexo;
 let codigoRetornoNF = '' 
+let NomeArquivoSemAcento;
+let dataAtualConf = ''
+let dataAtualConfPadrao = ''
+let erroDataMenor = false
 
 $(document).ready(function () {
     dataAtual()
     const fileInput = document.querySelector("#fileInput");
     const enviarNF = document.querySelector("#enviarNF");
     const downloadArquivoNF = document.getElementById("baixar");
-
+    const dataPag = document.getElementById("DataPagamento")
+    
     fileInput.addEventListener("change", event => {
     const files = event.target.files;
     arquivoAnexo = files[0]
+    NomeArquivoSemAcento = fileInput.value.replace('C:\\fakepath\\','').normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    // var NomeArquivoSemAcento = arquivoAnexo.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     });
 
     enviarNF.addEventListener("click", function(){
         
         validarCampos()
-        // codigoNF = 22222
-        // uploadFile(arquivoAnexo, codigoNF)
-        // nomeArquivo = fileInput.value.replace('C:\\fakepath\\','')
-        
+       
     });
 
-   
+    dataPag.addEventListener("change", event => {
 
+        validarCampoData(event.target.value)
+        
+        });
 
 });
 
@@ -45,17 +52,20 @@ function dataAtual(){
     var mes = String(data.getMonth()+1).padStart(2, '0');
     var ano = data.getFullYear();
     dataAtualConf = + ano + '-' + mes  + '-' + dia ;
+    dataAtualConfPadrao = dia  + '/' + mes  + '/' +  ano  ;
     document.getElementById("DataPagamento").value = dataAtualConf
+    document.getElementById("DataPagamento").setAttribute('min', dataAtualConf)
+
 }
 
 
 
 function adicionarCampoColaborador(){
-    var campoColaborador = document.getElementById('aprov')
-    campoColaborador.innerHTML = '<div class="col Colaborador">    <label id="labelColaborador">Colaborador:</label>    <input name="Colaborador" id="Colaborador" type="text" class="form-control" placeholder="Colaborador" aria-label="First name"> </div>'
-    colaborador = document.getElementById("Colaborador").value;
+    var campoColaborador = document.getElementById('campoColaborador')
+    campoColaborador.innerHTML = '<div class="col Colaborador"> <label id="labelColaborador">Colaborador:</label>    <select name="Colaborador" id="Colaborador" class="form-control">      <option selected></option>    </select></div>'
     campos.push('Colaborador')
     trueColaborador = true
+    conveniaColaborares()
     
 }
 
@@ -63,14 +73,18 @@ function removerCampoColaborador(){
     var campoColaborador = document.getElementById('Colaborador')
     var labelColaborador = document.getElementById('labelColaborador')
     var labelObrColaborador = document.querySelector('.obrigatorio-Colaborador')
-
+    trueColaborador = false
+    
     if(campoColaborador && labelObrColaborador){
     campoColaborador.remove()
     labelColaborador.remove()
     labelObrColaborador.remove()
+    campos.splice(campos.indexOf('Colaborador'), 1);
 } else{
     campoColaborador.remove()
     labelColaborador.remove()
+    campos.splice(campos.indexOf('Colaborador'), 1);
+
 }
 }
 
@@ -88,29 +102,66 @@ const conveniaCentroCusto = () => {
         return response.json()
     }).then(result => {
         var dados = result.data
-                
+        let listaCC = []
+
         dados.forEach(element => {
+            if(element.name.substr(0,1) <= 9){
+            listaCC.push(element.name)
+            listaCC.sort()
+        }});
+
+        listaCC.forEach(element => {
             var localCC = document.getElementById('CentroCusto') 
             var option = document.createElement('option');
-            option.textContent = element.name;
+            option.textContent = element;
             localCC.appendChild(option);
+            
+    
+    });
+})
 
+}
+
+const conveniaColaborares = () => {
+
+    fetch("https://public-api.convenia.com.br/api/v3/employees", {
+        method: 'GET', 
+        redirect: 'follow',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "token": "82856aeb-fa11-4918-b2bc-f7a49322f69b"
+        }
+    }).then(response => {
+        return response.json()
+    }).then(result => {
+        var dados = result.data
+        let listaColab = []
+
+        dados.forEach(element => {
+            listaColab.push(element.name +' ' + element.last_name )
+            listaColab.sort()
         });
-    })
+
+        listaColab.forEach(element => {
+            var localColab = document.getElementById('Colaborador') 
+            var option = document.createElement('option');
+            option.textContent = element;
+            localColab.appendChild(option);
+            
+    });
+})
 
 }
 
 function buscarValoresCampos(){
 
     var contrato = document.getElementById("TipoContrato").value;
-    var pagamento = document.getElementById("DadosPagamento").value;
-
 
     tipoContrato = contrato.substr(0,1);
-    dadosPagamento = pagamento.substr(0,1);
 
     if(trueColaborador){
-        colaborador = document.getElementById("Colaborador").value;
+        colaboradorNome =  document.getElementById("Colaborador").value+""
         setColaborador = "Y"
     }
 
@@ -138,13 +189,12 @@ function limparCampos(){
 
 async function insertNota() {
     
-    buscarValoresCampos()
 
     solicitante = document.getElementById("Solicitante").value;
     centroCusto = document.getElementById("CentroCusto").value;
     fornecedor = document.getElementById("Fornecedor").value;
     descServico = document.getElementById("DescServico").value;
-    dadosBanc = document.getElementById("DadosBanc").value;
+    valorNF = document.getElementById("valorNF").value;
     dataPagamento = document.getElementById("DataPagamento").value;
     deal = document.getElementById("Deal").value;
     observacoes = document.getElementById("Observacao").value;
@@ -153,6 +203,7 @@ async function insertNota() {
     centroCustoSplit = centroCusto.split('. ');
     console.log(centroCustoSplit[0]);
 
+    console.log(colaboradorNome)
 
         let headersList = {
             "Content-Type": "application/json"
@@ -165,19 +216,18 @@ async function insertNota() {
             "fornecedor":fornecedor,
             "Descricao": descServico, 
             "tipoContrato":tipoContrato, 
-            "TipoPagamento":dadosPagamento, 
-            "dadosBanc":dadosBanc, 
+            "valorNF":valorNF, 
             "dataPagamento":dataPagamento, 
             "deal": deal,
             "Observacao": observacoes, 
-            "possuiColaborador":setColaborador,
-            "Colaborador": colaborador,
-            "Anexo": nomeArquivo
+            "possuiColaborador": setColaborador,
+            "Colaborador": colaboradorNome,
+            "Anexo": NomeArquivoSemAcento
 
             
         });
 
-         let response =   await fetch('http://itonerdp06:5053/notafiscal/insertnotafiscal', {
+         let response =   await fetch(endpoints.NotaFiscal, {
             method: "POST",
             body: bodyContent,
             headers: headersList
@@ -188,14 +238,18 @@ async function insertNota() {
             codigoRetornoNF = dados
         })
 
-        uploadFile(arquivoAnexo, codigoRetornoNF)
+        uploadFile(arquivoAnexo, codigoRetornoNF, NomeArquivoSemAcento)
         
         limparCampos()
 }
 
 function validarCampos() {
 
-    campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','DadosPagamento','DadosBanc', 'DataPagamento','Deal','Observacao', 'fileInput')
+    buscarValoresCampos()
+
+    if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
+
+    campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
 
 
     for (let i = 0; i < campos.length; i++) {
@@ -208,7 +262,7 @@ function validarCampos() {
 
         if (document.getElementById(campos[i]).value == '' && !busca) {
             
-            const campoObrigatorio = document.querySelector('.col.' + campos[i])
+            const campoObrigatorio = document.querySelector('.' + campos[i])
             var labelObrigatorio = document.createElement('label')
             labelObrigatorio.setAttribute('ID', 'obrigatorio');
             labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
@@ -236,9 +290,9 @@ function validarCampos() {
 };
 
 
-function uploadFile (file, codigoRetornoNF){
+function uploadFile (file, codigoRetornoNF, NomeArquivoSemAcento){
   console.log("Uploading file...");
-  const API_ENDPOINT = "http://localhost:5053/notafiscal/uploadNF/"+codigoRetornoNF;
+  const API_ENDPOINT = "http://localhost:5050/notafiscal/uploadNF/"+codigoRetornoNF+'/'+NomeArquivoSemAcento;
   const request = new XMLHttpRequest();
   const formData = new FormData();
 
@@ -252,8 +306,27 @@ function uploadFile (file, codigoRetornoNF){
     request.send(formData);
 };
 
+function validarCampoData(valorCampoDataPagamento){
 
+    if(valorCampoDataPagamento < dataAtualConf && !erroDataMenor){
+        erroDataMenor = true
 
+        const campoObrigatorio = document.querySelector('.col-6.' + 'DataPagamentoInvalida')
+        var labelObrigatorio = document.createElement('label')
+        labelObrigatorio.setAttribute('ID', 'obrigatorio');
+        labelObrigatorio.setAttribute('class','obrigatorio-DataPagamento');
+        labelObrigatorio.textContent = '* Data não pode ser menor que '+ dataAtualConfPadrao;
+        campoObrigatorio.appendChild(labelObrigatorio)
+        listaErros.push('DataPagamentoInvalida')
+
+    }else if(valorCampoDataPagamento >= dataAtualConf && erroDataMenor){
+
+        var camposObr = document.querySelector('.obrigatorio-DataPagamento')
+        camposObr.remove()
+        erroDataMenor = false
+        listaErros.splice(listaErros.indexOf('DataPagamentoInvalida'), 1);
+    }
+}
 
 conveniaCentroCusto()
 

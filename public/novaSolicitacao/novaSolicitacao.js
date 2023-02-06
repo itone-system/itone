@@ -254,31 +254,38 @@ const retonarCodigo = () => {
 };
 
 const conveniaCentroCusto = () => {
-  fetch('https://public-api.convenia.com.br/api/v3/companies/cost-centers', {
-    method: 'GET',
-    redirect: 'follow',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      token: '82856aeb-fa11-4918-b2bc-f7a49322f69b'
-    }
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((result) => {
-      console.log(result);
 
-      var dados = result.data;
+  fetch("https://public-api.convenia.com.br/api/v3/companies/cost-centers", {
+      method: 'GET', 
+      redirect: 'follow',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          "token": "82856aeb-fa11-4918-b2bc-f7a49322f69b"
+      }
+  }).then(response => {
+      return response.json()
+  }).then(result => {
+      var dados = result.data
+      let listaCC = []
 
-      dados.forEach((element) => {
-        var localCC = document.getElementById('CentroCusto');
-        var option = document.createElement('option');
-        option.textContent = element.name;
-        localCC.appendChild(option);
-      });
-    });
-};
+      dados.forEach(element => {
+          if(element.name.substr(0,1) <= 9){
+          listaCC.push(element.name)
+          listaCC.sort()
+      }});
+
+      listaCC.forEach(element => {
+          var localCC = document.getElementById('CentroCusto') 
+          var option = document.createElement('option');
+          option.textContent = element;
+          localCC.appendChild(option);
+          
+  
+  });
+})
+
+}
 
 function uploadFile(file, codigoRetornoNF) {
   console.log('Uploading file...');

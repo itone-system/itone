@@ -9,12 +9,25 @@ const {
   EMAILTEST,
   SESSION_SECRET,
   ENVIRONMENT,
-  SECRET
+  SECRET,
+  PORT,
+  DOMAIN
 } = process.env;
+
+const port = parseInt(PORT || 5051)
+const isProd = ENVIRONMENT !== 'dev'
+
+if (isProd && !DOMAIN) {
+  throw new Error('O domínio deve ser informado!')
+}
+
+const domain = DOMAIN || port !== 80 ? `http://localhost:${port}` : 'http://localhost'
 
 module.exports = {
   enviroment: ENVIRONMENT,
-  isProd: ENVIRONMENT !== 'dev',
+  isProd,
+  port,
+  domain,
   db: {
     user: USUARIO,
     password: SENHA,
@@ -32,7 +45,7 @@ module.exports = {
   },
   session: {
     key: SESSION_SECRET,
-    age: 60000 * 10 // 10 min
+    age: 3600000
   },
   Keytoken: {
     secret: SECRET

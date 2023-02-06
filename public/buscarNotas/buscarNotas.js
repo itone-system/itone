@@ -5,6 +5,7 @@ let arraySolicitacao = [];
 let totalPaginas = null
 let codigoNF = 0
 let codigoRetornoNF = ''
+let tokenAtivo = false
 
 $(document).ready(function () {
     // $('#prev').css("display", "none")
@@ -19,8 +20,7 @@ $(document).ready(function () {
     });
 
     let elementModal = document.getElementById('openModal');
-    
-    let codigoNF = document.getElementById('CodigoNF');
+
 
     let tabelaNF = document.querySelectorAll('#tabelaNF');
 
@@ -28,10 +28,21 @@ $(document).ready(function () {
         row.addEventListener("click",  () =>{
             // window.location.assign(`/notafiscal/buscarNotas?codigoNF=${row.cells[0].innerText}`) 
             elementModal.click() 
-            gerarDadosModal(row.cells[0].innerText)
+
+            gerarDadosModal(row.cells[0].innerText, tokenAtivo)
+            
                })})
 
+               
+    let codigoNFToken = document.getElementById('CodigoNF');
+    if(codigoNFToken.innerText){
+        elementModal.click() 
+        gerarDadosModal(codigoNFToken.innerText)
+    }
+
+
 });
+
 
 
 // function proxPage() {
@@ -520,13 +531,15 @@ const atualizarStatusNF = () => {
             
         });
 
-        let response = fetch('http://itonerdp06:5053/notafiscal/atualizarStatusNota', {
+        let response = fetch(endpoints.AtualizarNF, {
             method: "POST",
             body: bodyContent,
             headers: headersList
         });
 
         alert('Status do recebimento n° ' + Codigo + ' alterado.')
+        window.location.reload();
+
 
 }
 
@@ -556,7 +569,7 @@ const conveniaCentroCusto = () => {
 
 }
 
- async function gerarDadosModal(codigo){
+async function gerarDadosModal(codigo){
 
     localRetorno =  document.getElementById('RetornoStatusNF')
 
@@ -565,7 +578,7 @@ const conveniaCentroCusto = () => {
         codigoNF: codigo
     };
 
-    await fetch('http://localhost:5053/notafiscal/notaUnica', {
+    await fetch(endpoints.ModalNF, {
         method: 'POST',
         body: JSON.stringify(bodyContent),
         headers: {
@@ -589,14 +602,17 @@ const conveniaCentroCusto = () => {
         document.getElementById('Observacao').value  = data[0].Observacao
         document.getElementById('Colaborador').value  = data[0].Colaborador
         document.getElementById('NomeAnexo').innerText  = data[0].Anexo
+        retornarNFUser = document.getElementById('retornarNFUser').innerText
 
         if(data[0].StatusNF == 'E'){
             localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
-    } else {
+    } else if(retornarNFUser) {
         localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
 
+    }else{
+        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+
     }
-        // window.location.reload();
 
     })
 
@@ -611,8 +627,5 @@ function downloadNF(){
 
     var arquivo = 'DCT-'+codigoNF+' '+document.getElementById('NomeAnexo').innerText
 
-    baixar.href = 'http://localhost:5053/notafiscal/downloadNF/'+arquivo
+    baixar.href = 'http://itonerdp06:5051/notafiscal/downloadNF/'+arquivo
 }
-
-
-

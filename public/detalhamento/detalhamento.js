@@ -42,7 +42,7 @@ function removerCampoParcelas() {
   // campoColaborador.innerHTML = ``
 }
 
-const aprovarSolicitacao = () => {
+function aprovarSolicitacao() {
   const codigoSolicitacao = document.getElementById('codigoSolicitacao').value;
 
   const corpo = {
@@ -68,7 +68,7 @@ const aprovarSolicitacao = () => {
     });
 };
 
-const insertCompra = (codigo) => {
+function insertCompra (codigo) {
   let quantidadeDeParcelas = null;
   let dataDaPrimeiraParcela = null;
 
@@ -122,11 +122,11 @@ const insertCompra = (codigo) => {
     });
 };
 
-const updateSolicitacao = () => {
+function updateSolicitacao(){
   const descricao = document.getElementById('descricaoModal').value;
   const motivo = document.getElementById('motivoModal').value;
   const quantidade = document.getElementById('quantidadeModal').value;
-  const centroDeCusto = document.getElementById('centroCustoModal').value;
+  const centroDeCusto = $('#CentroCustoModal').val();
   const deal = document.getElementById('dealModal').value;
   const codigo = document.getElementById('codigoSolicitacao').value;
 
@@ -163,7 +163,7 @@ const updateSolicitacao = () => {
     });
 };
 
-const conveniaCentroCusto = () => {
+function conveniaCentroCusto() {
   fetch('https://public-api.convenia.com.br/api/v3/companies/cost-centers', {
     method: 'GET',
     redirect: 'follow',

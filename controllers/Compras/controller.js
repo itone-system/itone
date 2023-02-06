@@ -2,10 +2,12 @@
 const { renderJson } = require('../../helpers/render');
 const { db } = require('../../config/env');
 const sql = require('mssql');
-
+const enviarEmail = require('../../infra/emailAdapter');
+const produtoAcaminho = require('../../template-email/produto_chegando');
+const produtoComprado = require('../../template-email/solicitacao_comprada')
 module.exports = {
-  async Create (request) {
-    const body = {
+  async Create(request) {
+    const body = ({
       dataDaCompra,
       valorDaCompra,
       quantidadeDeParcelas = 0,
@@ -14,7 +16,7 @@ module.exports = {
       codigo,
       metodoDePagamento,
       comprador
-    } = request;
+    } = request);
 
     const conexao = await sql.connect(db);
 
@@ -26,6 +28,40 @@ module.exports = {
         set Status_Compra = 'C'
         where Codigo = ${codigo}`);
 
+    const solicitacao = await conexao.request().query(`select Descricao from Solicitacao_Item where Codigo = ${codigo}`)
+
+    const query = await conexao.request().query(`SELECT usuarios.EMAIL_USUARIO
+    FROM usuarios
+    INNER Join Solicitacao_Item
+    ON Usuarios.NOME_USUARIO = Solicitacao_Item.Solicitante
+    WHERE Codigo = ${codigo}`);
+
+    const email = query.recordset[0].EMAIL_USUARIO;
+    // buscar descrição da solicitação baseada no código
+    // buscar email logistica
+    const emailOptions = {
+      to: email,
+      subject: 'Compra Realizada',
+      content: produtoComprado({
+        descricao: solicitacao.recordset[0].Descricao,
+        codigo
+      }),
+      isHtlm: true
+    };
+
+    const emailOptionsLogistica = {
+      to: 'gustavo.pereira@itone.com.br',
+      subject: 'Compra a Caminho',
+      content: produtoAcaminho({
+        descricao: 'teste',
+        previsaoDeEntrega,
+        codigo
+      }),
+      isHtlm: true
+    }
+
+    enviarEmail(emailOptions);
+    enviarEmail(emailOptionsLogistica)
     const corpo =
       'Solicitação N° ' + codigo + ' Foi adicionado para itens comprados';
 

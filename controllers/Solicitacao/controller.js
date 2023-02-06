@@ -4,7 +4,9 @@ const jwt = require('jsonwebtoken');
 const { db } = require('../../config/env');
 const sql = require('mssql');
 const enviarEmail = require('../../infra/emailAdapter');
-const { Keytoken } = require('../../config/env');
+const { Keytoken, domain } = require('../../config/env');
+const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente')
+const tokenAdapter = require('../../infra/tokenAdapter')
 
 const model = require('../../infra/dbAdapter');
 
@@ -137,7 +139,7 @@ module.exports = {
       let datas = await conexao
         .request()
         .query(
-          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-mm-dd') as dataEntrega from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
+          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
         );
       dadosParaViewDeCompra = datas.recordset[0];
     }
@@ -159,7 +161,7 @@ module.exports = {
     }
 
     // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
-
+    console.log(dadosParaViewDeCompra)
     return renderView('home/solicitacoes/Detail', {
       solicitacao,
       retornoUser: user.permissaoCompras,
@@ -208,12 +210,31 @@ module.exports = {
       const aprovadores = await conexao
         .request()
         .query(
-          `select COD_APROVADOR from Usuarios where COD_USUARIO = ${user.codigo}`
+          `(
+            SELECT
+              CONCAT(
+                PRIMEIRO_APROVADOR, ',',
+                SEGUNDO_APROVADOR, ',',
+                TERCEIRO_APROVADOR
+              ) as aprovadores FROM Usuarios
+             WHERE TERCEIRO_APROVADOR is not NULL AND SEGUNDO_APROVADOR IS NOT NULL and COD_USUARIO = ${user.codigo}
+          )UNION
+          (
+            SELECT
+              CONCAT(
+                  PRIMEIRO_APROVADOR, ',',
+                SEGUNDO_APROVADOR
+              ) as aprovadores FROM Usuarios
+            WHERE TERCEIRO_APROVADOR is NULL and SEGUNDO_APROVADOR is not NULL and COD_USUARIO = ${user.codigo}
+          )UNION
+          (
+            SELECT PRIMEIRO_APROVADOR as aprovadores
+            FROM Usuarios WHERE SEGUNDO_APROVADOR is NULL and  COD_USUARIO = ${user.codigo}
+          )`
         );
 
-      const ordemAprovadores =
-        aprovadores.recordset[0].COD_APROVADOR.split(',');
-
+      const ordemAprovadores = aprovadores.recordset[0].aprovadores.split(',');
+        console.log(ordemAprovadores[0])
       let contador = 1;
 
       for (let index = 0; index < ordemAprovadores.length; index++) {
@@ -227,11 +248,11 @@ module.exports = {
         contador++;
       }
 
-      let insertAprovacaoDiretorFinanceiro = await conexao
-        .request()
-        .query(
-          `INSERT INTO Aprovacoes ( Codigo_Solicitacao, Codigo_Aprovador, Ordem) VALUES (${Codigo}, 7, ${contador})`
-        );
+      // let insertAprovacaoDiretorFinanceiro = await conexao
+      //   .request()
+      //   .query(
+      //     `INSERT INTO Aprovacoes ( Codigo_Solicitacao, Codigo_Aprovador, Ordem) VALUES (${Codigo}, 1009, ${contador})`
+      //   );
 
       const firstEmail = await model('Usuarios')
         .select('EMAIL_USUARIO')
@@ -239,25 +260,21 @@ module.exports = {
           COD_USUARIO: ordemAprovadores[0]
         })
         .execute();
+        console.log(firstEmail)
 
-      // const primeiroEmail = await conexao
-      //   .request()
-      //   .query(
-      //     `select EMAIL_USUARIO from Usuarios where COD_USUARIO = ${ordemAprovadores[0]}`
-      //   );
+      const token = tokenAdapter({Codigo,aprovador: ordemAprovadores[0]})
 
-      const token = jwt.sign(
-        {
-          Codigo,
-          aprovador: ordemAprovadores[0]
-        },
-        Keytoken.secret,
-        {
-          expiresIn: '100d'
-        }
-      );
+      const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`
 
-      enviarEmail(firstEmail.data[0].EMAIL_USUARIO, token);
+      const emailOptions = {
+         to: firstEmail.data[0].EMAIL_USUARIO,
+         subject: 'Solicitação de Aprovação',
+         content: aprovacaoPendenteTemplate({link,Codigo, descricao}),
+         isHtlm: true
+      }
+
+      enviarEmail(emailOptions);
+
       const corpo = {
         codigo: Codigo
       };
@@ -300,19 +317,19 @@ module.exports = {
       codigoUsuario = dados.codigoUsuario;
     }
 
-    const token = jwt.sign(
-      {
-        Codigo: codigoSolicitacao,
-        aprovador: codigoUsuario
-      },
-      Keytoken.secret,
-      {
-        expiresIn: '100d'
-      }
-    );
+    const token = tokenAdapter({Codigo: codigoSolicitacao,aprovador: codigoUsuario})
+
+    const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`
+
+    const emailOptions = {
+       to: aprovador,
+       subject: 'Solicitação de Aprovação',
+       content: aprovacaoPendenteTemplate({link}),
+       isHtlm: true
+    }
 
     if (dados != undefined) {
-      enviarEmail(aprovador, token);
+      enviarEmail(emailOptions);
     }
 
     const corpo =
@@ -327,7 +344,7 @@ module.exports = {
     const conexao = await sql.connect(db);
 
     const result = await conexao.request().query(`UPDATE Solicitacao_Item
-            SET Descricao = '${descricao}', Quantidade = ${quantidade}, Centro_de_Custo = '${centroDeCusto}', Deal = '${deal}', Observacao = '${motivo}'
+            SET Descricao = '${descricao}', Quantidade = ${quantidade}, Centro_de_Custo = '${centroDeCusto.split('. ')[0]}', Deal = '${deal}', Observacao = '${motivo}'
             WHERE Codigo = ${codigo}`);
 
     const corpo = 'Solicitação N° ' + codigo + ' Editada com sucesso';

@@ -20,7 +20,9 @@
 
 body {
 
-    background-image: url('../Fotos/fundo.jpg');
+    /* background-image: url('../Fotos/Fundo.png'); */
+    /* background: linear-gradient(0deg, rgba(39,65,123,1) 0%, rgba(0,0,68,1) 27%); */
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgb(170, 170, 170) 63%);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100% 100%;

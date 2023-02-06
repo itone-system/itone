@@ -5,13 +5,35 @@ exports.getAprovadores = async (user) => {
 
   const conexao = await sql.connect(db);
 
-  const result = await conexao.request().query(`select COD_APROVADOR from Usuarios where COD_USUARIO = ${user}`)
+  const result = await conexao.request().query(`(
+    SELECT
+      CONCAT(
+        PRIMEIRO_APROVADOR, ',',
+        SEGUNDO_APROVADOR, ',',
+        TERCEIRO_APROVADOR
+      ) as aprovadores FROM Usuarios
+     WHERE TERCEIRO_APROVADOR is not NULL AND SEGUNDO_APROVADOR IS NOT NULL and COD_USUARIO = ${user}
+  )UNION
+  (
+    SELECT
+      CONCAT(
+          PRIMEIRO_APROVADOR, ',',
+        SEGUNDO_APROVADOR
+      ) as aprovadores FROM Usuarios
+    WHERE TERCEIRO_APROVADOR is NULL and SEGUNDO_APROVADOR is not NULL and COD_USUARIO = ${user}
+  )UNION
+  (
+    SELECT PRIMEIRO_APROVADOR as aprovadores
+    FROM Usuarios WHERE SEGUNDO_APROVADOR is NULL and  COD_USUARIO = ${user}
+  )`)
 
+  if (result.recordset[0].aprovadores == null) {
+    return false
+  }
   return result;
 };
 
 exports.getNameAprovadores = async (arrayCodigos) => {
-
   const conexao = await sql.connect(db);
 
   let nomes = []
@@ -26,7 +48,6 @@ exports.getNameAprovadores = async (arrayCodigos) => {
       nomes[index] = resultado.recordset[0].NOME_USUARIO
       contador++
   }
-  nomes[contador] = 'Andrezza Alencar'
 
   return nomes
 }

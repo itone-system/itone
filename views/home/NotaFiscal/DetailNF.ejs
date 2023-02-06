@@ -2,6 +2,7 @@
 <html lang="en">
 <%- include('../../partials/head', { title: 'Buscar Notas' } ) %>
 
+    <script src="../../public/main.js"></script>
     <script src="../../public/buscarNotas/buscarNotas.js"></script>
     <link rel="stylesheet" href="../../public/buscarNotas/buscarNotas.css">
     <link rel="stylesheet" href="../../../public/global.css">
@@ -169,8 +170,7 @@
                     </form> 
 
                     <button id="openModal" data-toggle="modal" data-target="#myModal" style="color: #e7e9f5"></button>
-                    <!-- GAMBIARRA MODAL -->
-                    <label id="CodigoNF" style="color: #e7e9f5; display: none;"><%= notaUnica[0].Codigo%></label>
+
                   </main>
 
 

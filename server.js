@@ -5,6 +5,7 @@ const setupPublic = require('./config/setup-public');
 const setupSession = require('./config/setup-session');
 const setupGlobal = require('./config/setup-global');
 const express = require('express');
+const { port } = require('./config/env')
 
 const app = express();
 setupGlobal(app);
@@ -13,8 +14,6 @@ setupSession(app);
 setupViews(app);
 setupPublic(app);
 setupRoutes(app);
-
-const port = process.env.PORT || 5051;
 
 app.listen(port, () => {
   console.log(`Aplicação rodando na porta ${port}`);

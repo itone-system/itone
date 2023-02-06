@@ -3,6 +3,8 @@
 <%- include('../../partials/head', { title: 'Nota Fiscal' } ) %>
 
     <script src="../../public/notaFiscal/notaFiscal.js"></script>
+    <script src="../../public/main.js"></script>
+
     <link rel="stylesheet" href="../../public/notaFiscal/notaFiscal.css">
     <link rel="stylesheet" href="../../../public/global.css">
 
@@ -25,7 +27,7 @@
                     <div class="row g-3">
                       <div class="col Solicitante">
                         <label>Solicitante:</label>
-                        <input value="Wesley" name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control" readonly>
+                        <input value="<%= nome%>" name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control" readonly>
                 
                       </div>
                 
@@ -68,16 +70,18 @@
                     </div>
                     </div>
                 
+              
                     <p> </p>
                 
                     <h5 style="margin-bottom: 0px; margin-top: 40px">Dados de Pagamento:</h5>
                 
                     <p> </p>
+             
                 
                 
                 
-                    <div class="row g-3">
-                      <div class="col DadosPagamento">
+                    <div class="row g-3" >
+                      <!-- <div class="col DadosPagamento">
                         <label>Tipo:</label>
                         <select name="DadosPagamento" id="DadosPagamento" class="form-control">
                           <option selected></option>
@@ -86,67 +90,86 @@
                           <option>Transfêrencia</option>
                           <option>Cartão de Crédito</option>
                         </select>
+                      </div> -->
+                
+                      <p> </p>
+                      <div class="col-lg-2 valorNF">
+                        <label>Valor:</label>
+                        <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="0,0">
                       </div>
                 
                       <p> </p>
-                      <div class="col DadosBanc">
-                        <label>Dados Bancários:</label>
-                        <input name="DadosBanc" id="DadosBanc" for="DadosBanc" type="text" class="form-control" placeholder="Dados Bancários">
-                      </div>
-                
-                      <p> </p>
-                      <div class="col DataPagamento" style="width: 200px" ;>
+                      <div class="col-lg-2  DataPagamento"  >
                         <label>Data de Pagamento:</label>
-                        <input name="DataPagamento"  id="DataPagamento" for="DataPagamento" type="date" class="form-control" disabled>
+                        <input name="DataPagamento"  id="DataPagamento" min="13-02-2023" for="DataPagamento" type="date" class="form-control">
+                      </div>
+
+                      <div class="col-6  DataPagamentoInvalida" style="margin-top: 3%" >
+              
+
                       </div>
                 
-                
-                      <p> </p>
+                                  
+                    </div>
+                    <p> </p>
+
+           
+                    <div class="row g-3" style="margin-right: 85.5%;">
                       <div class="col Deal">
                         <label>Deal:</label>
-                        <input name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="Deal">
+                        <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="Deal">
                       </div>
-                    </div>
-                
-                
-                    <p> </p>
+
+                  </div>
+                  <p> </p>
+
                     <div class="row g-3">
                     <div class="col Observacao">
                       <label>Observações:</label>
-                      <input  id="Observacao" type="text" class="form-control" placeholder="Observações" aria-label="First name">
+                      <input  id="Observacao" type="text" class="form-control" placeholder="Observações" aria-label="First name" ">
                     </div>
                   </div>
-                
-                    <p> </p>
-                
-                   
-                      
-                          <label>Vincular algum colaborador?</label>
+
+                  <p></p>
+
+                          <label style="margin-top: 2%;">Vincular algum colaborador?</label>
                           <p></p>
+                          <div class="row g-3" style="margin-right: 90%;">
+                            <div class="col">
 
                          <input    onclick="adicionarCampoColaborador()" type="radio" id="Sim" name="radioColab" value="Sim">
                          <label for="Sim">Sim</label><br>
+                        </div>
+                        <div class="col">
+
                         <input    onclick="removerCampoColaborador()" type="radio" id="Não" name="radioColab" value="Não" checked>
                          <label for="Não">Não</label><br>
-                     
-                          
-                    <div id="aprov">
-                
+                     </div>
                     </div>
                 
-                    <p></p>
+
+                          
+                    <div id="campoColaborador" style="margin-right: 70%;">
+                
+                       
+
+                    </div>
+                
 
                     <div id="app"></div>
                 <!-- <form action="/uploadNF" enctype="multipart/form-data" method="POST"> -->
+                  <div class="row g-3"  style="margin-top: 1%;">
+
                   <div class="col fileInput">
 
-                  <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+                  <div class="form-group anexo" style="margin-top: 1%; font-size: 13px">
                     <input type="file" name="file" class="form-control-file" id="fileInput">
                   </div>
             
                 </div>
+              </div>
+              <button id="enviarNF"  value="upload" type="submit" class="btn btn-success"  style="margin-top: 1%;">Salvar</button>
 
-                  <button class="button button2" value="upload" id="enviarNF" type="submit"  role="button" id="botao-solicitar" style="margin-left: 0%;">Solicitar</button>
                 </div>
 
           

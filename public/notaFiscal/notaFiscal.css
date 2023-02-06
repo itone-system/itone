@@ -539,7 +539,7 @@ img#foto {
     }
 }
 
-#Descricao, #Quantidade, #CentroCusto, #Deal, #Solicitante, #Fornecedor, #DescServico, #TipoContrato, #DadosBanc, #DataPagamento, #DadosPagamento, #Tipo, #Observacao, #Colaborador{
+#Descricao, #Quantidade, #CentroCusto, #Deal, #Solicitante, #Fornecedor, #DescServico, #TipoContrato, #valorNF, #DataPagamento, #DadosPagamento, #Tipo, #Observacao, #Colaborador{
     font-size: 12px;
   }
 
@@ -549,5 +549,7 @@ img#foto {
   }
 
   #obrigatorio{
-    color: rgb(223, 24, 24);
+    color: rgb(253, 0, 0);
+    font-size: 11px;
+
   }

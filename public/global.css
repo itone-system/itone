@@ -394,3 +394,17 @@ body.dark .home .text{
         text-align: left;
     }
 }
+
+
+
+
+
+
+
+.listNS{
+  display: none;
+}
+
+.itensNS.mostra{
+    display:block;
+}
