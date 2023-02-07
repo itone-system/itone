@@ -147,7 +147,6 @@ module.exports = (table) => {
       return result.recordsets[0] ? result.recordsets[0][0] : null;
     },
     async execute () {
-      console.log(query)
       const instance = await initDb();
       const result = await instance.query(query);
       query = null;

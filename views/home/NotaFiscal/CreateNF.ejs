@@ -16,7 +16,7 @@
 
             <section class="home">
                 <%- include('../../components/navbar', { usuario: 'Gustavo' } ) %>
-                   
+
 
 
                 <main class="text">
@@ -27,36 +27,62 @@
                     <div class="row g-3">
                       <div class="col Solicitante">
                         <label>Solicitante:</label>
-                        <input value="<%= nome%>" name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control" readonly>
-                
+                        <% if(dados.solicitante) { %>
+
+                          <input value="<%= dados.solicitante%>" name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control" readonly>
+
+                          <% } else {%>
+
+
+                            <input value="<%= nome%>" name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control" readonly>
+                            <%}%>
+
                       </div>
-                
+
                       <div class="col CentroCusto">
                         <label>Centro de Custo:</label>
                         <select name="CentroCusto" id="CentroCusto" class="form-control">
-                          <option selected></option>
+                          <% if(dados.centroCusto) { %>
+
+                            <option selected><%= dados.centroCusto%></option>
+
+
+                            <% } else {%>
+
+                              <option selected></option>
+
+                              <%}%>
                         </select>
                       </div>
-                
+
                       <p> </p>
-                
+
                     </div>
-                
+
                     <h5 style="margin-bottom: 13px; margin-top: 40px">Dados do Serviço:</h5>
-                
-                
+
+
                     <div class="row g-3">
                       <div class="col Fornecedor">
                         <label>Fornecedor:</label>
                         <input name="Fornecedor"  id="Fornecedor" for="Fornecedor" type="text" class="form-control" placeholder="Fornecedor">
                       </div>
-                
+
                       <p> </p>
                       <div class="col DescServico">
                         <label>Descrição do Serviço:</label>
-                        <input name="DescServico"  id="DescServico" for="DescServico" type="text" class="form-control" placeholder="Descrição Serviço">
+                        <% if(dados.descricao) { %>
+
+                          <input name="DescServico"  id="DescServico" for="DescServico" type="text" class="form-control" placeholder="<%= dados.descricao%>">
+
+                          <% } else {%>
+
+
+                            <input name="DescServico"  id="DescServico" for="DescServico" type="text" class="form-control" placeholder="Descrição Serviço">
+
+                            <%}%>
                       </div>
-                
+
                       <p> </p>
                       <div class="col TipoContrato">
                         <label>Tipo Contrato:</label>
@@ -69,17 +95,17 @@
                     </div>
                     </div>
                     </div>
-                
-              
+
+
                     <p> </p>
-                
+
                     <h5 style="margin-bottom: 0px; margin-top: 40px">Dados de Pagamento:</h5>
-                
+
                     <p> </p>
-             
-                
-                
-                
+
+
+
+
                     <div class="row g-3" >
                       <!-- <div class="col DadosPagamento">
                         <label>Tipo:</label>
@@ -91,13 +117,23 @@
                           <option>Cartão de Crédito</option>
                         </select>
                       </div> -->
-                
+
                       <p> </p>
                       <div class="col-lg-2 valorNF">
                         <label>Valor:</label>
-                        <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="0,0">
+                        <% if(dados.valor) { %>
+
+                          <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="<%= dados.valor%>">
+
+                          <% } else {%>
+
+
+                            <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="0,0">
+
+                            <%}%>
+
                       </div>
-                
+
                       <p> </p>
                       <div class="col-lg-2  DataPagamento"  >
                         <label>Data de Pagamento:</label>
@@ -105,19 +141,28 @@
                       </div>
 
                       <div class="col-6  DataPagamentoInvalida" style="margin-top: 3%" >
-              
+
 
                       </div>
-                
-                                  
+
+
                     </div>
                     <p> </p>
 
-           
+
                     <div class="row g-3" style="margin-right: 85.5%;">
                       <div class="col Deal">
                         <label>Deal:</label>
-                        <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="Deal">
+                        <% if(dados.deal) { %>
+                          <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="<%= dados.deal%>">
+
+
+                          <% } else {%>
+
+
+                            <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="Deal">
+
+                            <%}%>
                       </div>
 
                   </div>
@@ -126,7 +171,16 @@
                     <div class="row g-3">
                     <div class="col Observacao">
                       <label>Observações:</label>
-                      <input  id="Observacao" type="text" class="form-control" placeholder="Observações" aria-label="First name" ">
+                      <% if(dados.observacao) { %>
+
+                        <input  id="Observacao" type="text" class="form-control" placeholder="<%= dados.observacao%>" aria-label="First name">
+
+                        <% } else {%>
+
+
+
+                          <input  id="Observacao" type="text" class="form-control" placeholder="Observações" aria-label="First name">
+                          <%}%>
                     </div>
                   </div>
 
@@ -146,15 +200,15 @@
                          <label for="Não">Não</label><br>
                      </div>
                     </div>
-                
 
-                          
+
+
                     <div id="campoColaborador" style="margin-right: 70%;">
-                
-                       
+
+
 
                     </div>
-                
+
 
                     <div id="app"></div>
                 <!-- <form action="/uploadNF" enctype="multipart/form-data" method="POST"> -->
@@ -165,29 +219,29 @@
                   <div class="form-group anexo" style="margin-top: 1%; font-size: 13px">
                     <input type="file" name="file" class="form-control-file" id="fileInput">
                   </div>
-            
+
                 </div>
               </div>
               <button id="enviarNF"  value="upload" type="submit" class="btn btn-success"  style="margin-top: 1%;">Salvar</button>
 
                 </div>
 
-          
+                <input type="text" name="codigo" id="codigoSolicitacao" value="<%= dados.codigo  %>" hidden>
 
             <!-- </form> -->
-                   
-    
+
+
                       <!-- <button onclick="validarCampos()" class="button button2" type="submit"  role="button" id="botao-solicitar" style="margin-left: 0%;">Solicitar</button> -->
 
-                
 
-        
+
+
 
                   </main>
             </section>
 
 
-      
+
     </body>
-    
+
 </html>

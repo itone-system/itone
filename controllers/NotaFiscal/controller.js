@@ -19,8 +19,8 @@ module.exports = {
 
    async insertNotas(req, res) {
 
-      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo} = req.body;
-
+      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao} = req.body;
+    console.log(codigoSolicitacao)
       const conexao = await sql.connect(db)
 
       let result = await conexao.request()
@@ -272,7 +272,8 @@ async Criar(request) {
   const user = request.session.get('user');
   console.log(user)
   const message = await request.session.message();
-  return renderView('home/NotaFiscal/CreateNF', { nome: user.nome, message });
+  const dados = {}
+  return renderView('home/NotaFiscal/CreateNF', { nome: user.nome, message, dados });
 //   return renderView('home/NotaFiscal/CreateNF', { nome: user.nome, message });
 
 },
@@ -280,6 +281,24 @@ async Criar(request) {
 async uploadNF (request, response){
    response.send('Arquivo Recebido')
 
+},
+
+async pageInsert (request) {
+const {solicitante, descricao, observacao, centroCusto, deal, valor, codigo} = request
+const user = request.session.get('user');
+const message = await request.session.message();
+
+const dados = {
+  solicitante: solicitante,
+  descricao: descricao,
+  observacao: observacao,
+  centroCusto: centroCusto,
+  deal: deal,
+  valor: valor,
+  codigo: codigo
+}
+
+return renderView('home/NotaFiscal/CreateNF', { nome: user.nome, message, dados });
 },
 
 async downloadNF (request, response){

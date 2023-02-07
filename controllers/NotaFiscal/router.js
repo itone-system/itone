@@ -28,6 +28,7 @@ notasFiscalRouter.get('/buscarNotas', expressAdapter(notas.listarNotas));
 notasFiscalRouter.post('/uploadNF/:codigoNF/:nomeArquivo', upload.single('file'), notas.uploadNF )
 notasFiscalRouter.get('/downloadNF/:path',  notas.downloadNF )
 notasFiscalRouter.post('/notaUnica',  expressAdapter(notas.notaUnica ))
+notasFiscalRouter.get('/insertNotaSolicitacao', expressAdapter(notas.pageInsert))
 
 
 module.exports = notasFiscalRouter

@@ -6,7 +6,7 @@ let trueColaborador = false;
 let tipoContrato = '';
 let dadosPagamento = '';
 let arquivoAnexo;
-let codigoRetornoNF = '' 
+let codigoRetornoNF = ''
 let NomeArquivoSemAcento;
 let dataAtualConf = ''
 let dataAtualConfPadrao = ''
@@ -18,7 +18,7 @@ $(document).ready(function () {
     const enviarNF = document.querySelector("#enviarNF");
     const downloadArquivoNF = document.getElementById("baixar");
     const dataPag = document.getElementById("DataPagamento")
-    
+
     fileInput.addEventListener("change", event => {
     const files = event.target.files;
     arquivoAnexo = files[0]
@@ -27,15 +27,15 @@ $(document).ready(function () {
     });
 
     enviarNF.addEventListener("click", function(){
-        
+
         validarCampos()
-       
+
     });
 
     dataPag.addEventListener("change", event => {
 
         validarCampoData(event.target.value)
-        
+
         });
 
 });
@@ -66,7 +66,7 @@ function adicionarCampoColaborador(){
     campos.push('Colaborador')
     trueColaborador = true
     conveniaColaborares()
-    
+
 }
 
 function removerCampoColaborador(){
@@ -74,7 +74,7 @@ function removerCampoColaborador(){
     var labelColaborador = document.getElementById('labelColaborador')
     var labelObrColaborador = document.querySelector('.obrigatorio-Colaborador')
     trueColaborador = false
-    
+
     if(campoColaborador && labelObrColaborador){
     campoColaborador.remove()
     labelColaborador.remove()
@@ -91,7 +91,7 @@ function removerCampoColaborador(){
 const conveniaCentroCusto = () => {
 
     fetch("https://public-api.convenia.com.br/api/v3/companies/cost-centers", {
-        method: 'GET', 
+        method: 'GET',
         redirect: 'follow',
         headers: {
             'Accept': 'application/json',
@@ -111,12 +111,12 @@ const conveniaCentroCusto = () => {
         }});
 
         listaCC.forEach(element => {
-            var localCC = document.getElementById('CentroCusto') 
+            var localCC = document.getElementById('CentroCusto')
             var option = document.createElement('option');
             option.textContent = element;
             localCC.appendChild(option);
-            
-    
+
+
     });
 })
 
@@ -125,7 +125,7 @@ const conveniaCentroCusto = () => {
 const conveniaColaborares = () => {
 
     fetch("https://public-api.convenia.com.br/api/v3/employees", {
-        method: 'GET', 
+        method: 'GET',
         redirect: 'follow',
         headers: {
             'Accept': 'application/json',
@@ -144,11 +144,11 @@ const conveniaColaborares = () => {
         });
 
         listaColab.forEach(element => {
-            var localColab = document.getElementById('Colaborador') 
+            var localColab = document.getElementById('Colaborador')
             var option = document.createElement('option');
             option.textContent = element;
             localColab.appendChild(option);
-            
+
     });
 })
 
@@ -170,7 +170,7 @@ function buscarValoresCampos(){
 function limparCampos(){
 
     campos.forEach(element => {
-        
+
         switch(element){
             case 'Solicitante':
                 document.getElementById(element).value = 'Wesley'
@@ -181,14 +181,14 @@ function limparCampos(){
             default:
                 document.getElementById(element).value = ''
             break
-        } 
+        }
     });
 
     alert('Documento Enviado!')
 }
 
 async function insertNota() {
-    
+
 
     solicitante = document.getElementById("Solicitante").value;
     centroCusto = document.getElementById("CentroCusto").value;
@@ -199,6 +199,7 @@ async function insertNota() {
     deal = document.getElementById("Deal").value;
     observacoes = document.getElementById("Observacao").value;
     nomeArquivo = fileInput.value.replace('C:\\fakepath\\','')
+    codigoSolicitacao = document.getElementById('codigoSolicitacao').value
 
     centroCustoSplit = centroCusto.split('. ');
     console.log(centroCustoSplit[0]);
@@ -214,17 +215,18 @@ async function insertNota() {
             "solicitante": solicitante,
             "CentroCusto": centroCustoSplit[0],
             "fornecedor":fornecedor,
-            "Descricao": descServico, 
-            "tipoContrato":tipoContrato, 
-            "valorNF":valorNF, 
-            "dataPagamento":dataPagamento, 
+            "Descricao": descServico,
+            "tipoContrato":tipoContrato,
+            "valorNF":valorNF,
+            "dataPagamento":dataPagamento,
             "deal": deal,
-            "Observacao": observacoes, 
+            "Observacao": observacoes,
             "possuiColaborador": setColaborador,
             "Colaborador": colaboradorNome,
-            "Anexo": NomeArquivoSemAcento
+            "Anexo": NomeArquivoSemAcento,
+            "codigoSolicitacao": codigoSolicitacao
 
-            
+
         });
 
          let response =   await fetch(endpoints.NotaFiscal, {
@@ -239,7 +241,7 @@ async function insertNota() {
         })
 
         uploadFile(arquivoAnexo, codigoRetornoNF, NomeArquivoSemAcento)
-        
+
         limparCampos()
 }
 
@@ -254,14 +256,14 @@ function validarCampos() {
 
     for (let i = 0; i < campos.length; i++) {
 
-     
-        
+
+
         var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
         const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
 
         if (document.getElementById(campos[i]).value == '' && !busca) {
-            
+
             const campoObrigatorio = document.querySelector('.' + campos[i])
             var labelObrigatorio = document.createElement('label')
             labelObrigatorio.setAttribute('ID', 'obrigatorio');
@@ -269,23 +271,23 @@ function validarCampos() {
             labelObrigatorio.textContent = '* Campo obrigatório';
             campoObrigatorio.appendChild(labelObrigatorio)
             listaErros.push(campos[i])
-            
-            
+
+
         }
-       
+
         else if(camposObr && document.getElementById(campos[i]).value != '')  {
             camposObr.remove()
-            
+
             listaErros.splice(listaErros.indexOf(campos[i]), 1);
-            
+
         }
-       
+
     }
     console.log(listaErros)
     if(listaErros == '' || listaErros == undefined ){
         this.insertNota()
-        
-    } 
+
+    }
 
 };
 

@@ -39,6 +39,14 @@ module.exports = {
       return redirect('/');
     }
 
+    if (user.recordset[0].VALIDACAO_SENHA == 'N') {
+      request.session.message({
+        type,
+        text: 'Acesso negado!'
+      });
+      return redirect('/');
+    }
+
     const dadosUsuario = await SolicitacaoService.obterDadosUser(
       user.recordset[0].COD_USUARIO
     );

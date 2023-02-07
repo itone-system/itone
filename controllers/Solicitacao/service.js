@@ -116,7 +116,9 @@ exports.buscarProximoAprovador = async (codigo) => {
         ON Usuarios.NOME_USUARIO = Solicitacao_Item.Solicitante
         WHERE Codigo = ${codigo}`);
 
-    const queryDesc = await conexao.request().query(`select Descricao from Solicitacao_Item where Codigo =${codigo}`)
+    const queryDesc = await conexao
+      .request()
+      .query(`select Descricao from Solicitacao_Item where Codigo =${codigo}`);
 
     const email = query.recordset[0].EMAIL_USUARIO;
 
@@ -265,3 +267,39 @@ exports.verificaData = async (date1, date2) => {
   }
 };
 // const result = filterAprovador(4, 5)
+
+exports.verifyAprovador = async (codigoAprovador, codigoSolicitacao) => {
+  const conexao = await sql.connect(db);
+
+  const ordem = await conexao
+    .request()
+    .query(
+      `select Ordem from Aprovacoes where Codigo_Aprovador = ${codigoAprovador} and Codigo_Solicitacao = ${codigoSolicitacao}`
+    );
+if (!ordem.recordset[0]) {
+  return false
+}
+  const ordemFilter = ordem.recordset[0].Ordem;
+
+  const result = await conexao
+    .request()
+    .query(`select Ordem, Status from Aprovacoes where Codigo_Solicitacao = ${codigoSolicitacao}`);
+
+  const dados = result.recordset;
+
+  for (const dado of dados) {
+    console.log(dado.Ordem);
+    if (dado.Ordem <= ordemFilter) {
+      if (dado.Ordem == (ordemFilter - 1)) {
+        if (dado.Status == 'Y') {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+  console.log('aprovações', dados);
+
+  return true; //significa que é o primeiro aprovador
+};

@@ -11,6 +11,7 @@ module.exports = (app) => {
     ListarUsuarios: '/users/listar',
     ListarItens: '/itens',
     AprovarSolicitacao: '/solicitacoes/aprovar',
-    editarSolicitacao: '/solicitacoes/editar'
+    editarSolicitacao: '/solicitacoes/editar',
+    inserirNota: '/notafiscal/insertNotaSolicitacao'
   };
 };

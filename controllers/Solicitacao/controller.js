@@ -5,8 +5,8 @@ const { db } = require('../../config/env');
 const sql = require('mssql');
 const enviarEmail = require('../../infra/emailAdapter');
 const { Keytoken, domain } = require('../../config/env');
-const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente')
-const tokenAdapter = require('../../infra/tokenAdapter')
+const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente');
+const tokenAdapter = require('../../infra/tokenAdapter');
 
 const model = require('../../infra/dbAdapter');
 
@@ -104,6 +104,8 @@ module.exports = {
         dadosParaBotaoAprovar = status.recordset[0];
       }
 
+      let ordem = await SolicitacaoService.verifyAprovador(user.codigo,solicitacao.Codigo)
+
       let dadosParaViewDeCompra = null;
       if (solicitacao.Status_Compra == 'C') {
         const conexao = await sql.connect(db);
@@ -123,7 +125,8 @@ module.exports = {
         nome: user.nome,
         codigoUsuario: user.codigo,
         dadosParaBotaoAprovar,
-        dadosParaViewDeCompra
+        dadosParaViewDeCompra,
+        ordem
         // dateTime
       });
     }
@@ -139,13 +142,14 @@ module.exports = {
       let datas = await conexao
         .request()
         .query(
-          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
+          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega,valorDaCompra as valor from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
         );
       dadosParaViewDeCompra = datas.recordset[0];
     }
 
     let dadosParaBotaoAprovar = {
-      Status: null
+      // Status: null,
+      ordem: null
     };
 
     const conexao = await sql.connect(db);
@@ -156,19 +160,22 @@ module.exports = {
         `select Status from Aprovacoes where Codigo_Aprovador = ${user.codigo} and Codigo_Solicitacao = ${solicitacao.Codigo}`
       );
 
+    let ordem = await SolicitacaoService.verifyAprovador(user.codigo,solicitacao.Codigo)
+
     if (status.recordset[0]) {
       dadosParaBotaoAprovar = status.recordset[0];
+      dadosParaBotaoAprovar.ordem = 0;
     }
-
     // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
-    console.log(dadosParaViewDeCompra)
+    console.log(dadosParaViewDeCompra);
     return renderView('home/solicitacoes/Detail', {
       solicitacao,
       retornoUser: user.permissaoCompras,
       nome: user.nome,
       codigoUsuario: user.codigo,
       dadosParaViewDeCompra,
-      dadosParaBotaoAprovar
+      dadosParaBotaoAprovar,
+      ordem
       // dateTime
     });
   },
@@ -207,10 +214,8 @@ module.exports = {
       // salvar no banco o nome do arquivo
       const conexao = await sql.connect(db);
 
-      const aprovadores = await conexao
-        .request()
-        .query(
-          `(
+      const aprovadores = await conexao.request().query(
+        `(
             SELECT
               CONCAT(
                 PRIMEIRO_APROVADOR, ',',
@@ -231,10 +236,10 @@ module.exports = {
             SELECT PRIMEIRO_APROVADOR as aprovadores
             FROM Usuarios WHERE SEGUNDO_APROVADOR is NULL and  COD_USUARIO = ${user.codigo}
           )`
-        );
+      );
 
       const ordemAprovadores = aprovadores.recordset[0].aprovadores.split(',');
-        console.log(ordemAprovadores[0])
+      console.log(ordemAprovadores[0]);
       let contador = 1;
 
       for (let index = 0; index < ordemAprovadores.length; index++) {
@@ -248,30 +253,24 @@ module.exports = {
         contador++;
       }
 
-      // let insertAprovacaoDiretorFinanceiro = await conexao
-      //   .request()
-      //   .query(
-      //     `INSERT INTO Aprovacoes ( Codigo_Solicitacao, Codigo_Aprovador, Ordem) VALUES (${Codigo}, 1009, ${contador})`
-      //   );
-
       const firstEmail = await model('Usuarios')
         .select('EMAIL_USUARIO')
         .andWhere({
           COD_USUARIO: ordemAprovadores[0]
         })
         .execute();
-        console.log(firstEmail)
+      console.log(firstEmail);
 
-      const token = tokenAdapter({Codigo,aprovador: ordemAprovadores[0]})
+      const token = tokenAdapter({ Codigo, aprovador: ordemAprovadores[0] });
 
-      const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`
+      const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`;
 
       const emailOptions = {
-         to: firstEmail.data[0].EMAIL_USUARIO,
-         subject: 'Solicitação de Aprovação',
-         content: aprovacaoPendenteTemplate({link,Codigo, descricao}),
-         isHtlm: true
-      }
+        to: firstEmail.data[0].EMAIL_USUARIO,
+        subject: 'Solicitação de Aprovação',
+        content: aprovacaoPendenteTemplate({ link, Codigo, descricao }),
+        isHtlm: true
+      };
 
       enviarEmail(emailOptions);
 
@@ -317,16 +316,19 @@ module.exports = {
       codigoUsuario = dados.codigoUsuario;
     }
 
-    const token = tokenAdapter({Codigo: codigoSolicitacao,aprovador: codigoUsuario})
+    const token = tokenAdapter({
+      Codigo: codigoSolicitacao,
+      aprovador: codigoUsuario
+    });
 
-    const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`
+    const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`;
 
     const emailOptions = {
-       to: aprovador,
-       subject: 'Solicitação de Aprovação',
-       content: aprovacaoPendenteTemplate({link}),
-       isHtlm: true
-    }
+      to: aprovador,
+      subject: 'Solicitação de Aprovação',
+      content: aprovacaoPendenteTemplate({ link }),
+      isHtlm: true
+    };
 
     if (dados != undefined) {
       enviarEmail(emailOptions);
@@ -344,7 +346,9 @@ module.exports = {
     const conexao = await sql.connect(db);
 
     const result = await conexao.request().query(`UPDATE Solicitacao_Item
-            SET Descricao = '${descricao}', Quantidade = ${quantidade}, Centro_de_Custo = '${centroDeCusto.split('. ')[0]}', Deal = '${deal}', Observacao = '${motivo}'
+            SET Descricao = '${descricao}', Quantidade = ${quantidade}, Centro_de_Custo = '${
+      centroDeCusto.split('. ')[0]
+    }', Deal = '${deal}', Observacao = '${motivo}'
             WHERE Codigo = ${codigo}`);
 
     const corpo = 'Solicitação N° ' + codigo + ' Editada com sucesso';
