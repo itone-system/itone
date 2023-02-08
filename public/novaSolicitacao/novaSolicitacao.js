@@ -247,6 +247,7 @@ const validarCampos = () => {
     }
   }
 
+
   if (Enviardados.listaErros == '') insert();
 };
 
