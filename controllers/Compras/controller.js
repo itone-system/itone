@@ -22,7 +22,7 @@ module.exports = {
 
     const inserirCompra = await conexao.query(`
         insert into Compras (dataDaCompra, valorDaCompra, quantidadeDeParcelas, dataDaPrimeiraParcela, previsaoDeEntrega, codigo_solicitacao, metodo_De_Pagamento, id_Comprador )
-        values ('${dataDaCompra}', ${valorDaCompra}, ${quantidadeDeParcelas}, '${dataDaPrimeiraParcela}', '${previsaoDeEntrega}', ${codigo},'${metodoDePagamento}', ${comprador})`);
+        values ('${dataDaCompra}', '${valorDaCompra}', ${quantidadeDeParcelas}, '${dataDaPrimeiraParcela}', '${previsaoDeEntrega}', ${codigo},'${metodoDePagamento}', ${comprador})`);
 
     await conexao.query(`update Solicitacao_Item
         set Status_Compra = 'C'
