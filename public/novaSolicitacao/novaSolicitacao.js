@@ -76,6 +76,7 @@ const insert = () => {
   const arquivo = document
     .querySelector('#fileInput')
     .value.replace('C:\\fakepath\\', '');
+  const link = document.querySelector("#linkInput").value
 
   let bodyContent = {
     descricao: descricao,
@@ -87,7 +88,8 @@ const insert = () => {
     aprovadores: listaUsuarios,
     dataCriacao: new Date(),
     dataAtualizacao: new Date(),
-    arquivo: arquivo
+    arquivo: arquivo,
+    linkk: link
   };
 
   fetch(endpoints.NovaSolicitacao, {
@@ -240,58 +242,24 @@ const validarCampos = () => {
   if (Enviardados.listaErros == '') insert();
 };
 
+function adicionarCampoArquivo() {
+  document.getElementById("anexo").innerHTML = ""
+  let campoArquivo = document.querySelector('#anexo');
+  campoArquivo.innerHTML = `  <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+  <label for="exampleFormControlFile1">Anexar Arquivo</label>
+  <input type="file" class="form-control-file" id="fileInput">
+</div>`
 
+}
 
-
-
-
-
-function validarCampos() {
-
-  buscarValoresCampos()
-
-  if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
-
-  campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
-
-  for (let i = 0; i < campos.length; i++) {
-
-      var camposObr = document.querySelector('.obrigatorio-'+campos[i])
-
-      const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
-
-      if (document.getElementById(campos[i]).value == '' && !busca) {
-
-          const campoObrigatorio = document.querySelector('.' + campos[i])
-          var labelObrigatorio = document.createElement('label')
-          labelObrigatorio.setAttribute('ID', 'obrigatorio');
-          labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
-          labelObrigatorio.textContent = '* Campo obrigatório';
-          campoObrigatorio.appendChild(labelObrigatorio)
-          listaErros.push(campos[i])
-
-      }
-
-      else if(camposObr && document.getElementById(campos[i]).value != '')  {
-          camposObr.remove()
-
-          listaErros.splice(listaErros.indexOf(campos[i]), 1);
-
-      }
-
-  }
-  console.log(listaErros)
-  if(listaErros == '' || listaErros == undefined ){
-      this.insertNota()
-
-  }
-
-};
-
-
-
-
-
+function adicionarCampoLink() {
+  document.getElementById("anexo").innerHTML = ""
+let campoLink = document.querySelector('#anexo')
+campoLink.innerHTML = `<div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+<label for="exampleFormControlFile1">Anexar Link</label>
+<input type="text"  id="linkInput">
+</div>`
+}
 
 
 
