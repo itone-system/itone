@@ -65,7 +65,7 @@ const listar = () => {
 };
 
 const insert = () => {
-  var listaUsuarios = retonarCodigo();
+  // var listaUsuarios = retonarCodigo();
 
   const descricao = document.getElementById('Descricao').value;
   const quantidade = document.getElementById('Quantidade').value;
@@ -73,18 +73,22 @@ const insert = () => {
   const deal = document.getElementById('Deal').value;
   const observacao = document.getElementById('Observações').value;
   const solicitante = document.getElementById('nomeUser').value;
-  const arquivo = document
-    .querySelector('#fileInput')
-    .value.replace('C:\\fakepath\\', '');
-    console.log(arquivo)
-  let link = ''
-
-  if (!document.querySelector("#linkInput").value) {
-    link = ''
+  let arquivo = '';
+  if (!document.querySelector('#fileInput')) {
+    arquivo = '';
   } else {
-    link = document.querySelector("#linkInput").value
+    arquivo = document
+      .querySelector('#fileInput')
+      .value.replace('C:\\fakepath\\', '');
   }
 
+  let link = '';
+
+  if (!document.querySelector('#linkInput')) {
+    link = '';
+  } else {
+    link = document.querySelector('#linkInput').value;
+  }
 
   let bodyContent = {
     descricao: descricao,
@@ -93,7 +97,6 @@ const insert = () => {
     deal: deal,
     observacao: observacao,
     solicitante: solicitante,
-    aprovadores: listaUsuarios,
     dataCriacao: new Date(),
     dataAtualizacao: new Date(),
     arquivo: arquivo,
@@ -247,30 +250,26 @@ const validarCampos = () => {
     }
   }
 
-
   if (Enviardados.listaErros == '') insert();
 };
 
 function adicionarCampoArquivo() {
-  document.getElementById("anexo").innerHTML = ""
+  document.getElementById('anexo').innerHTML = '';
   let campoArquivo = document.querySelector('#anexo');
   campoArquivo.innerHTML = `  <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
   <label for="exampleFormControlFile1">Anexar Arquivo</label>
   <input type="file" class="form-control-file" id="fileInput">
-</div>`
-
+</div>`;
 }
 
 function adicionarCampoLink() {
-  document.getElementById("anexo").innerHTML = ""
-let campoLink = document.querySelector('#anexo')
-campoLink.innerHTML = `<div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+  document.getElementById('anexo').innerHTML = '';
+  let campoLink = document.querySelector('#anexo');
+  campoLink.innerHTML = `<div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
 <label for="exampleFormControlFile1">Anexar Link</label>
 <input type="text"  id="linkInput">
-</div>`
+</div>`;
 }
-
-
 
 const retonarCodigo = () => {
   var listaUsuarios = [];
