@@ -272,6 +272,7 @@ function validarCampos() {
             // campoObrigatorio.appendChild(labelObrigatorio)
             listaErros.push(campos[i])
             console.log('Acrescentando: ', listaErros)
+            console.log('Campos: ', camposObr)
 
         }
 
