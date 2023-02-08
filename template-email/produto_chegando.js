@@ -18,7 +18,7 @@ module.exports = ({codigo, descricao, previsaoDeEntrega }) => {
                                   <td>
                                       <center><h3 >Você Recebeu um Aviso</h3></center><br></br>
 
-                                      <span>O Time de sistemas informou que o Produto abaixo já tem previsão de entrega</span> <br></br>
+                                      <span>Gestão Compras informou que o Produto abaixo já tem previsão de entrega</span> <br></br>
                                       <span>Solicitação n° ${codigo}</span><br></br>
                                       <span>Descrição: ${descricao}</span><br></br>
                                       <span>Previsão de Entrega: ${previsaoDeEntrega}</span><br></br>

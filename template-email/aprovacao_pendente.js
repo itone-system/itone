@@ -18,7 +18,7 @@ module.exports = ({ link, codigoSolicitacao, descricao }) => {
                                     <td>
                                         <center><h3 >Você tem uma solicitação Pendente</h3></center><br></br>
 
-                                        <span>O Time de sistemas informou que a solicitação abaixo está aguardando aprovação</span> <br></br>
+                                        <span>Gestão Compras informou que a solicitação abaixo está aguardando aprovação</span> <br></br>
                                         <span>Solicitação n° ${codigoSolicitacao}</span><br></br>
                                         <span>Descrição: ${descricao}</span><br></br>
                                     </td>
