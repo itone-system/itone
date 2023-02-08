@@ -17,6 +17,19 @@ $(document).ready(function () {
   }
   conveniaCentroCusto()
 
+  function formatAsCurrency(input) {
+    let formattedValue = parseFloat(input.val().replace(/,/g, ''))
+      .toFixed(2)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    input.val(formattedValue);
+  }
+
+  $('#valorDaCompra').on('input', function() {
+    formatAsCurrency($(this));
+  });
+
 });
 
 function adicionarCampoParcelas() {

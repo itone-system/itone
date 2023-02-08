@@ -67,13 +67,15 @@ module.exports = {
       centroCustoFiltro: centroCustoNormal
     };
 
+
     return renderView('home/solicitacoes/index', {
       solicitacoes: result.data,
       paginas,
       retornoUser: user.permissaoCompras,
       filtros: filtros,
       nome: user.nome,
-      codigoUsuario: user.codigo
+      codigoUsuario: user.codigo,
+      perfil: user.Perfil
     });
   },
 
@@ -116,6 +118,7 @@ module.exports = {
           );
         dadosParaViewDeCompra = datas.recordset[0];
       }
+      const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo)
 
       // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
 
@@ -126,7 +129,8 @@ module.exports = {
         codigoUsuario: user.codigo,
         dadosParaBotaoAprovar,
         dadosParaViewDeCompra,
-        ordem
+        ordem,
+        nota
         // dateTime
       });
     }
@@ -166,6 +170,8 @@ module.exports = {
       dadosParaBotaoAprovar = status.recordset[0];
       dadosParaBotaoAprovar.ordem = 0;
     }
+    const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo)
+
     // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
     console.log(dadosParaViewDeCompra);
     return renderView('home/solicitacoes/Detail', {
@@ -175,7 +181,8 @@ module.exports = {
       codigoUsuario: user.codigo,
       dadosParaViewDeCompra,
       dadosParaBotaoAprovar,
-      ordem
+      ordem,
+      nota
       // dateTime
     });
   },
@@ -293,7 +300,7 @@ module.exports = {
 
   async Aprovar(request) {
     const { codigoSolicitacao } = request;
-
+    console.log('olaaaaa',codigoSolicitacao )
     const codigoAprovador = request.session.get('user').codigo;
 
     const conexao = await sql.connect(db);
@@ -323,10 +330,12 @@ module.exports = {
 
     const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`;
 
+    const descricao = await SolicitacaoService.buscarDescricao(codigoSolicitacao)
+
     const emailOptions = {
       to: aprovador,
       subject: 'Solicitação de Aprovação',
-      content: aprovacaoPendenteTemplate({ link }),
+      content: aprovacaoPendenteTemplate({ link, codigoSolicitacao, descricao }),
       isHtlm: true
     };
 

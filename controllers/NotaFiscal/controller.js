@@ -36,8 +36,9 @@ module.exports = {
          .input('PossuiColaborador', sql.VarChar, possuiColaborador)
          .input('Colaborador', sql.VarChar, Colaborador)
          .input('Anexo', sql.VarChar, Anexo)
+         .input('CodigoSolicitacao', sql.Int, codigoSolicitacao)
 
-         .query('INSERT INTO NotaFiscal (Solicitante, CentroCusto, Fornecedor, Descricao, TipoContrato, valorNF, DataPagamento, Deal, Observacao, PossuiColaborador, Colaborador, Anexo )    OUTPUT Inserted.Codigo VALUES (@solicitante, @centroCusto, @fornecedor, @Descricao, @tipoContrato, @valorNF, @dataPagamento, @deal, @Observacao, @possuiColaborador, @Colaborador, @Anexo)')
+         .query('INSERT INTO NotaFiscal (Solicitante, CentroCusto, Fornecedor, Descricao, TipoContrato, valorNF, DataPagamento, Deal, Observacao, PossuiColaborador, Colaborador, Anexo, CodigoSolicitacao )    OUTPUT Inserted.Codigo VALUES (@solicitante, @centroCusto, @fornecedor, @Descricao, @tipoContrato, @valorNF, @dataPagamento, @deal, @Observacao, @possuiColaborador, @Colaborador, @Anexo, @codigoSolicitacao)')
 
 
       const codigo = result.recordset[0].Codigo

@@ -3,13 +3,18 @@ let arquivoAnexo;
 $(document).ready(function () {
   conveniaCentroCusto();
   // $('#addAprovador').click();
-  listar()
+  // const enviarSolicitacao = document.querySelector('#botao-solicitar');
+  listar();
   const fileInput = document.querySelector('#fileInput');
 
   fileInput.addEventListener('change', (event) => {
     const files = event.target.files;
     arquivoAnexo = files[0];
   });
+
+  // enviarSolicitacao.addEventListener('click', function () {
+  //   validarCampos();
+  // });
 });
 
 const Enviardados = {
@@ -39,20 +44,19 @@ const listar = () => {
       return dados.json();
     })
     .then((dados) => {
-
-      const nomes = dados
+      const nomes = dados;
       let container = document.getElementById('aprov');
 
       for (let i = 0; i < nomes.length; i++) {
         let input = document.createElement('input');
-        let br = document.createElement('br')
+        let br = document.createElement('br');
         input.type = 'text';
-        input.className = 'form-control'
-        input.readOnly = true
+        input.className = 'form-control';
+        input.readOnly = true;
         input.value = nomes[i];
-        input.style.fontSize = "12px"
+        input.style.fontSize = '12px';
         container.appendChild(input);
-        container.appendChild(br)
+        container.appendChild(br);
       }
       // Enviardados.arrayNomes = data.recordsets[0];
 
@@ -192,7 +196,6 @@ const removerEmail = () => {
   var valorCampo = Enviardados.arrayEmails[tamanhoCampo];
 
   if (tamanhoCampo != 0) {
-
     var inputEmail = document.getElementById('E-mail' + valorCampo);
     var inputNome = document.getElementById('NomeAprovador' + valorCampo);
 
@@ -202,40 +205,82 @@ const removerEmail = () => {
   }
 };
 
-const validarCampos = () => {
-  retonarCodigo();
-  const descricao = document.getElementById('Descricao').value;
-  const quantidade = document.getElementById('Quantidade').value;
-  const centroCusto = document.getElementById('CentroCusto').value;
-  const deal = document.getElementById('Deal').value;
-  const observacao = document.getElementById('Observações').value;
+// const validarCampos = () => {
+//   retonarCodigo();
+//   const descricao = document.getElementById('Descricao').value;
+//   const quantidade = document.getElementById('Quantidade').value;
+//   const centroCusto = document.getElementById('CentroCusto').value;
+//   const deal = document.getElementById('Deal').value;
+//   const observacao = document.getElementById('Observações').value;
 
-  var campos = ['Descricao', 'Quantidade', 'Deal', 'Observações'];
+//   var campos = ['Descricao', 'Quantidade', 'Deal', 'Observações'];
 
-  for (let i = 0; i < campos.length; i++) {
-    var camposObr = document.querySelector('.obrigatorio-' + campos[i]);
+//   for (let i = 0; i < campos.length; i++) {
+//     var camposObr = document.querySelector('.obrigatorio-' + campos[i]);
 
-    const busca = Enviardados.listaErros.find(
-      (element) => element === document.getElementById(campos[i]).id
-    );
+//     const busca = Enviardados.listaErros.find(
+//       (element) => element === document.getElementById(campos[i]).id
+//     );
 
-    if (document.getElementById(campos[i]).value == '' && !busca) {
-      const campoObrigatorio = document.querySelector('.col.' + campos[i]);
-      var labelObrigatorio = document.createElement('label');
-      labelObrigatorio.setAttribute('id', 'obrigatorio');
-      labelObrigatorio.setAttribute('class', 'obrigatorio-' + campos[i]);
-      labelObrigatorio.textContent = '* Campo obrigatório';
-      campoObrigatorio.appendChild(labelObrigatorio);
-      Enviardados.listaErros.push(campos[i]);
-    } else if (camposObr && document.getElementById(campos[i]).value != '') {
-      camposObr.remove();
-      console.log(camposObr);
-      Enviardados.listaErros.splice(listaErros.indexOf(campos[i]), 1);
-    }
-  }
+//     if (document.getElementById(campos[i]).value == '' && !busca) {
+//       const campoObrigatorio = document.querySelector('.col.' + campos[i]);
+//       var labelObrigatorio = document.createElement('label');
+//       labelObrigatorio.setAttribute('id', 'obrigatorio');
+//       labelObrigatorio.setAttribute('class', 'obrigatorio-' + campos[i]);
+//       labelObrigatorio.textContent = '* Campo obrigatório';
+//       campoObrigatorio.appendChild(labelObrigatorio);
+//       Enviardados.listaErros.push(campos[i]);
+//     } else if (camposObr && document.getElementById(campos[i]).value != '') {
+//       camposObr.remove();
+//       console.log(camposObr);
+//       Enviardados.listaErros.splice(listaErros.indexOf(campos[i]), 1);
+//     }
+//   }
 
-  if (Enviardados.listaErros == '') insert();
-};
+//   if (Enviardados.listaErros == '') insert();
+// };
+
+// function validarCampos() {
+
+//   buscarValoresCampos()
+
+//   if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
+
+//   campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
+
+//   for (let i = 0; i < campos.length; i++) {
+
+//       var camposObr = document.querySelector('.obrigatorio-'+campos[i])
+
+//       const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
+
+//       if (document.getElementById(campos[i]).value == '' && !busca) {
+
+//           const campoObrigatorio = document.querySelector('.' + campos[i])
+//           var labelObrigatorio = document.createElement('label')
+//           labelObrigatorio.setAttribute('ID', 'obrigatorio');
+//           labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
+//           labelObrigatorio.textContent = '* Campo obrigatório';
+//           campoObrigatorio.appendChild(labelObrigatorio)
+//           listaErros.push(campos[i])
+
+//       }
+
+//       else if(camposObr && document.getElementById(campos[i]).value != '')  {
+//           camposObr.remove()
+
+//           listaErros.splice(listaErros.indexOf(campos[i]), 1);
+
+//       }
+
+//   }
+//   console.log(listaErros)
+//   if(listaErros == '' || listaErros == undefined ){
+//       this.insertNota()
+
+//   }
+
+// };
 
 const retonarCodigo = () => {
   var listaUsuarios = [];
@@ -254,38 +299,37 @@ const retonarCodigo = () => {
 };
 
 const conveniaCentroCusto = () => {
+  fetch('https://public-api.convenia.com.br/api/v3/companies/cost-centers', {
+    method: 'GET',
+    redirect: 'follow',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      token: '82856aeb-fa11-4918-b2bc-f7a49322f69b'
+    }
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((result) => {
+      var dados = result.data;
+      let listaCC = [];
 
-  fetch("https://public-api.convenia.com.br/api/v3/companies/cost-centers", {
-      method: 'GET', 
-      redirect: 'follow',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          "token": "82856aeb-fa11-4918-b2bc-f7a49322f69b"
-      }
-  }).then(response => {
-      return response.json()
-  }).then(result => {
-      var dados = result.data
-      let listaCC = []
+      dados.forEach((element) => {
+        if (element.name.substr(0, 1) <= 9) {
+          listaCC.push(element.name);
+          listaCC.sort();
+        }
+      });
 
-      dados.forEach(element => {
-          if(element.name.substr(0,1) <= 9){
-          listaCC.push(element.name)
-          listaCC.sort()
-      }});
-
-      listaCC.forEach(element => {
-          var localCC = document.getElementById('CentroCusto') 
-          var option = document.createElement('option');
-          option.textContent = element;
-          localCC.appendChild(option);
-          
-  
-  });
-})
-
-}
+      listaCC.forEach((element) => {
+        var localCC = document.getElementById('CentroCusto');
+        var option = document.createElement('option');
+        option.textContent = element;
+        localCC.appendChild(option);
+      });
+    });
+};
 
 function uploadFile(file, codigoRetornoNF) {
   console.log('Uploading file...');

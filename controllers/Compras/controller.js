@@ -7,7 +7,7 @@ const produtoAcaminho = require('../../template-email/produto_chegando');
 const produtoComprado = require('../../template-email/solicitacao_comprada')
 module.exports = {
   async Create(request) {
-    const body = ({
+    const {
       dataDaCompra,
       valorDaCompra,
       quantidadeDeParcelas = 0,
@@ -16,7 +16,7 @@ module.exports = {
       codigo,
       metodoDePagamento,
       comprador
-    } = request);
+    } = request;
 
     const conexao = await sql.connect(db);
 
@@ -37,7 +37,6 @@ module.exports = {
     WHERE Codigo = ${codigo}`);
 
     const email = query.recordset[0].EMAIL_USUARIO;
-    // buscar descrição da solicitação baseada no código
     // buscar email logistica
     const emailOptions = {
       to: email,

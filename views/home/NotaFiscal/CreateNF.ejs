@@ -73,7 +73,7 @@
                         <label>Descrição do Serviço:</label>
                         <% if(dados.descricao) { %>
 
-                          <input name="DescServico"  id="DescServico" for="DescServico" type="text" class="form-control" placeholder="<%= dados.descricao%>">
+                          <input name="DescServico"  id="DescServico" for="DescServico" type="text" class="form-control" placeholder="descrição" value="<%= dados.descricao%>">
 
                           <% } else {%>
 
@@ -123,7 +123,7 @@
                         <label>Valor:</label>
                         <% if(dados.valor) { %>
 
-                          <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="<%= dados.valor%>">
+                          <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="valor" value="<%= dados.valor%>">
 
                           <% } else {%>
 
@@ -154,7 +154,7 @@
                       <div class="col Deal">
                         <label>Deal:</label>
                         <% if(dados.deal) { %>
-                          <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="<%= dados.deal%>">
+                          <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="deal" value="<%= dados.deal%>">
 
 
                           <% } else {%>
@@ -173,7 +173,7 @@
                       <label>Observações:</label>
                       <% if(dados.observacao) { %>
 
-                        <input  id="Observacao" type="text" class="form-control" placeholder="<%= dados.observacao%>" aria-label="First name">
+                        <input  id="Observacao" type="text" class="form-control" placeholder="observacao" aria-label="First name" value="<%= dados.observacao%>">
 
                         <% } else {%>
 

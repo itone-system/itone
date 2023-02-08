@@ -33,9 +33,20 @@
                     value="<%=filtros.Descricao%>">
                 </div>
                 <div class="col">
-                  <input readonly name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control"
+                  <% if(perfil == 1 || perfil == 3) { %>
+
+                    <input name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control"
                     placeholder="Solicitante" aria-label="Last name" style="font-size: 13px"
                     value="" />
+
+                    <% } else {%>
+
+
+                      <input readonly name="Solicitante" id="Solicitante" for="Solicitante" type="text" class="form-control"
+                        placeholder="Solicitante" aria-label="Last name" style="font-size: 13px"
+                        value="" />
+
+                      <%}%>
                   <input name="pagina" type="text" id="pagina" hidden value="<%=paginas.corrente%>" />
                   <input name="paginas" type="text" id="paginas" hidden value="<%=paginas.total%>" />
                 </div>

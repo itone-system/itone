@@ -303,3 +303,25 @@ if (!ordem.recordset[0]) {
 
   return true; //significa que é o primeiro aprovador
 };
+
+exports.buscarDescricao = async (codigoSolicitacao) => {
+  const conexao = await sql.connect(db);
+
+  const result = await conexao.request().query(`select Descricao from Solicitacao_Item where Codigo = ${codigoSolicitacao}`)
+
+  const descricao = result.recordset[0].Descricao
+
+  return descricao
+}
+
+exports.verificaNota = async (codigoSolicitacao) => {
+  const conexao = await sql.connect(db);
+
+  const result = await conexao.request().query(`select CodigoSolicitacao from NotaFiscal where CodigoSolicitacao = ${codigoSolicitacao}`)
+console.log(result)
+  if (result.recordset[0]) {
+    return true
+  } else {
+    return false
+  }
+}

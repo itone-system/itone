@@ -1,4 +1,4 @@
-module.exports = ({ link, Codigo, descricao }) => {
+module.exports = ({ link, codigoSolicitacao, descricao }) => {
     return `<body style="margin: 0; padding:0; font-family: Arial, Helvetica, sans-serif;" >
     <table border="0" width="100%" cellpadding="0" cellspacing="0">
         <tr>
@@ -19,7 +19,7 @@ module.exports = ({ link, Codigo, descricao }) => {
                                         <center><h3 >Você tem uma solicitação Pendente</h3></center><br></br>
 
                                         <span>O Time de sistemas informou que a solicitação abaixo está aguardando aprovação</span> <br></br>
-                                        <span>Solicitação n° ${Codigo}</span><br></br>
+                                        <span>Solicitação n° ${codigoSolicitacao}</span><br></br>
                                         <span>Descrição: ${descricao}</span><br></br>
                                     </td>
                                 </tr>
