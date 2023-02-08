@@ -294,7 +294,7 @@ function validarCampos() {
 
 function uploadFile (file, codigoRetornoNF, NomeArquivoSemAcento){
   console.log("Uploading file...");
-  const API_ENDPOINT = "http://localhost:5050/notafiscal/uploadNF/"+codigoRetornoNF+'/'+NomeArquivoSemAcento;
+  const API_ENDPOINT = "http://localhost:5052/notafiscal/uploadNF/"+codigoRetornoNF+'/'+NomeArquivoSemAcento;
   const request = new XMLHttpRequest();
   const formData = new FormData();
 

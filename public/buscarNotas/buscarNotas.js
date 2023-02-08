@@ -26,17 +26,17 @@ $(document).ready(function () {
 
     tabelaNF.forEach(row => {
         row.addEventListener("click",  () =>{
-            // window.location.assign(`/notafiscal/buscarNotas?codigoNF=${row.cells[0].innerText}`) 
-            elementModal.click() 
+            // window.location.assign(`/notafiscal/buscarNotas?codigoNF=${row.cells[0].innerText}`)
+            elementModal.click()
 
             gerarDadosModal(row.cells[0].innerText, tokenAtivo)
-            
+
                })})
 
-               
+
     let codigoNFToken = document.getElementById('CodigoNF');
     if(codigoNFToken.innerText){
-        elementModal.click() 
+        elementModal.click()
         gerarDadosModal(codigoNFToken.innerText)
     }
 
@@ -85,12 +85,12 @@ $(document).ready(function () {
 //             $('#prev').attr("disabled", true)
 //         }
 //     }
-    
+
 //     window.location.assign(`/buscarNotas?paginate=${pagina}`)
 
 //     $("#tbody").empty()
 
-    
+
 
 //     $('#prox').attr("disabled", false)
 // }
@@ -177,8 +177,8 @@ $(document).ready(function () {
 //     //     let td_deal= tr.insertCell();
 //     //     let td_colaborador= tr.insertCell();
 
-  
-        
+
+
 //     //     td_codigo.innerText = arraySolicitacao[i].Codigo;
 //     //     td_solicitante.innerText = arraySolicitacao[i].Solicitante;
 //     //     td_CentroCusto.innerText = arraySolicitacao[i].CentroCusto;
@@ -201,7 +201,7 @@ $(document).ready(function () {
 //     //     td_colaborador.innerText = arraySolicitacao[i].Colaborador;
 
 
-        
+
 
 //     //     // td_solicitante.innerText = this.arraySolicitacao[i].DataAtualizacao;
 
@@ -211,7 +211,7 @@ $(document).ready(function () {
 
 //         //$(tr).data('a', arraySolicitacao[i])
 
-       
+
 
 //         let teste = document.getElementById('tbody');
 
@@ -275,16 +275,16 @@ $(document).ready(function () {
 //     if (itens2[1] == 1 && StatusNF == "E") {
 //         console.log(StatusNF)
 //         modalBody.innerHTML = `
-        
+
 //         <div>
-          
+
 //                 <div class="row g-3">
 //                 <div class="col Solicitacao">
 //                   <label>N° Solicitação:</label>
 //                   <input id="NumeroSolicitacaoModal" for="NumeroSolicitacao" style="margin-bottom: 10%;" value="${Codigo}" type="text" class="form-control" readonly>
-          
+
 //                 </div>
-          
+
 //                 <div class="col Solicitante">
 //                     <label>Solicitante:</label>
 //                     <input id="Solicitante" for="Solicitante" style="margin-bottom: 10%;" value="${Solicitante}" type="text" class="form-control" readonly>
@@ -294,9 +294,9 @@ $(document).ready(function () {
 //               <div class="col Fornecedor">
 //                 <label>N° Fornecedor:</label>
 //                 <input id="Fornecedor" for="Fornecedor" style="margin-bottom: 10%;" value="${Fornecedor}" type="text" class="form-control" readonly>
-        
+
 //               </div>
-        
+
 //               <div class="col Descricao">
 //                   <label>Descricao:</label>
 //                   <input id="Descricao" for="Descricao" style="margin-bottom: 10%;" value="${Descricao}" type="text" class="form-control" readonly>
@@ -307,9 +307,9 @@ $(document).ready(function () {
 //             <div class="col TipoContrato">
 //               <label>Tipo do Contrato:</label>
 //               <input id="TipoContrato" for="TipoContrato" style="margin-bottom: 10%;" value="${TipoContrato}" type="text" class="form-control" readonly>
-      
+
 //             </div>
-      
+
 //             <div class="col Deal">
 //                 <label>Deal:</label>
 //                 <input id="Deal" for="Deal" style="margin-bottom: 10%;" value="${Deal}" type="text" class="form-control" readonly>
@@ -320,19 +320,19 @@ $(document).ready(function () {
 //           <div class="col TipoPagamento">
 //             <label>Tipo do Pagamento:</label>
 //             <input id="TipoPagamento" for="TipoPagamento" style="margin-bottom: 10%;" value="${TipoPagamento}" type="text" class="form-control" readonly>
-    
+
 //           </div>
-    
+
 //           <div class="col DataPagamento">
 //               <label>Data do Pagamento:</label>
 //               <input id="DataPagamento" for="DataPagamento" style="margin-bottom: 10%;" value="${DataPagamento}" type="text" class="form-control" readonly>
 //               </div>
 //         </div>
-        
-      
+
+
 //           <label>Observação:</label>
 //           <input id="Observacao" for="Observacao" style="margin-bottom: 5%;" value="${Observacao}" type="text" class="form-control" readonly>
-  
+
 //           <label>Colaborador:</label>
 //             <input id="Colaborador" for="Colaborador" style="margin-bottom: 5%;" value="${Colaborador}" type="text" class="form-control" readonly>
 //             </div>
@@ -347,9 +347,9 @@ $(document).ready(function () {
 
 
 //       </div>
-        
+
 //         </div>
-        
+
 //         `
 
 //         $('#dataDaCompra').attr("disabled", false)
@@ -365,16 +365,16 @@ $(document).ready(function () {
 
 //     if (itens2[1] == 1 && StatusNF == "A" ) {
 //         modalBody.innerHTML = `
-        
+
 //         <div>
-          
+
 //                 <div class="row g-3">
 //                         <div class="col Solicitacao">
 //                             <label>N° Solicitação:</label>
 //                             <input id="NumeroSolicitacaoModal" for="NumeroSolicitacao" style="margin-bottom: 10%;" value="${Codigo}" type="text" class="form-control" readonly>
-                
+
 //                         </div>
-            
+
 //                         <div class="col Solicitante">
 //                             <label>Solicitante:</label>
 //                             <input id="Solicitante" for="Solicitante" style="margin-bottom: 10%;" value="${Solicitante}" type="text" class="form-control" readonly>
@@ -386,7 +386,7 @@ $(document).ready(function () {
 //                         <label>N° Fornecedor:</label>
 //                         <input id="Fornecedor" for="Fornecedor" style="margin-bottom: 10%;" value="${Fornecedor}" type="text" class="form-control" readonly>
 //                     </div>
-                
+
 //                     <div class="col Descricao">
 //                         <label>Descricao:</label>
 //                         <input id="Descricao" for="Descricao" style="margin-bottom: 10%;" value="${Descricao}" type="text" class="form-control" readonly>
@@ -398,7 +398,7 @@ $(document).ready(function () {
 //                             <label>Tipo do Contrato:</label>
 //                             <input id="TipoContrato" for="TipoContrato" style="margin-bottom: 10%;" value="${TipoContrato}" type="text" class="form-control" readonly>
 //                     </div>
-            
+
 //                     <div class="col Deal">
 //                         <label>Deal:</label>
 //                         <input id="Deal" for="Deal" style="margin-bottom: 10%;" value="${Deal}" type="text" class="form-control" readonly>
@@ -409,19 +409,19 @@ $(document).ready(function () {
 //           <div class="col TipoPagamento">
 //             <label>Tipo do Pagamento:</label>
 //             <input id="TipoPagamento" for="TipoPagamento" style="margin-bottom: 10%;" value="${TipoPagamento}" type="text" class="form-control" readonly>
-    
+
 //           </div>
-    
+
 //           <div class="col DataPagamento">
 //               <label>Data do Pagamento:</label>
 //               <input id="DataPagamento" for="DataPagamento" style="margin-bottom: 10%;" value="${DataPagamento}" type="text" class="form-control" readonly>
 //               </div>
 //         </div>
-        
-      
+
+
 //           <label>Observação:</label>
 //           <input id="Observacao" for="Observacao" style="margin-bottom: 5%;" value="${Observacao}" type="text" class="form-control" readonly>
-  
+
 //           <label>Colaborador:</label>
 //             <input id="Colaborador" for="Colaborador" style="margin-bottom: 5%;" value="${Colaborador}" type="text" class="form-control" readonly>
 //             </div>
@@ -436,9 +436,9 @@ $(document).ready(function () {
 
 
 //       </div>
-        
+
 //         </div>
-        
+
 //         `
 
 //         $('#dataDaCompra').attr("disabled", false)
@@ -457,25 +457,25 @@ $(document).ready(function () {
 //     if (itens2[1] == 1 ) { //e pagina seja == a pagina atual
 
 //         modalBody.innerHTML = `
-        
+
 //         <div >
-          
+
 //             <ul>
-//                 <li>${Codigo}<l1> 
-//                 <li>${Descricao}<l1>  
+//                 <li>${Codigo}<l1>
+//                 <li>${Descricao}<l1>
 //                 <li>${DataAtualizacao}<l1> <br><br>
-        
-            
+
+
 //             </ul>
 //                 <label for="fname">Data da Compra:</label>
 //                 <input type="date" id="dataDaCompra" class="form-control"><br><br>
-        
+
 //                 <label for="fname">Valor:</label>
 //                 <input type="number" step="0.01" id="valorDaCompra" class="form-control"><br><br>
-        
+
 //                 <label for="fname">Previsão de entrega:</label>
 //                 <input type="date" id="previsaoDeEntrega" name="fname" class="form-control" ><br><br>
-        
+
 //                 <label for="cars">Possui Parcelas?</label>
 //                 <div>
 //                   <input onclick="adicionarCampoParcelas()"  type="radio" id="Sim" name="fav_language" value="Sim">
@@ -483,22 +483,22 @@ $(document).ready(function () {
 //                   <input onclick="removerCampoParcelas()" type="radio" id="Não" name="fav_language" value="Não" checked>
 //                   <label for="Não">Não</label><br>
 //                 </div>
-                  
+
 //                 <div id="divParcela">
-              
+
 //                 </div>
 //                 <br>
 //                 <br>
-        
+
 //         </div>
-        
+
 //         `
 //     }
 
 //     if (itens2[1] == 2) {
 //         modalBody.innerHTML = `<ul>
-//         <li>${Codigo}<li> 
-//         <li>${Descricao}<l1>  
+//         <li>${Codigo}<li>
+//         <li>${Descricao}<l1>
 //         <li>${DataAtualizacao}<l1> <br><br>
 //             </ul>`
 //     }
@@ -510,7 +510,7 @@ $(document).ready(function () {
 // }
 
 const atualizarStatusNF = () => {
-   
+
     StatusNF = document.getElementById("StatusNF").value;
     Codigo = document.getElementById("NumeroSolicitacaoModal").value;
     Solicitante = document.getElementById("ModSolicitante").value;
@@ -527,8 +527,8 @@ const atualizarStatusNF = () => {
             "StatusNF": StatusNF.substr(0,1),
             "Solicitante": Solicitante,
             "Descricao": Descricao,
-            "Fornecedor": Fornecedor 
-            
+            "Fornecedor": Fornecedor
+
         });
 
         let response = fetch(endpoints.AtualizarNF, {
@@ -546,7 +546,7 @@ const atualizarStatusNF = () => {
 const conveniaCentroCusto = () => {
 
     fetch("https://public-api.convenia.com.br/api/v3/companies/cost-centers", {
-        method: 'GET', 
+        method: 'GET',
         redirect: 'follow',
         headers: {
             'Accept': 'application/json',
@@ -557,9 +557,9 @@ const conveniaCentroCusto = () => {
         return response.json()
     }).then(result => {
         var dados = result.data
-                
+
         dados.forEach(element => {
-            var localCC = document.getElementById('CentroCusto') 
+            var localCC = document.getElementById('CentroCusto')
             var option = document.createElement('option');
             option.textContent = element.name;
             localCC.appendChild(option);
@@ -627,5 +627,5 @@ function downloadNF(){
 
     var arquivo = 'DCT-'+codigoNF+' '+document.getElementById('NomeAnexo').innerText
 
-    baixar.href = 'http://itonerdp06:5051/notafiscal/downloadNF/'+arquivo
+    baixar.href = 'http://itonerdp06:5052/notafiscal/downloadNF/'+arquivo
 }

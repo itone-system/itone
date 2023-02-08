@@ -237,7 +237,7 @@ async atualizarStatusNota(req, res) {
 
 
 
-       href = 'http://itonerdp06:5051/notafiscal/buscarNotas?token='+token
+       href = 'http://itonerdp06:5052/notafiscal/buscarNotas?token='+token
 
       ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v1.0\\itone-compras\\views\\home\\NotaFiscal\\retornoEmail.ejs',{req, href}, function(err, data){
          if(err){

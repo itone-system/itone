@@ -21,86 +21,77 @@
 
           <main class="text">
 
-            <h2 style="border-bottom: 1px solid #27417B; margin-bottom: 25px; margin-top: 25px;  padding: 13px 0">Nova
-              Solicitação de Compra</h2>
-            <p> </p>
-            <!-- <form action="/solicitacoes/inserir" method="get"> -->
-            <div class="row g-3">
-              <div class="col Descricao">
-                <label>Item Solicitado:</label>
-                <input id="Descricao" for="Descricao" type="text" class="form-control" placeholder="Descricao Item"
-                  name="descricao">
+              <h2 style="border-bottom: 1px solid #27417B; margin-bottom: 25px; margin-top: 25px;  padding: 13px 0">Nova
+                Solicitação de Compra</h2>
+              <p> </p>
+              <!-- <form action="/solicitacoes/inserir" method="get"> -->
+              <div class="row g-3">
+                <div class="col Descricao">
+                  <label>Item Solicitado:</label>
+                  <input id="Descricao" for="Descricao" type="text" class="form-control" placeholder="Descricao Item"
+                    name="descricao">
+
+                </div>
+                <div class="col Quantidade">
+                  <label>Quantidade:</label>
+                  <input id="Quantidade" for="Quantidade" type="text" class="form-control" placeholder="N°"
+                    name="quantidade">
+                </div>
 
               </div>
-              <div class="col Quantidade">
-                <label>Quantidade:</label>
-                <input id="Quantidade" for="Quantidade" type="text" class="form-control" placeholder="N°"
-                  name="quantidade">
+              <p> </p>
+              <div class="row g-3">
+                <div class="col CentroCusto">
+                  <label>Centro de Custo:</label>
+                  <select id="CentroCusto" class="form-control" name="centroCusto">
+                    <option selected>Selecionar...</option>
+
+                  </select>
+                </div>
+
+
+
+
+                <div class="col Deal">
+                  <label>Deal:</label>
+                  <input id="Deal" for="Quantidade" type="text" class="form-control" placeholder="Deal" name="deal">
+                </div>
+              </div>
+              <p> </p>
+
+
+
+
+              <label id="MotivoLabel">Motivo da Compra:</label>
+              <input id="Observações" type="text" class="form-control emailText" placeholder="Observações"
+                aria-label="First name" name="observacao">
+
+
+              <p> </p>
+              <div class="row g-3" id="aprovacao" name="aprovadores">
+
+                <div id="aprov">
+                  <label id="aprovaLabel">Aprovações:</label>
+
+                </div>
+
+
+                <input type="text" name="solicitante" id="nomeUser" value="<%=nome %>" placeholder="<%=nome %> " hidden>
+
+
+
               </div>
 
-            </div>
-            <p> </p>
-            <div class="row g-3">
-              <div class="col CentroCusto">
-                <label>Centro de Custo:</label>
-                <select id="CentroCusto" class="form-control" name="centroCusto">
-                  <option selected>Selecionar...</option>
+              <p></p>
 
-                </select>
+              <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+                <label for="exampleFormControlFile1">Anexar Arquivo</label>
+                <input type="file" class="form-control-file" id="fileInput">
               </div>
 
+              <button onclick="validarCampos()" type="submit" name="inserir" id="botao-solicitar"
+                class=" button2">Solicitar</button>
 
-
-
-              <div class="col Deal">
-                <label>Deal:</label>
-                <input id="Deal" for="Quantidade" type="text" class="form-control" placeholder="Deal" name="deal">
-              </div>
-            </div>
-            <p> </p>
-
-
-
-
-            <label id="MotivoLabel">Motivo da Compra:</label>
-            <input id="Observações" type="text" class="form-control emailText" placeholder="Observações"
-              aria-label="First name" name="observacao">
-
-            </div>
-            <p> </p>
-            <div class="row g-3" id="aprovacao" name="aprovadores">
-
-              <div id="aprov">
-                <label id="aprovaLabel">Aprovações:</label>
-
-              </div>
-
-
-            <input type="text" name="solicitante" id="nomeUser" value="<%=nome %>" placeholder="<%=nome %> " hidden>
-
-
-
-            </div>
-
-            <p></p>
-
-            <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
-              <label for="exampleFormControlFile1">Anexar Arquivo</label>
-              <input type="file" class="form-control-file" id="fileInput">
-            </div>
-
-
-
-
-
-            <button onclick="validarCampos()" type="submit" name="inserir" id="botao-solicitar"
-              class=" button2">Solicitar</button>
-
-
-            <!-- </form> -->
-
-
-            </div>
           </main>
       </section>
 

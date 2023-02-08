@@ -205,82 +205,95 @@ const removerEmail = () => {
   }
 };
 
-// const validarCampos = () => {
-//   retonarCodigo();
-//   const descricao = document.getElementById('Descricao').value;
-//   const quantidade = document.getElementById('Quantidade').value;
-//   const centroCusto = document.getElementById('CentroCusto').value;
-//   const deal = document.getElementById('Deal').value;
-//   const observacao = document.getElementById('Observações').value;
+const validarCampos = () => {
+  retonarCodigo();
+  const descricao = document.getElementById('Descricao').value;
+  const quantidade = document.getElementById('Quantidade').value;
+  const centroCusto = document.getElementById('CentroCusto').value;
+  const deal = document.getElementById('Deal').value;
+  const observacao = document.getElementById('Observações').value;
 
-//   var campos = ['Descricao', 'Quantidade', 'Deal', 'Observações'];
+  var campos = ['Descricao', 'Quantidade', 'Deal', 'Observações'];
 
-//   for (let i = 0; i < campos.length; i++) {
-//     var camposObr = document.querySelector('.obrigatorio-' + campos[i]);
+  for (let i = 0; i < campos.length; i++) {
+    var camposObr = document.querySelector('.obrigatorio-' + campos[i]);
 
-//     const busca = Enviardados.listaErros.find(
-//       (element) => element === document.getElementById(campos[i]).id
-//     );
+    const busca = Enviardados.listaErros.find(
+      (element) => element === document.getElementById(campos[i]).id
+    );
 
-//     if (document.getElementById(campos[i]).value == '' && !busca) {
-//       const campoObrigatorio = document.querySelector('.col.' + campos[i]);
-//       var labelObrigatorio = document.createElement('label');
-//       labelObrigatorio.setAttribute('id', 'obrigatorio');
-//       labelObrigatorio.setAttribute('class', 'obrigatorio-' + campos[i]);
-//       labelObrigatorio.textContent = '* Campo obrigatório';
-//       campoObrigatorio.appendChild(labelObrigatorio);
-//       Enviardados.listaErros.push(campos[i]);
-//     } else if (camposObr && document.getElementById(campos[i]).value != '') {
-//       camposObr.remove();
-//       console.log(camposObr);
-//       Enviardados.listaErros.splice(listaErros.indexOf(campos[i]), 1);
-//     }
-//   }
+    if (document.getElementById(campos[i]).value == '' && !busca) {
+      const campoObrigatorio = document.querySelector('.col.' + campos[i]);
+      var labelObrigatorio = document.createElement('label');
+      labelObrigatorio.setAttribute('id', 'obrigatorio');
+      labelObrigatorio.setAttribute('class', 'obrigatorio-' + campos[i]);
+      labelObrigatorio.textContent = '* Campo obrigatório';
+      campoObrigatorio.appendChild(labelObrigatorio);
+      Enviardados.listaErros.push(campos[i]);
+    } else if (camposObr && document.getElementById(campos[i]).value != '') {
+      camposObr.remove();
+      console.log(camposObr);
+      Enviardados.listaErros.splice(listaErros.indexOf(campos[i]), 1);
+    }
+  }
 
-//   if (Enviardados.listaErros == '') insert();
-// };
+  if (Enviardados.listaErros == '') insert();
+};
 
-// function validarCampos() {
 
-//   buscarValoresCampos()
 
-//   if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
 
-//   campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
 
-//   for (let i = 0; i < campos.length; i++) {
 
-//       var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
-//       const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
+function validarCampos() {
 
-//       if (document.getElementById(campos[i]).value == '' && !busca) {
+  buscarValoresCampos()
 
-//           const campoObrigatorio = document.querySelector('.' + campos[i])
-//           var labelObrigatorio = document.createElement('label')
-//           labelObrigatorio.setAttribute('ID', 'obrigatorio');
-//           labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
-//           labelObrigatorio.textContent = '* Campo obrigatório';
-//           campoObrigatorio.appendChild(labelObrigatorio)
-//           listaErros.push(campos[i])
+  if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
 
-//       }
+  campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
 
-//       else if(camposObr && document.getElementById(campos[i]).value != '')  {
-//           camposObr.remove()
+  for (let i = 0; i < campos.length; i++) {
 
-//           listaErros.splice(listaErros.indexOf(campos[i]), 1);
+      var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
-//       }
+      const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
 
-//   }
-//   console.log(listaErros)
-//   if(listaErros == '' || listaErros == undefined ){
-//       this.insertNota()
+      if (document.getElementById(campos[i]).value == '' && !busca) {
 
-//   }
+          const campoObrigatorio = document.querySelector('.' + campos[i])
+          var labelObrigatorio = document.createElement('label')
+          labelObrigatorio.setAttribute('ID', 'obrigatorio');
+          labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
+          labelObrigatorio.textContent = '* Campo obrigatório';
+          campoObrigatorio.appendChild(labelObrigatorio)
+          listaErros.push(campos[i])
 
-// };
+      }
+
+      else if(camposObr && document.getElementById(campos[i]).value != '')  {
+          camposObr.remove()
+
+          listaErros.splice(listaErros.indexOf(campos[i]), 1);
+
+      }
+
+  }
+  console.log(listaErros)
+  if(listaErros == '' || listaErros == undefined ){
+      this.insertNota()
+
+  }
+
+};
+
+
+
+
+
+
+
 
 const retonarCodigo = () => {
   var listaUsuarios = [];
@@ -334,7 +347,7 @@ const conveniaCentroCusto = () => {
 function uploadFile(file, codigoRetornoNF) {
   console.log('Uploading file...');
   const API_ENDPOINT =
-    'http://localhost:5051/notafiscal/uploadNF/' + codigoRetornoNF;
+    'http://localhost:5052/notafiscal/uploadNF/' + codigoRetornoNF;
   const request = new XMLHttpRequest();
   const formData = new FormData();
 
