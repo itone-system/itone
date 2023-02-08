@@ -19,8 +19,7 @@ module.exports = {
 
    async insertNotas(req, res) {
 
-      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao} = req.body;
-    console.log(codigoSolicitacao)
+      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao =''} = req.body;
       const conexao = await sql.connect(db)
 
       let result = await conexao.request()
