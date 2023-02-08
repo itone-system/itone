@@ -246,47 +246,47 @@ const validarCampos = () => {
 
 
 
-function validarCampos() {
+// function validarCampos() {
 
-  buscarValoresCampos()
+//   buscarValoresCampos()
 
-  if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
+//   if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
 
-  campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
+//   campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
 
-  for (let i = 0; i < campos.length; i++) {
+//   for (let i = 0; i < campos.length; i++) {
 
-      var camposObr = document.querySelector('.obrigatorio-'+campos[i])
+//       var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
-      const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
+//       const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
 
-      if (document.getElementById(campos[i]).value == '' && !busca) {
+//       if (document.getElementById(campos[i]).value == '' && !busca) {
 
-          const campoObrigatorio = document.querySelector('.' + campos[i])
-          var labelObrigatorio = document.createElement('label')
-          labelObrigatorio.setAttribute('ID', 'obrigatorio');
-          labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
-          labelObrigatorio.textContent = '* Campo obrigatório';
-          campoObrigatorio.appendChild(labelObrigatorio)
-          listaErros.push(campos[i])
+//           const campoObrigatorio = document.querySelector('.' + campos[i])
+//           var labelObrigatorio = document.createElement('label')
+//           labelObrigatorio.setAttribute('ID', 'obrigatorio');
+//           labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
+//           labelObrigatorio.textContent = '* Campo obrigatório';
+//           campoObrigatorio.appendChild(labelObrigatorio)
+//           listaErros.push(campos[i])
 
-      }
+//       }
 
-      else if(camposObr && document.getElementById(campos[i]).value != '')  {
-          camposObr.remove()
+//       else if(camposObr && document.getElementById(campos[i]).value != '')  {
+//           camposObr.remove()
 
-          listaErros.splice(listaErros.indexOf(campos[i]), 1);
+//           listaErros.splice(listaErros.indexOf(campos[i]), 1);
 
-      }
+//       }
 
-  }
-  console.log(listaErros)
-  if(listaErros == '' || listaErros == undefined ){
-      this.insertNota()
+//   }
+//   console.log(listaErros)
+//   if(listaErros == '' || listaErros == undefined ){
+//       this.insertNota()
 
-  }
+//   }
 
-};
+// };
 
 
 

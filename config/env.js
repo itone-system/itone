@@ -14,7 +14,7 @@ const {
   DOMAIN
 } = process.env;
 
-const port = parseInt(PORT || 5052)
+const port = parseInt(PORT || 5053)
 const isProd = ENVIRONMENT !== 'dev'
 
 if (isProd && !DOMAIN) {
