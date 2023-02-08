@@ -76,7 +76,15 @@ const insert = () => {
   const arquivo = document
     .querySelector('#fileInput')
     .value.replace('C:\\fakepath\\', '');
-  const link = document.querySelector("#linkInput").value
+    console.log(arquivo)
+  let link = ''
+
+  if (!document.querySelector("#linkInput").value) {
+    link = ''
+  } else {
+    link = document.querySelector("#linkInput").value
+  }
+
 
   let bodyContent = {
     descricao: descricao,
@@ -230,7 +238,7 @@ const validarCampos = () => {
       labelObrigatorio.setAttribute('id', 'obrigatorio');
       labelObrigatorio.setAttribute('class', 'obrigatorio-' + campos[i]);
       labelObrigatorio.textContent = '* Campo obrigatório';
-      campoObrigatorio.appendChild(labelObrigatorio);
+      // campoObrigatorio.appendChild(labelObrigatorio);
       Enviardados.listaErros.push(campos[i]);
     } else if (camposObr && document.getElementById(campos[i]).value != '') {
       camposObr.remove();
