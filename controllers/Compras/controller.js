@@ -49,10 +49,10 @@ module.exports = {
     };
 
     const emailOptionsLogistica = {
-      to: 'gustavo.pereira@itone.com.br',
+      to: 'logistica@itone.com.br',
       subject: 'Compra a Caminho',
       content: produtoAcaminho({
-        descricao: 'teste',
+        descricao: solicitacao.recordset[0].Descricao,
         previsaoDeEntrega,
         codigo
       }),

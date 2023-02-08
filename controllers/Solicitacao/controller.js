@@ -197,7 +197,8 @@ module.exports = {
       dataCriacao = new Date(),
       dataAtualizacao = new Date(),
       centroCusto,
-      arquivo
+      arquivo,
+      linkk
     } = request;
 
     try {
@@ -214,7 +215,8 @@ module.exports = {
           DataCriacao: dataCriacao,
           DataAtualizacao: dataAtualizacao,
           Status_Compra: 'P',
-          anexo: arquivo
+          anexo: arquivo,
+          Link: linkk
         },
         'Codigo'
       );
