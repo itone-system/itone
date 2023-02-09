@@ -401,7 +401,7 @@ module.exports = {
       aprovador: codigoUsuario
     });
 
-    const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`;
+    const link = `${domain}/solicitacoes/detalhar?token=${token}`;
 
     const descricao = await SolicitacaoService.buscarDescricao(
       codigoSolicitacao
