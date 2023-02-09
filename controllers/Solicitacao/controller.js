@@ -212,29 +212,30 @@ module.exports = {
       linkk
     } = request;
 
-    const user = request.session.get('user');
 
-    if (!descricao) {
-      return renderJson(1)
-    }
-    if (!quantidade) {
-      return renderJson(2)
-    }
-    if (!deal) {
-      return renderJson(3)
-    }
-    if (centroCusto == 'Selecionar...') {
-      return renderJson(4)
-    }
-    if (!observacao) {
-      return renderJson(5)
-    }
-    if (arquivo == '' || linkk == '') {
-      return renderJson(6)
-    }
+
 
     try {
+      const user = request.session.get('user');
 
+      if (!descricao) {
+        return renderJson(1)
+      }
+      if (!quantidade) {
+        return renderJson(2)
+      }
+      if (!deal) {
+        return renderJson(3)
+      }
+      if (centroCusto == 'Selecionar...') {
+        return renderJson(4)
+      }
+      if (!observacao) {
+        return renderJson(5)
+      }
+      if (arquivo == '' && linkk == '' ) {
+        return renderJson(6)
+      }
       let CodigoObject = null;
 
       if (linkk != '') {
@@ -356,7 +357,7 @@ module.exports = {
       const corpo = {
         codigo: Codigo
       };
-
+      console.log(corpo)
       return renderJson(corpo);
     } catch (error) {
       console.log('error ', error);

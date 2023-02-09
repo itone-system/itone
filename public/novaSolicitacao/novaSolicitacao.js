@@ -2,31 +2,13 @@ let arquivoAnexo;
 
 $(document).ready(function () {
   conveniaCentroCusto();
-  // $('#addAprovador').click();
-  // const enviarSolicitacao = document.querySelector('#botao-solicitar');
   listar();
   const fileInput = document.querySelector('#fileInput');
-
   fileInput.addEventListener('change', (event) => {
     const files = event.target.files;
     arquivoAnexo = files[0];
   });
 
-  // $("#botao-solicitar").click(function() {
-  //   // Select all fields that need to be mandatory
-  //   $(".mandatory").each(function() {
-  //     // Create a red text to indicate the field is mandatory
-  //     var redText = $("<p>").text("This field is mandatory").css("color", "red");
-  //     // Add the red text below the field
-  //     $(this).after(redText);
-  //   });
-  // });
-
-
-
-  // enviarSolicitacao.addEventListener('click', function () {
-  //   validarCampos();
-  // });
 });
 
 const Enviardados = {
@@ -129,6 +111,7 @@ const insert = () => {
     })
     .then((dados) => {
       let data = dados;
+      console.log(data)
       if (data == 1) {
         alert('Informe a descrição');
         window.location.reload();
@@ -164,139 +147,14 @@ const insert = () => {
         return
       }
 
-      uploadFile(arquivoAnexo, data.codigo);
+      // uploadFile(arquivoAnexo, data.codigo);
 
-      limparCampos();
-
-      // $("#aprovacao").empty();
       const text =
         ' Solicitação N° ' + data.codigo + ' cadastrada com sucesso ';
       alert(text);
 
       window.location.reload();
     });
-};
-
-const limparCampos = () => {
-  document.getElementById('Descricao').value = '';
-  document.getElementById('Quantidade').value = '';
-  document.getElementById('CentroCusto').value = '';
-  document.getElementById('Deal').value = '';
-  document.getElementById('Observações').value = '';
-};
-
-const criarCamposAprovacao = () => {
-  let adicionar = document.getElementById('aprov');
-
-  var div = document.createElement('div');
-  div.setAttribute('class', 'row g-3');
-
-  var div1 = document.createElement('div');
-  div1.setAttribute('class', 'row g-3 text');
-
-  var coluna1 = document.createElement('div');
-  coluna1.setAttribute('class', 'col');
-  coluna1.setAttribute('class', 'nomeAprovador');
-
-  var coluna2 = document.createElement('div');
-  coluna2.setAttribute('class', 'col');
-  coluna2.setAttribute('class', 'email');
-
-  var inputEmail = document.createElement('input');
-  inputEmail.setAttribute('class', 'emailText');
-  inputEmail.classList.add('form-control');
-  inputEmail.setAttribute('placeholder', 'E-mail');
-  inputEmail.setAttribute('id', 'E-mail' + Enviardados.indexEmail);
-  inputEmail.textContent = 'E-mail';
-
-  Enviardados.arrayEmails.push(Enviardados.indexEmail);
-  Enviardados.indexEmail++;
-
-  var inputOrdem = document.createElement('select');
-  inputOrdem.setAttribute('class', 'form-control');
-  inputOrdem.classList.add('emailText');
-  inputOrdem.setAttribute('id', 'NomeAprovador' + Enviardados.indexNome);
-  inputOrdem.setAttribute('onchange', 'incluirEmail()');
-  inputOrdem.textContent = 'Nome';
-  Enviardados.indexNome++;
-
-  inputOrdem.innerHTML = '<option selected>Selecionar...</option>';
-
-  adicionar.appendChild(div);
-  div.appendChild(div1);
-  div1.appendChild(coluna1);
-  div1.appendChild(coluna2);
-  coluna2.appendChild(inputEmail);
-  coluna1.appendChild(inputOrdem);
-
-  for (let i = 0; i < Enviardados.arrayNomes.length; i++) {
-    var option = document.createElement('option');
-    option.textContent = Enviardados.arrayNomes[i].NOME_USUARIO;
-    inputOrdem.appendChild(option);
-  }
-};
-
-const incluirEmail = () => {
-  for (let i = 0; i < Enviardados.arrayEmails.length; i++) {
-    var inputEmail = document.getElementById('E-mail' + i);
-    var inputapr = document.getElementById('NomeAprovador' + i);
-
-    for (let i = 0; i < Enviardados.arrayNomes.length; i++) {
-      if (inputapr.value == Enviardados.arrayNomes[i].NOME_USUARIO) {
-        inputEmail.value = Enviardados.arrayNomes[i].EMAIL_USUARIO;
-      }
-    }
-  }
-};
-
-const removerEmail = () => {
-  var tamanhoCampo = Enviardados.arrayEmails.length - 1;
-
-  var valorCampo = Enviardados.arrayEmails[tamanhoCampo];
-
-  if (tamanhoCampo != 0) {
-    var inputEmail = document.getElementById('E-mail' + valorCampo);
-    var inputNome = document.getElementById('NomeAprovador' + valorCampo);
-
-    Enviardados.arrayEmails.pop();
-    inputEmail.remove();
-    inputNome.remove();
-  }
-};
-
-const validarCampos = () => {
-  retonarCodigo();
-  const descricao = document.getElementById('Descricao').value;
-  const quantidade = document.getElementById('Quantidade').value;
-  const centroCusto = document.getElementById('CentroCusto').value;
-  const deal = document.getElementById('Deal').value;
-  const observacao = document.getElementById('Observações').value;
-
-  var campos = ['Descricao', 'Quantidade', 'Deal', 'Observações'];
-
-  for (let i = 0; i < campos.length; i++) {
-    var camposObr = document.querySelector('.obrigatorio-' + campos[i]);
-
-    const busca = Enviardados.listaErros.find(
-      (element) => element === document.getElementById(campos[i]).id
-    );
-
-    if (document.getElementById(campos[i]).value == '' && !busca) {
-      const campoObrigatorio = document.querySelector('.col.' + campos[i]);
-      var labelObrigatorio = document.createElement('label');
-      labelObrigatorio.setAttribute('id', 'obrigatorio');
-      labelObrigatorio.setAttribute('class', 'obrigatorio-' + campos[i]);
-      labelObrigatorio.textContent = '* Campo obrigatório';
-      // campoObrigatorio.appendChild(labelObrigatorio);
-      Enviardados.listaErros.push(campos[i]);
-    } else if (camposObr && document.getElementById(campos[i]).value != '') {
-      camposObr.remove();
-      console.log(camposObr);
-      Enviardados.listaErros.splice(listaErros.indexOf(campos[i]), 1);
-    }
-  }
-
-  if (Enviardados.listaErros == '') insert();
 };
 
 function adicionarCampoArquivo() {
@@ -316,22 +174,6 @@ function adicionarCampoLink() {
 <input type="text"  id="linkInput">
 </div>`;
 }
-
-const retonarCodigo = () => {
-  var listaUsuarios = [];
-  const emailSelecionado = document.querySelectorAll('.email');
-
-  for (let i = 0; i < emailSelecionado.length; i++) {
-    var inputEmail = document.getElementById('E-mail' + i);
-
-    for (let i = 0; i < Enviardados.arrayNomes.length; i++) {
-      if (Enviardados.arrayNomes[i].EMAIL_USUARIO == inputEmail.value) {
-        listaUsuarios.push(Enviardados.arrayNomes[i].COD_USUARIO);
-      }
-    }
-  }
-  return listaUsuarios.toString();
-};
 
 const conveniaCentroCusto = () => {
   fetch('https://public-api.convenia.com.br/api/v3/companies/cost-centers', {
@@ -383,21 +225,3 @@ function uploadFile(file, codigoRetornoNF) {
   request.send(formData);
 }
 
-function teste() {
-  document.getElementById("botao-solicitar").addEventListener("click", function(event) {
-    event.preventDefault();
-
-    const form = document.querySelector("form");
-    const inputs = form.querySelectorAll("input");
-
-    for (let i = 0; i < inputs.length; i++) {
-      const input = inputs[i];
-      if (!input.value) {
-        const errorMessage = document.createElement("div");
-        errorMessage.style.color = "red";
-        errorMessage.innerHTML = "mandatory field";
-        form.insertBefore(errorMessage, input.nextSibling);
-      }
-    }
-  });
-}
