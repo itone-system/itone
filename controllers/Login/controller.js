@@ -9,7 +9,7 @@ module.exports = {
   },
 
   async Auth(request) {
-    const { usuario = 'gustavo.costa', senha = 'abc*123' } = request;
+    const { usuario, senha } = request;
 
     const type = 'warning';
 

@@ -12,6 +12,18 @@ $(document).ready(function () {
     arquivoAnexo = files[0];
   });
 
+  // $("#botao-solicitar").click(function() {
+  //   // Select all fields that need to be mandatory
+  //   $(".mandatory").each(function() {
+  //     // Create a red text to indicate the field is mandatory
+  //     var redText = $("<p>").text("This field is mandatory").css("color", "red");
+  //     // Add the red text below the field
+  //     $(this).after(redText);
+  //   });
+  // });
+
+
+
   // enviarSolicitacao.addEventListener('click', function () {
   //   validarCampos();
   // });
@@ -117,6 +129,40 @@ const insert = () => {
     })
     .then((dados) => {
       let data = dados;
+      if (data == 1) {
+        alert('Informe a descrição');
+        window.location.reload();
+        return
+      }
+      if (data == 2) {
+        alert('Informe a quantidade');
+        window.location.reload();
+        return
+      }
+
+      if (data == 3) {
+        alert('Informe o deal, caso não exista preencha como "0"');
+        window.location.reload();
+        return
+      }
+
+      if (data == 4) {
+        alert('Informe o centro de custo');
+        window.location.reload();
+        return
+      }
+
+      if (data == 5) {
+        alert('Informe o motivo da compra');
+        window.location.reload();
+        return
+      }
+
+      if (data == 6) {
+        alert('Deixe um Link do produto ou anexe uma imagem');
+        window.location.reload();
+        return
+      }
 
       uploadFile(arquivoAnexo, data.codigo);
 
@@ -335,4 +381,23 @@ function uploadFile(file, codigoRetornoNF) {
   };
   formData.append('file', file);
   request.send(formData);
+}
+
+function teste() {
+  document.getElementById("botao-solicitar").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    const form = document.querySelector("form");
+    const inputs = form.querySelectorAll("input");
+
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      if (!input.value) {
+        const errorMessage = document.createElement("div");
+        errorMessage.style.color = "red";
+        errorMessage.innerHTML = "mandatory field";
+        form.insertBefore(errorMessage, input.nextSibling);
+      }
+    }
+  });
 }

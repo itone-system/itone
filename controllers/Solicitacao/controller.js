@@ -1,4 +1,5 @@
 const SolicitacaoService = require('./service');
+const SolicitacaoServiceLogin = require('../Login/service')
 const { renderView, renderJson, redirect } = require('../../helpers/render');
 const jwt = require('jsonwebtoken');
 const { db } = require('../../config/env');
@@ -204,7 +205,6 @@ module.exports = {
       quantidade,
       deal,
       observacao,
-      solicitante,
       dataCriacao = new Date(),
       dataAtualizacao = new Date(),
       centroCusto,
@@ -212,8 +212,28 @@ module.exports = {
       linkk
     } = request;
 
+    const user = request.session.get('user');
+
+    if (!descricao) {
+      return renderJson(1)
+    }
+    if (!quantidade) {
+      return renderJson(2)
+    }
+    if (!deal) {
+      return renderJson(3)
+    }
+    if (centroCusto == 'Selecionar...') {
+      return renderJson(4)
+    }
+    if (!observacao) {
+      return renderJson(5)
+    }
+    if (arquivo == '' || linkk == '') {
+      return renderJson(6)
+    }
+
     try {
-      const user = request.session.get('user');
 
       let CodigoObject = null;
 
@@ -253,7 +273,6 @@ module.exports = {
         );
       }
       const Codigo = CodigoObject.Codigo;
-      console.log(Codigo);
 
       // const { Codigo } = await SolicitacaoService.create(
       //   {
@@ -323,12 +342,12 @@ module.exports = {
 
       const token = tokenAdapter({ Codigo, aprovador: ordemAprovadores[0] });
 
-      const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`;
+      const link = `${domain}/solicitacoes/detalhar?token=${token}`;
 
       const emailOptions = {
         to: firstEmail.data[0].EMAIL_USUARIO,
         subject: 'Solicitação de Aprovação',
-        content: aprovacaoPendenteTemplate({ link, Codigo, descricao }),
+        content: aprovacaoPendenteTemplate({ link, codigoSolicitacao:Codigo, descricao }),
         isHtlm: true
       };
 
@@ -429,5 +448,112 @@ module.exports = {
     const user = request.session.get('user');
     const message = await request.session.message();
     return renderView('home/solicitacoes/Create', { nome: user.nome, message });
+  },
+
+  async Detail(request) {
+    const { usuario, senha } = request;
+    const tokenRecebido = request.token;
+    const type = 'warning';
+
+    if (!usuario) {
+      request.session.message({
+        type,
+        text: 'Usuário não informado!'
+      });
+      return renderView('login/loginEmail',{tokenRecebido, message});
+    }
+
+    if (!senha) {
+      request.session.message({
+        type,
+        text: 'Senha não informada!'
+      });
+      return renderView('login/loginEmail',{tokenRecebido, message});
+    }
+
+    const user = await SolicitacaoServiceLogin.verifyUser(usuario, senha);
+    if (!user.recordset[0]) {
+      request.session.message({
+        type,
+        text: 'Usuário ou senha inválidos!'
+      });
+      const message = await request.session.message();
+      return renderView('login/loginEmail',{tokenRecebido, message});
+    }
+
+    if (user.recordset[0].VALIDACAO_SENHA == 'N') {
+      request.session.message({
+        type,
+        text: 'Acesso negado!'
+      });
+      return renderView('login/loginEmail',{tokenRecebido, message});
+    }
+
+    const dadosUsuario = await SolicitacaoServiceLogin.obterDadosUser(
+      user.recordset[0].COD_USUARIO
+    );
+
+    request.session.set('user', dadosUsuario.dadosUserSolicitacao);
+
+    const dadosDecodificados = jwt.verify(tokenRecebido, Keytoken.secret);
+    const solicitacao = await SolicitacaoService.obterServicoPorCodigo(
+      dadosDecodificados.Codigo
+    );
+    let dadosParaBotaoAprovar = {
+      Status: null
+    };
+
+    const conexao = await sql.connect(db);
+
+    let status = await conexao
+      .request()
+      .query(
+        `select Status from Aprovacoes where Codigo_Aprovador = ${dadosUsuario.dadosUserSolicitacao.codigo} and Codigo_Solicitacao = ${solicitacao.Codigo}`
+      );
+
+    if (status.recordset[0]) {
+      dadosParaBotaoAprovar = status.recordset[0];
+    }
+
+    let ordem = await SolicitacaoService.verifyAprovador(
+      dadosUsuario.dadosUserSolicitacao.codigo,
+      solicitacao.Codigo
+    );
+
+    let dadosParaViewDeCompra = null;
+    if (solicitacao.Status_Compra == 'C') {
+      const conexao = await sql.connect(db);
+      let datas = await conexao
+        .request()
+        .query(
+          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
+        );
+      dadosParaViewDeCompra = datas.recordset[0];
+    }
+    const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
+
+    // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
+
+    const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
+
+
+    return renderView('home/solicitacoes/Detail', {
+      solicitacao,
+      retornoUser: dadosUsuario.dadosUserSolicitacao.permissaoCompras,
+      nome: dadosUsuario.dadosUserSolicitacao.nome,
+      codigoUsuario: dadosUsuario.dadosUserSolicitacao.codigo,
+      dadosParaBotaoAprovar,
+      dadosParaViewDeCompra,
+      ordem,
+      nota,
+      anexoLink
+      // dateTime
+    });
+  },
+
+  async Login(request) {
+    const tokenRecebido = request.token;
+    const message = await request.session.message();
+    return renderView('login/loginEmail', {tokenRecebido, message});
   }
 };
