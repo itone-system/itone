@@ -21,7 +21,6 @@ module.exports = {
       statusItem,
       centroCustoFiltro
     } = request);
-
     const centroCustoNormal = centroCustoFiltro;
 
     if (centroCustoFiltro) {
@@ -67,7 +66,6 @@ module.exports = {
       centroCustoFiltro: centroCustoNormal
     };
 
-
     return renderView('home/solicitacoes/index', {
       solicitacoes: result.data,
       paginas,
@@ -106,7 +104,10 @@ module.exports = {
         dadosParaBotaoAprovar = status.recordset[0];
       }
 
-      let ordem = await SolicitacaoService.verifyAprovador(user.codigo,solicitacao.Codigo)
+      let ordem = await SolicitacaoService.verifyAprovador(
+        user.codigo,
+        solicitacao.Codigo
+      );
 
       let dadosParaViewDeCompra = null;
       if (solicitacao.Status_Compra == 'C') {
@@ -118,9 +119,12 @@ module.exports = {
           );
         dadosParaViewDeCompra = datas.recordset[0];
       }
-      const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo)
+      const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
 
       // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
+
+      const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
+
 
       return renderView('home/solicitacoes/Detail', {
         solicitacao,
@@ -130,7 +134,8 @@ module.exports = {
         dadosParaBotaoAprovar,
         dadosParaViewDeCompra,
         ordem,
-        nota
+        nota,
+        anexoLink
         // dateTime
       });
     }
@@ -164,16 +169,21 @@ module.exports = {
         `select Status from Aprovacoes where Codigo_Aprovador = ${user.codigo} and Codigo_Solicitacao = ${solicitacao.Codigo}`
       );
 
-    let ordem = await SolicitacaoService.verifyAprovador(user.codigo,solicitacao.Codigo)
+    let ordem = await SolicitacaoService.verifyAprovador(
+      user.codigo,
+      solicitacao.Codigo
+    );
 
     if (status.recordset[0]) {
       dadosParaBotaoAprovar = status.recordset[0];
       dadosParaBotaoAprovar.ordem = 0;
     }
-    const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo)
+    const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
 
     // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
-    console.log(dadosParaViewDeCompra);
+
+    const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
+
     return renderView('home/solicitacoes/Detail', {
       solicitacao,
       retornoUser: user.permissaoCompras,
@@ -182,7 +192,8 @@ module.exports = {
       dadosParaViewDeCompra,
       dadosParaBotaoAprovar,
       ordem,
-      nota
+      nota,
+      anexoLink
       // dateTime
     });
   },
@@ -204,22 +215,62 @@ module.exports = {
     try {
       const user = request.session.get('user');
 
-      const { Codigo } = await SolicitacaoService.create(
-        {
-          Descricao: descricao,
-          Quantidade: quantidade,
-          Centro_de_Custo: centroCusto.split('. ')[0],
-          Deal: deal,
-          Observacao: observacao,
-          Solicitante: user.nome,
-          DataCriacao: dataCriacao,
-          DataAtualizacao: dataAtualizacao,
-          Status_Compra: 'P',
-          anexo: arquivo,
-          Link: linkk
-        },
-        'Codigo'
-      );
+      let CodigoObject = null;
+
+      if (linkk != '') {
+        CodigoObject = await SolicitacaoService.create(
+          {
+            Descricao: descricao,
+            Quantidade: quantidade,
+            Centro_de_Custo: centroCusto.split('. ')[0],
+            Deal: deal,
+            Observacao: observacao,
+            Solicitante: user.nome,
+            DataCriacao: dataCriacao,
+            DataAtualizacao: dataAtualizacao,
+            Status_Compra: 'P',
+            Link: linkk
+          },
+          'Codigo'
+        );
+      }
+
+      if (arquivo != '') {
+        CodigoObject = await SolicitacaoService.create(
+          {
+            Descricao: descricao,
+            Quantidade: quantidade,
+            Centro_de_Custo: centroCusto.split('. ')[0],
+            Deal: deal,
+            Observacao: observacao,
+            Solicitante: user.nome,
+            DataCriacao: dataCriacao,
+            DataAtualizacao: dataAtualizacao,
+            Status_Compra: 'P',
+            anexo: arquivo
+          },
+          'Codigo'
+        );
+      }
+      const Codigo = CodigoObject.Codigo;
+      console.log(Codigo);
+
+      // const { Codigo } = await SolicitacaoService.create(
+      //   {
+      //     Descricao: descricao,
+      //     Quantidade: quantidade,
+      //     Centro_de_Custo: centroCusto.split('. ')[0],
+      //     Deal: deal,
+      //     Observacao: observacao,
+      //     Solicitante: user.nome,
+      //     DataCriacao: dataCriacao,
+      //     DataAtualizacao: dataAtualizacao,
+      //     Status_Compra: 'P',
+      //     anexo: arquivo,
+      //     Link: linkk
+      //   },
+      //   'Codigo'
+      // );
       // salvar no banco o nome do arquivo
       const conexao = await sql.connect(db);
 
@@ -302,7 +353,7 @@ module.exports = {
 
   async Aprovar(request) {
     const { codigoSolicitacao } = request;
-    console.log('olaaaaa',codigoSolicitacao )
+    console.log('olaaaaa', codigoSolicitacao);
     const codigoAprovador = request.session.get('user').codigo;
 
     const conexao = await sql.connect(db);
@@ -332,12 +383,18 @@ module.exports = {
 
     const link = `${domain}/solicitacoes/:Codigo/edit?token=${token}`;
 
-    const descricao = await SolicitacaoService.buscarDescricao(codigoSolicitacao)
+    const descricao = await SolicitacaoService.buscarDescricao(
+      codigoSolicitacao
+    );
 
     const emailOptions = {
       to: aprovador,
       subject: 'Solicitação de Aprovação',
-      content: aprovacaoPendenteTemplate({ link, codigoSolicitacao, descricao }),
+      content: aprovacaoPendenteTemplate({
+        link,
+        codigoSolicitacao,
+        descricao
+      }),
       isHtlm: true
     };
 

@@ -171,20 +171,39 @@
 
                                 <% } %>
 
+                                <% if(anexoLink == 'anexo') { %>
+                                </div>
+                                <div style="margin-left: 70%; margin-top: 3%;  font-size:13px">
+                                  <i class='bx bx-download bx-flip-horizontal' undefined></i>
 
-                                  </div>
-                                  <div style="margin-left: 70%; margin-top: 3%;  font-size:13px">
-                                    <i class='bx bx-download bx-flip-horizontal' undefined></i>
+                                  <label id="NomeAnexo">
+                                    <%= solicitacao.anexo %>
+                                  </label>
 
-                                    <label id="NomeAnexo">
-                                      <%= solicitacao.anexo %>
-                                    </label>
+                                  <a id="baixar" download><button id="baixararq" href="google.com"
+                                      class="btn btn-secondary" style="margin-left: 10%; font-size:12px"> Baixar
+                                      Anexo</button></a>
 
-                                    <a id="baixar" download><button id="baixararq" href="google.com"
-                                        class="btn btn-secondary" style="margin-left: 10%; font-size:12px"> Baixar
-                                        Anexo</button></a>
+                                </div>
 
-                                  </div>
+
+                                  <% } %>
+
+                                  <% if(anexoLink == 'link') { %>
+
+
+
+                                    <br>
+                                    <br>
+                                    <label for="">Link De Exemplo</label>
+                                    <input type="text" class="form-control" value="<%= solicitacao.Link %>">
+
+
+
+
+
+                                    <% } %>
+
 
 
                                   <!-- </form> -->

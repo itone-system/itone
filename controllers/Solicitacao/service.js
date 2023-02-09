@@ -318,10 +318,25 @@ exports.verificaNota = async (codigoSolicitacao) => {
   const conexao = await sql.connect(db);
 
   const result = await conexao.request().query(`select CodigoSolicitacao from NotaFiscal where CodigoSolicitacao = ${codigoSolicitacao}`)
-console.log(result)
   if (result.recordset[0]) {
     return true
   } else {
     return false
+  }
+}
+
+exports.verificaArquivoElink = async (codigoSolicitacao) => {
+  const conexao = await sql.connect(db);
+
+  const result = await conexao.request().query(`select anexo, Link from Solicitacao_Item where Codigo = ${codigoSolicitacao}`)
+
+  const objeto = result.recordset[0]
+
+  if (objeto.anexo == null) {
+    return 'link'
+  }
+
+  if (objeto.Link == null) {
+    return 'anexo'
   }
 }
