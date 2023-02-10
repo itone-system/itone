@@ -8,7 +8,6 @@ $(document).ready(function () {
     const files = event.target.files;
     arquivoAnexo = files[0];
   });
-
 });
 
 const Enviardados = {
@@ -59,14 +58,50 @@ const listar = () => {
 };
 
 const insert = () => {
-  // var listaUsuarios = retonarCodigo();
+  // event.preventDefault();
 
   const descricao = document.getElementById('Descricao').value;
+
+  if (descricao.length == 0) {
+    document.getElementById('descricaoObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
   const quantidade = document.getElementById('Quantidade').value;
+
+  if (quantidade.length == 0) {
+    document.getElementById('quantidadeObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
   const centroCusto = document.getElementById('CentroCusto').value;
+
+  if (centroCusto == 'Selecionar...') {
+    document.getElementById('centroCustoObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
   const deal = document.getElementById('Deal').value;
+
+  if (deal.length == 0) {
+    document.getElementById('dealObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
   const observacao = document.getElementById('Observações').value;
+
+  if (observacao.length == 0) {
+    document.getElementById('motivoObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
   const solicitante = document.getElementById('nomeUser').value;
+
+  if (!document.querySelector('#fileInput') && !document.querySelector('#linkInput')) {
+    document.getElementById('arquivoLinkObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
   let arquivo = '';
   if (!document.querySelector('#fileInput')) {
     arquivo = '';
@@ -111,41 +146,6 @@ const insert = () => {
     })
     .then((dados) => {
       let data = dados;
-      console.log(data)
-      if (data == 1) {
-        alert('Informe a descrição');
-        window.location.reload();
-        return
-      }
-      if (data == 2) {
-        alert('Informe a quantidade');
-        window.location.reload();
-        return
-      }
-
-      if (data == 3) {
-        alert('Informe o deal, caso não exista preencha como "0"');
-        window.location.reload();
-        return
-      }
-
-      if (data == 4) {
-        alert('Informe o centro de custo');
-        window.location.reload();
-        return
-      }
-
-      if (data == 5) {
-        alert('Informe o motivo da compra');
-        window.location.reload();
-        return
-      }
-
-      if (data == 6) {
-        alert('Deixe um Link do produto ou anexe uma imagem');
-        window.location.reload();
-        return
-      }
 
       // uploadFile(arquivoAnexo, data.codigo);
 
@@ -225,3 +225,15 @@ function uploadFile(file, codigoRetornoNF) {
   request.send(formData);
 }
 
+function sobreporValues() {
+  const descricao = (document.getElementById('Descricao').value =
+    document.getElementById('Descricao').value);
+  const quantidade = (document.getElementById('Quantidade').value =
+    document.getElementById('Quantidade').value);
+  const centroCusto = (document.getElementById('CentroCusto').value =
+    document.getElementById('CentroCusto').value);
+  const deal = (document.getElementById('Deal').value =
+    document.getElementById('Deal').value);
+  const observacao = (document.getElementById('Observações').value =
+    document.getElementById('Observações').value);
+}

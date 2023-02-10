@@ -218,24 +218,24 @@ module.exports = {
     try {
       const user = request.session.get('user');
 
-      if (!descricao) {
-        return renderJson(1)
-      }
-      if (!quantidade) {
-        return renderJson(2)
-      }
-      if (!deal) {
-        return renderJson(3)
-      }
-      if (centroCusto == 'Selecionar...') {
-        return renderJson(4)
-      }
-      if (!observacao) {
-        return renderJson(5)
-      }
-      if (arquivo == '' && linkk == '' ) {
-        return renderJson(6)
-      }
+      // if (!descricao) {
+      //   return renderJson('1s')
+      // }
+      // if (!quantidade) {
+      //   return renderJson('2s')
+      // }
+      // if (!deal) {
+      //   return renderJson('3s')
+      // }
+      // if (centroCusto == 'Selecionar...') {
+      //   return renderJson('4s')
+      // }
+      // if (!observacao) {
+      //   return renderJson('5s')
+      // }
+      // if (arquivo == '' && linkk == '' ) {
+      //   return renderJson('6s')
+      // }
       let CodigoObject = null;
 
       if (linkk != '') {
@@ -275,23 +275,6 @@ module.exports = {
       }
       const Codigo = CodigoObject.Codigo;
 
-      // const { Codigo } = await SolicitacaoService.create(
-      //   {
-      //     Descricao: descricao,
-      //     Quantidade: quantidade,
-      //     Centro_de_Custo: centroCusto.split('. ')[0],
-      //     Deal: deal,
-      //     Observacao: observacao,
-      //     Solicitante: user.nome,
-      //     DataCriacao: dataCriacao,
-      //     DataAtualizacao: dataAtualizacao,
-      //     Status_Compra: 'P',
-      //     anexo: arquivo,
-      //     Link: linkk
-      //   },
-      //   'Codigo'
-      // );
-      // salvar no banco o nome do arquivo
       const conexao = await sql.connect(db);
 
       const aprovadores = await conexao.request().query(
