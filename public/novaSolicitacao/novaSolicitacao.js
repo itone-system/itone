@@ -261,9 +261,6 @@ function adicionarCampoArquivo() {
 
 }
 
-<<<<<<< HEAD
-
-
 
 
 // function validarCampos() {
@@ -312,7 +309,7 @@ function adicionarCampoArquivo() {
 
 
 
-=======
+
 function adicionarCampoLink() {
   document.getElementById("anexo").innerHTML = ""
 let campoLink = document.querySelector('#anexo')
@@ -321,8 +318,6 @@ campoLink.innerHTML = `<div class="form-group anexo" style="margin-top: 3%; font
 <input type="text"  id="linkInput">
 </div>`
 }
->>>>>>> b91b250576fabed6da799a46156ade1dc10740cb
-
 
 
 const retonarCodigo = () => {
