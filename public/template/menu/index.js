@@ -81,8 +81,7 @@ const buscarNotas = () => {
 }
 
 const sair = () => {
-    localStorage.removeItem("dados")
-    window.location.assign(`/`)
+    window.location.assign(`/sair`)
 }
 
 const dropdownToggle = document.querySelector('.dropdown-toggle');

@@ -119,5 +119,10 @@ module.exports = {
     });
 
     return redirect('/');
+  },
+
+  async Logoff (request) {
+    request.session.destroy()
+    return redirect('/')
   }
 };
