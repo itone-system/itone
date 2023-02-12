@@ -84,3 +84,12 @@ const sair = () => {
     localStorage.removeItem("dados")
     window.location.assign(`/`)
 }
+
+const dropdownToggle = document.querySelector('.dropdown-toggle');
+const subMenu = document.querySelector('.sub-menu');
+// const acompanhar2 = document.querySelector('acompanhar2')
+
+dropdownToggle.addEventListener('click', () => {
+  subMenu.classList.toggle('show');
+  // acompanhar2.style.marginTop = "20px";
+});

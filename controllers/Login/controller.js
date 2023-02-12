@@ -53,6 +53,10 @@ module.exports = {
 
     request.session.set('user', dadosUsuario.dadosUserSolicitacao);
 
+    if (request.token) {
+      return redirect('/home?token=' + request.token);
+    }
+
     return redirect('/home');
   },
 
