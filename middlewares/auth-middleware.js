@@ -21,7 +21,7 @@ exports.auth = (request, response, next) => {
     try {
       const user = jwt.verify(token, Keytoken.secret)
 
-      if (user.id != userInSession.codigo) {
+      if (user.aprovador != userInSession.codigo) {
         request.session.destroy();
         return response.redirect('/home');
       }

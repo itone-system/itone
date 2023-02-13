@@ -224,16 +224,3 @@ function uploadFile(file, codigoRetornoNF) {
   formData.append('file', file);
   request.send(formData);
 }
-
-function sobreporValues() {
-  const descricao = (document.getElementById('Descricao').value =
-    document.getElementById('Descricao').value);
-  const quantidade = (document.getElementById('Quantidade').value =
-    document.getElementById('Quantidade').value);
-  const centroCusto = (document.getElementById('CentroCusto').value =
-    document.getElementById('CentroCusto').value);
-  const deal = (document.getElementById('Deal').value =
-    document.getElementById('Deal').value);
-  const observacao = (document.getElementById('Observações').value =
-    document.getElementById('Observações').value);
-}

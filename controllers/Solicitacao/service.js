@@ -1,5 +1,6 @@
 const model = require('../../infra/dbAdapter');
 const TableSolicitacao = model('Solicitacao_Item');
+const TableAprovacoes = model('Aprovacoes');
 const enviarEmail = require('../../infra/emailAdapter');
 const { db } = require('../../config/env');
 const sql = require('mssql');
@@ -75,6 +76,15 @@ exports.obterServicoPorCodigo = async (Codigo) => {
   }
 
   return solicitacao?.data[0];
+};
+
+exports.buscarStatus = (codigoAprovador, codigoSolicitacao) => {
+  return TableAprovacoes.select('Status')
+    .andWhere({
+      Codigo_Aprovador: codigoAprovador,
+      Codigo_Solicitacao: codigoSolicitacao
+    })
+    .execute();
 };
 
 exports.enviarEmail = async (email, token) => {
@@ -276,21 +286,22 @@ exports.verifyAprovador = async (codigoAprovador, codigoSolicitacao) => {
     .query(
       `select Ordem from Aprovacoes where Codigo_Aprovador = ${codigoAprovador} and Codigo_Solicitacao = ${codigoSolicitacao}`
     );
-if (!ordem.recordset[0]) {
-  return false
-}
+  if (!ordem.recordset[0]) {
+    return false;
+  }
   const ordemFilter = ordem.recordset[0].Ordem;
 
   const result = await conexao
     .request()
-    .query(`select Ordem, Status from Aprovacoes where Codigo_Solicitacao = ${codigoSolicitacao}`);
+    .query(
+      `select Ordem, Status from Aprovacoes where Codigo_Solicitacao = ${codigoSolicitacao}`
+    );
 
   const dados = result.recordset;
 
   for (const dado of dados) {
-    console.log(dado.Ordem);
     if (dado.Ordem <= ordemFilter) {
-      if (dado.Ordem == (ordemFilter - 1)) {
+      if (dado.Ordem == ordemFilter - 1) {
         if (dado.Status == 'Y') {
           return true;
         } else {
@@ -299,7 +310,6 @@ if (!ordem.recordset[0]) {
       }
     }
   }
-  console.log('aprovações', dados);
 
   return true; //significa que é o primeiro aprovador
 };
@@ -307,36 +317,48 @@ if (!ordem.recordset[0]) {
 exports.buscarDescricao = async (codigoSolicitacao) => {
   const conexao = await sql.connect(db);
 
-  const result = await conexao.request().query(`select Descricao from Solicitacao_Item where Codigo = ${codigoSolicitacao}`)
+  const result = await conexao
+    .request()
+    .query(
+      `select Descricao from Solicitacao_Item where Codigo = ${codigoSolicitacao}`
+    );
 
-  const descricao = result.recordset[0].Descricao
+  const descricao = result.recordset[0].Descricao;
 
-  return descricao
-}
+  return descricao;
+};
 
 exports.verificaNota = async (codigoSolicitacao) => {
   const conexao = await sql.connect(db);
 
-  const result = await conexao.request().query(`select CodigoSolicitacao from NotaFiscal where CodigoSolicitacao = ${codigoSolicitacao}`)
+  const result = await conexao
+    .request()
+    .query(
+      `select CodigoSolicitacao from NotaFiscal where CodigoSolicitacao = ${codigoSolicitacao}`
+    );
   if (result.recordset[0]) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
-}
+};
 
 exports.verificaArquivoElink = async (codigoSolicitacao) => {
   const conexao = await sql.connect(db);
 
-  const result = await conexao.request().query(`select anexo, Link from Solicitacao_Item where Codigo = ${codigoSolicitacao}`)
+  const result = await conexao
+    .request()
+    .query(
+      `select anexo, Link from Solicitacao_Item where Codigo = ${codigoSolicitacao}`
+    );
 
-  const objeto = result.recordset[0]
+  const objeto = result.recordset[0];
 
   if (objeto.anexo == null) {
-    return 'link'
+    return 'link';
   }
 
   if (objeto.Link == null) {
-    return 'anexo'
+    return 'anexo';
   }
-}
+};
