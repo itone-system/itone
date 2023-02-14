@@ -362,3 +362,20 @@ exports.verificaArquivoElink = async (codigoSolicitacao) => {
     return 'anexo';
   }
 };
+
+exports.buscarEmail = async (codigoSolicitacao) => {
+  const conexao = await sql.connect(db);
+
+  const result = await conexao
+    .request()
+    .query(
+      `SELECT u.EMAIL_USUARIO
+      FROM Usuarios u
+      INNER JOIN Solicitacao_Item t ON u.NOME_USUARIO = t.Solicitante
+      where t.Codigo = ${codigoSolicitacao}`
+    );
+
+  const email = result.recordset[0].EMAIL_USUARIO
+
+  return email
+}
