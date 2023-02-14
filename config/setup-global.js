@@ -12,6 +12,7 @@ module.exports = (app) => {
     ListarItens: '/itens',
     AprovarSolicitacao: '/solicitacoes/aprovar',
     editarSolicitacao: '/solicitacoes/editar',
-    inserirNota: '/notafiscal/insertNotaSolicitacao'
+    inserirNota: '/notafiscal/insertNotaSolicitacao',
+    detalhe: '/solicitacoes/detailAprovador'
   };
 };
