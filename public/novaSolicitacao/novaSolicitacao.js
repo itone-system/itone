@@ -151,7 +151,7 @@ const insert = () => {
         ' Solicitação N° ' + data.codigo + ' cadastrada com sucesso ';
       alert(text);
 
-      // window.location.reload();
+      window.location.reload();
     });
 };
 

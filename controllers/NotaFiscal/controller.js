@@ -131,12 +131,15 @@ async listarNotas(request, res) {
 
    if (paginates > 1) {
       offset = (paginates * limite) - limite
-      console.log('OFFSET: '+offset)
-      console.log('paginates: '+paginates)
-      console.log('limite: '+limite)
+
 
 
    }
+
+   console.log('OFFSET: '+offset)
+   console.log('paginates: '+paginates)
+   console.log('limite: '+limite)
+
 
    const obterSolicitacoes = await conexao.query(`SELECT	left(CentroCusto,1) as [Primeiro_Codigo_CC],
 
@@ -177,8 +180,6 @@ async listarNotas(request, res) {
       case 3:
          var dados  = itens.filter(x => x.Primeiro_Codigo_CC === user.departamento.substr(0,1))
       break
-
-
    }
 
    if (request.token) {
@@ -190,8 +191,6 @@ async listarNotas(request, res) {
    } else{
       let = codigoToken = ''
    }
-
-   console.log(codigoToken)
 
    return renderView('home/notafiscal/DetailNF', {
       dados,
@@ -206,7 +205,7 @@ async listarNotas(request, res) {
       codigoToken
     });
 
-
+    
 
 
    // return ({ notasRecebidas, notaUnica, totalPaginas, paginate, descricaoSalva, fornecedorSalva, solicitanteSalva, centroCustoExtensoSalva})
