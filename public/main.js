@@ -13,7 +13,12 @@ const endpoints = {
   ListarUsuarios: URL_APP + '/users/listar',
   ListarItens: URL_APP + '/itens',
   AprovarSolicitacao: URL_APP + '/solicitacoes/aprovar',
-  editarSolicitacao: URL_APP + '/solicitacoes/atualizar'
+  editarSolicitacao: URL_APP + '/solicitacoes/atualizar',
+  downloadNF: URL_APP + '/notafiscal/downloadNF/',
+  uploadNF: URL_APP + '/notafiscal/uploadNF/',
+  downloadItem: URL_APP + '/solicitacoes/downloadItem/',
+  uploadItem: URL_APP + '/solicitacoes/uploadItem/'
 };
+
 // http://itonerdp06:5051
 

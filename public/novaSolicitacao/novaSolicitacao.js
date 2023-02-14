@@ -1,13 +1,11 @@
 let arquivoAnexo;
+let NomeArquivoSemAcento;
 
 $(document).ready(function () {
   conveniaCentroCusto();
   listar();
-  const fileInput = document.querySelector('#fileInput');
-  fileInput.addEventListener('change', (event) => {
-    const files = event.target.files;
-    arquivoAnexo = files[0];
-  });
+
+  
 });
 
 const Enviardados = {
@@ -147,13 +145,13 @@ const insert = () => {
     .then((dados) => {
       let data = dados;
 
-      // uploadFile(arquivoAnexo, data.codigo);
+      uploadFile(arquivoAnexo, data.codigo, NomeArquivoSemAcento);
 
       const text =
         ' Solicitação N° ' + data.codigo + ' cadastrada com sucesso ';
       alert(text);
 
-      window.location.reload();
+      // window.location.reload();
     });
 };
 
@@ -162,8 +160,16 @@ function adicionarCampoArquivo() {
   let campoArquivo = document.querySelector('#anexo');
   campoArquivo.innerHTML = `  <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
   <label for="exampleFormControlFile1">Anexar Arquivo</label>
-  <input type="file" class="form-control-file" id="fileInput">
+  <input type="file" name="file" class="form-control-file" id="fileInput">
 </div>`;
+  const fileInput = document.querySelector('#fileInput');
+
+  fileInput.addEventListener("change", event => {
+  const files = event.target.files;
+  arquivoAnexo = files[0]
+  NomeArquivoSemAcento = fileInput.value.replace('C:\\fakepath\\','').normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+  // var NomeArquivoSemAcento = arquivoAnexo.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+  });
 }
 
 
@@ -211,10 +217,6 @@ function adicionarCampoArquivo() {
 // };
 
 
-
-
-
-
 function adicionarCampoLink() {
   document.getElementById('anexo').innerHTML = '';
   let campoLink = document.querySelector('#anexo');
@@ -224,7 +226,6 @@ function adicionarCampoLink() {
 </div>`;
 }
 
-<<<<<<< HEAD
 
 const retonarCodigo = () => {
   var listaUsuarios = [];
@@ -242,8 +243,6 @@ const retonarCodigo = () => {
   return listaUsuarios.toString();
 };
 
-=======
->>>>>>> 0b21ed92d430dc9417ed6aa5d0711c3be5649a36
 const conveniaCentroCusto = () => {
   fetch('https://public-api.convenia.com.br/api/v3/companies/cost-centers', {
     method: 'GET',
@@ -277,19 +276,18 @@ const conveniaCentroCusto = () => {
     });
 };
 
-function uploadFile(file, codigoRetornoNF) {
-  console.log('Uploading file...');
-  const API_ENDPOINT =
-    'http://localhost:5052/notafiscal/uploadNF/' + codigoRetornoNF;
+function uploadFile (file, codigoRetornoNF, NomeArquivoSemAcento){
+  console.log("Uploading file...");
+  const API_ENDPOINT = endpoints.uploadItem+codigoRetornoNF+'/'+NomeArquivoSemAcento;
   const request = new XMLHttpRequest();
   const formData = new FormData();
 
-  request.open('POST', API_ENDPOINT, true);
+  request.open("POST", API_ENDPOINT, true);
   request.onreadystatechange = () => {
     if (request.readyState === 4 && request.status === 200) {
       console.log(request.responseText);
     }
   };
-  formData.append('file', file);
-  request.send(formData);
-}
+  formData.append("file", file);
+    request.send(formData);
+};

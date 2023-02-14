@@ -30,6 +30,14 @@ $(document).ready(function () {
     formatAsCurrency($(this));
   });
 
+
+  const downloadArquivoNF = document.getElementById("baixararq");
+  downloadArquivoNF.addEventListener("click", function(){
+
+    downloadItem()
+
+  });
+
 });
 
 function adicionarCampoParcelas() {
@@ -221,14 +229,14 @@ function removeAnex() {
 }
 
 
-function downloadNF(){
+function downloadItem(){
 
   baixar = document.getElementById('baixar')
 
   // var codigoNF = document.getElementById("NumeroSolicitacaoModal").value;
   const codigo = document.getElementById('codigoSolicitacao').value;
 
-  var arquivo = 'DCT-'+codigo+' '+document.getElementById('NomeAnexo').innerText
+  var arquivo = 'SLT-'+codigo+' '+document.getElementById('NomeAnexo').innerText
 
-  baixar.href = 'http://localhost:5051/notafiscal/downloadNF/'+arquivo
+  baixar.href = endpoints.downloadItem+arquivo
 }

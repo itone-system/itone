@@ -403,4 +403,13 @@ module.exports = {
     return renderView('home/solicitacoes/Create', { nome: user.nome, message });
   },
 
+  async downloadItem (request, response){
+    response.download('U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Itens Compra\\'+request.params.path)
+ },
+
+ async uploadItem (request, response){
+  response.send('Arquivo Recebido')
+
+},
+
 };

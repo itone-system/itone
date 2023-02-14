@@ -1,16 +1,19 @@
 let listaErros = [];
-let campos = [];
 let colaborador = '';
 let setColaborador = '';
 let trueColaborador = false;
 let tipoContrato = '';
 let dadosPagamento = '';
 let arquivoAnexo;
-let codigoRetornoNF = ''
+let codigoRetornoNF = '';
 let NomeArquivoSemAcento;
-let dataAtualConf = ''
-let dataAtualConfPadrao = ''
-let erroDataMenor = false
+let dataAtualConf = '';
+let dataAtualConfPadrao = '';
+let erroDataMenor = false;
+let campos = ["Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput']
+
+
+
 
 $(document).ready(function () {
     dataAtual()
@@ -37,6 +40,10 @@ $(document).ready(function () {
         validarCampoData(event.target.value)
 
         });
+
+    // $('#valorNF').on('input', function() {
+    //     formatAsCurrency($(this));
+    // });
 
 });
 
@@ -65,6 +72,7 @@ function adicionarCampoColaborador(){
     campoColaborador.innerHTML = '<div class="col Colaborador"> <label id="labelColaborador">Colaborador:</label>    <select name="Colaborador" id="Colaborador" class="form-control">      <option selected></option>    </select></div>'
     campos.push('Colaborador')
     trueColaborador = true
+    campos.push('Colaborador')  
     conveniaColaborares()
 
 }
@@ -160,9 +168,14 @@ function buscarValoresCampos(){
 
     tipoContrato = contrato.substr(0,1);
 
+    const busca = campos.find(element => element == 'Colaborador')
+
     if(trueColaborador){
         colaboradorNome =  document.getElementById("Colaborador").value+""
         setColaborador = "Y"
+       
+    }else if (busca){
+        campos.splice(campos.indexOf('Colaborador'),1)
     }
 
 }
@@ -245,67 +258,101 @@ async function insertNota() {
         limparCampos()
 }
 
-function validarCampos() {
-
-    campos = []
+function validarCamposBackup() {
 
     buscarValoresCampos()
 
+    validarCampoData(document.getElementById('DataPagamento').value)
+
+
     if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
 
-    campos.push('CentroCusto', 'Fornecedor')
+    for (let i = 0; i < campos.length; i++) {
+
+        var camposObr = document.querySelector('.obrigatorio-'+campos[i])
+
+        const busca = lista.find(element => element == campos[i])
+        
+        if (document.getElementById(campos[i]).value == '' && !busca) {
+            
+            const campoObrigatorio = campos[i] == 'valorNF' ? document.querySelector('.col-lg-2.' + campos[i]) : document.querySelector('.col.' + campos[i])
+            var labelObrigatorio = document.createElement('label')
+            labelObrigatorio.setAttribute('ID', 'obrigatorio');
+            labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
+            labelObrigatorio.textContent = '* Campo obrigatório';
+            campoObrigatorio.appendChild(labelObrigatorio)
+            listaErros.push(campos[i])
+            lista = listaErros
+            
+        }
+       
+        else if(camposObr && document.getElementById(campos[i]).value != '')  {
+            camposObr.remove()
+            
+            listaErros.splice(listaErros.indexOf(campos[i]), 1);
+            
+        }
+
+        const dadosCompleto = {
+            Campo: campos[i],
+            Buscas: busca,
+            ValorCampo: document.getElementById(campos[i]).value,
+            listaErros: listaErros
+
+        }
+        // console.log(dadosCompleto)
+
+    }
+
+    if(listaErros == '' || listaErros == undefined ){
+        this.insertNota()
+        
+    } 
+
+};
+
+function validarCampos() {
+  
+    buscarValoresCampos()
+
+    validarCampoData(document.getElementById('DataPagamento').value)
 
     for (let i = 0; i < campos.length; i++) {
 
         var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
         const busca = listaErros.find(element => element == campos[i])
-
-
-        // console.log(document.getElementById(campos[i]).id)
-
-
-        let dados = {
-            'ID': i,
-            'Campo': campos[i],
-            'Busca': busca,
-            'Lista de Erros': listaErros,
-        }
-        console.log(dados)
-
+        
         if (document.getElementById(campos[i]).value == '' && !busca) {
-
-            // const campoObrigatorio = document.querySelector('.' + campos[i]);
-            // var labelObrigatorio = document.createElement('label');
-            // labelObrigatorio.setAttribute('ID', 'obrigatorio');
-            // labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
-            // labelObrigatorio.textContent = '* Campo obrigatório';
-            // campoObrigatorio.appendChild(labelObrigatorio);
-           
-            listaErros.push(campos[i]);
-            // console.log(listaErros)
-
+            
+            const campoObrigatorio = campos[i] == 'valorNF' ? document.querySelector('.col-lg-2.' + campos[i]) : document.querySelector('.col.' + campos[i])
+            var labelObrigatorio = document.createElement('label')
+            labelObrigatorio.setAttribute('ID', 'obrigatorio');
+            labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
+            labelObrigatorio.textContent = '* Campo obrigatório';
+            campoObrigatorio.appendChild(labelObrigatorio)
+            listaErros.push(campos[i])
         }
-
+       
         else if(camposObr && document.getElementById(campos[i]).value != '')  {
             camposObr.remove()
+            
             listaErros.splice(listaErros.indexOf(campos[i]), 1);
-
+            
         }
-        
+
     }
 
     if(listaErros == '' || listaErros == undefined ){
         this.insertNota()
-
-    }
+        
+    } 
 
 };
 
-
 function uploadFile (file, codigoRetornoNF, NomeArquivoSemAcento){
   console.log("Uploading file...");
-  const API_ENDPOINT = "http://localhost:5052/notafiscal/uploadNF/"+codigoRetornoNF+'/'+NomeArquivoSemAcento;
+  const API_ENDPOINT = endpoints.uploadNF+codigoRetornoNF+'/'+NomeArquivoSemAcento;
   const request = new XMLHttpRequest();
   const formData = new FormData();
 
@@ -340,6 +387,17 @@ function validarCampoData(valorCampoDataPagamento){
         listaErros.splice(listaErros.indexOf('DataPagamentoInvalida'), 1);
     }
 }
+
+// function formatAsCurrency(input) {
+//     let formattedValue = parseFloat(input.val().replace(/,/g, ''))
+//       .toFixed(2)
+//       .toString()
+//       .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+//     input.val(formattedValue);
+//   }
+
+ 
 
 conveniaCentroCusto()
 
