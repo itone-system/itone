@@ -627,5 +627,5 @@ function downloadNF(){
 
     var arquivo = 'DCT-'+codigoNF+' '+document.getElementById('NomeAnexo').innerText
 
-    baixar.href = 'http://itonerdp06:5052/notafiscal/downloadNF/'+arquivo
+    baixar.href = endpoints.downloadNF+arquivo
 }

@@ -111,7 +111,7 @@ async listarNotas(request, res) {
 
    const conexao = await sql.connect(db)
 
-   const obterTotalSolicitacoes = await conexao.query(`SELECT COUNT (Codigo) as total FROM notaFiscal ${condicaoGeral}`)
+   const obterTotalSolicitacoes = await conexao.query(`SELECT COUNT (Codigo) as total FROM notaFiscal ${condicaoGeral} `)
 
    const totalPaginas = Math.ceil(obterTotalSolicitacoes.recordsets[0][0].total / limite)
 
@@ -131,7 +131,11 @@ async listarNotas(request, res) {
 
    if (paginates > 1) {
       offset = (paginates * limite) - limite
-      console.log(offset)
+      console.log('OFFSET: '+offset)
+      console.log('paginates: '+paginates)
+      console.log('limite: '+limite)
+
+
    }
 
    const obterSolicitacoes = await conexao.query(`SELECT	left(CentroCusto,1) as [Primeiro_Codigo_CC],

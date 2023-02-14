@@ -1,13 +1,11 @@
 let arquivoAnexo;
+let NomeArquivoSemAcento;
 
 $(document).ready(function () {
   conveniaCentroCusto();
   listar();
-  const fileInput = document.querySelector('#fileInput');
-  fileInput.addEventListener('change', (event) => {
-    const files = event.target.files;
-    arquivoAnexo = files[0];
-  });
+
+
 });
 
 const Enviardados = {
@@ -147,7 +145,7 @@ const insert = () => {
     .then((dados) => {
       let data = dados;
 
-      // uploadFile(arquivoAnexo, data.codigo);
+      uploadFile(arquivoAnexo, data.codigo, NomeArquivoSemAcento);
 
       const text =
         ' Solicitação N° ' + data.codigo + ' cadastrada com sucesso ';
@@ -162,9 +160,62 @@ function adicionarCampoArquivo() {
   let campoArquivo = document.querySelector('#anexo');
   campoArquivo.innerHTML = `  <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
   <label for="exampleFormControlFile1">Anexar Arquivo</label>
-  <input type="file" class="form-control-file" id="fileInput">
+  <input type="file" name="file" class="form-control-file" id="fileInput">
 </div>`;
+  const fileInput = document.querySelector('#fileInput');
+
+  fileInput.addEventListener("change", event => {
+  const files = event.target.files;
+  arquivoAnexo = files[0]
+  NomeArquivoSemAcento = fileInput.value.replace('C:\\fakepath\\','').normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+  // var NomeArquivoSemAcento = arquivoAnexo.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+  });
 }
+
+
+
+// function validarCampos() {
+
+//   buscarValoresCampos()
+
+//   if(!trueColaborador) { listaErros.splice(listaErros.indexOf('Colaborador'), 1) }
+
+//   campos.push("Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput')
+
+//   for (let i = 0; i < campos.length; i++) {
+
+//       var camposObr = document.querySelector('.obrigatorio-'+campos[i])
+
+//       const busca = listaErros.find(element => element == document.getElementById(campos[i]).id)
+
+//       if (document.getElementById(campos[i]).value == '' && !busca) {
+
+//           const campoObrigatorio = document.querySelector('.' + campos[i])
+//           var labelObrigatorio = document.createElement('label')
+//           labelObrigatorio.setAttribute('ID', 'obrigatorio');
+//           labelObrigatorio.setAttribute('class','obrigatorio-'+campos[i]);
+//           labelObrigatorio.textContent = '* Campo obrigatório';
+//           campoObrigatorio.appendChild(labelObrigatorio)
+//           listaErros.push(campos[i])
+
+//       }
+
+//       else if(camposObr && document.getElementById(campos[i]).value != '')  {
+//           camposObr.remove()
+
+//           listaErros.splice(listaErros.indexOf(campos[i]), 1);
+
+//       }
+
+//   }
+//   console.log(listaErros)
+//   if(listaErros == '' || listaErros == undefined ){
+//       this.insertNota()
+
+//   }
+
+// };
+
 
 function adicionarCampoLink() {
   document.getElementById('anexo').innerHTML = '';
@@ -174,6 +225,23 @@ function adicionarCampoLink() {
 <input type="text"  id="linkInput">
 </div>`;
 }
+
+
+const retonarCodigo = () => {
+  var listaUsuarios = [];
+  const emailSelecionado = document.querySelectorAll('.email');
+
+  for (let i = 0; i < emailSelecionado.length; i++) {
+    var inputEmail = document.getElementById('E-mail' + i);
+
+    for (let i = 0; i < Enviardados.arrayNomes.length; i++) {
+      if (Enviardados.arrayNomes[i].EMAIL_USUARIO == inputEmail.value) {
+        listaUsuarios.push(Enviardados.arrayNomes[i].COD_USUARIO);
+      }
+    }
+  }
+  return listaUsuarios.toString();
+};
 
 const conveniaCentroCusto = () => {
   fetch('https://public-api.convenia.com.br/api/v3/companies/cost-centers', {
@@ -208,19 +276,18 @@ const conveniaCentroCusto = () => {
     });
 };
 
-function uploadFile(file, codigoRetornoNF) {
-  console.log('Uploading file...');
-  const API_ENDPOINT =
-    'http://localhost:5052/notafiscal/uploadNF/' + codigoRetornoNF;
+function uploadFile (file, codigoRetornoNF, NomeArquivoSemAcento){
+  console.log("Uploading file...");
+  const API_ENDPOINT = endpoints.uploadItem+codigoRetornoNF+'/'+NomeArquivoSemAcento;
   const request = new XMLHttpRequest();
   const formData = new FormData();
 
-  request.open('POST', API_ENDPOINT, true);
+  request.open("POST", API_ENDPOINT, true);
   request.onreadystatechange = () => {
     if (request.readyState === 4 && request.status === 200) {
       console.log(request.responseText);
     }
   };
-  formData.append('file', file);
-  request.send(formData);
-}
+  formData.append("file", file);
+    request.send(formData);
+};

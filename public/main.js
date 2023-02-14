@@ -14,7 +14,12 @@ const endpoints = {
   ListarItens: URL_APP + '/itens',
   AprovarSolicitacao: URL_APP + '/solicitacoes/aprovar',
   editarSolicitacao: URL_APP + '/solicitacoes/atualizar',
-  ReprovarSolicitacao: URL_APP + '/solicitacoes/reprovar'
+  ReprovarSolicitacao: URL_APP + '/solicitacoes/reprovar',
+  downloadNF: URL_APP + '/notafiscal/downloadNF/',
+  uploadNF: URL_APP + '/notafiscal/uploadNF/',
+  downloadItem: URL_APP + '/solicitacoes/downloadItem/',
+  uploadItem: URL_APP + '/solicitacoes/uploadItem/'
 };
 // http://itonerdp06:5052/solicitacoes/reprovar
+
 
