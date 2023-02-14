@@ -401,10 +401,21 @@ body.dark .home .text{
 
 
 
-.listNS{
+/* .listNS{
   display: none;
 }
 
 .itensNS.mostra{
     display:block;
-}
+} */
+
+
+
+.sub-menu {
+    display: none;
+  }
+
+  .sub-menu.show {
+    display: block;
+    margin-bottom: 150px;
+  }

@@ -8,6 +8,7 @@ const enviarEmail = require('../../infra/emailAdapter');
 const { Keytoken, domain } = require('../../config/env');
 const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente');
 const tokenAdapter = require('../../infra/tokenAdapter');
+let teste5 = {}
 
 const model = require('../../infra/dbAdapter');
 
@@ -79,67 +80,9 @@ module.exports = {
   },
 
   async Edit(request) {
-    const user = request.session.get('user');
-
-    if (request.token) {
-      const tokenRecebido = request.token;
-
-      const dadosDecodificados = jwt.verify(tokenRecebido, Keytoken.secret);
-      const solicitacao = await SolicitacaoService.obterServicoPorCodigo(
-        dadosDecodificados.Codigo
-      );
-
-      let dadosParaBotaoAprovar = {
-        Status: null
-      };
-
-      const conexao = await sql.connect(db);
-
-      let status = await conexao
-        .request()
-        .query(
-          `select Status from Aprovacoes where Codigo_Aprovador = ${user.codigo} and Codigo_Solicitacao = ${solicitacao.Codigo}`
-        );
-
-      if (status.recordset[0]) {
-        dadosParaBotaoAprovar = status.recordset[0];
-      }
-
-      let ordem = await SolicitacaoService.verifyAprovador(
-        user.codigo,
-        solicitacao.Codigo
-      );
-
-      let dadosParaViewDeCompra = null;
-      if (solicitacao.Status_Compra == 'C') {
-        const conexao = await sql.connect(db);
-        let datas = await conexao
-          .request()
-          .query(
-            `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
-          );
-        dadosParaViewDeCompra = datas.recordset[0];
-      }
-      const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
-
-      // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
-
-      const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
-
-
-      return renderView('home/solicitacoes/Detail', {
-        solicitacao,
-        retornoUser: user.permissaoCompras,
-        nome: user.nome,
-        codigoUsuario: user.codigo,
-        dadosParaBotaoAprovar,
-        dadosParaViewDeCompra,
-        ordem,
-        nota,
-        anexoLink
-        // dateTime
-      });
-    }
+    // teste5 = {}
+    try {
+      const user = request.session.get('user');
 
     const solicitacao = await SolicitacaoService.obterServicoPorCodigo(
       request.Codigo
@@ -164,12 +107,15 @@ module.exports = {
 
     const conexao = await sql.connect(db);
 
+    // const statusPesquisa = await SolicitacaoService.buscarStatus(user.codigo, solicitacao.Codigo)
+    // const status = statusPesquisa.data[0].Status
+    // console.log(status)
     let status = await conexao
       .request()
       .query(
-        `select Status from Aprovacoes where Codigo_Aprovador = ${user.codigo} and Codigo_Solicitacao = ${solicitacao.Codigo}`
+        `select Status from Aprovacoes where Codigo_Aprovador = '${user.codigo}' and Codigo_Solicitacao = '${solicitacao.Codigo}'`
       );
-
+        console.log('olasssssssss')
     let ordem = await SolicitacaoService.verifyAprovador(
       user.codigo,
       solicitacao.Codigo
@@ -181,9 +127,16 @@ module.exports = {
     }
     const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
 
-    // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
-
     const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
+
+    // teste5.solicitacao = solicitacao
+    // teste5.retornoUser = user.permissaoCompras
+    // teste5.nome = user.nome
+    // teste5.codigoUsuario = user.codigo
+    // teste5.dadosParaViewDeCompra = dadosParaViewDeCompra
+    // teste5.dadosParaBotaoAprovar = dadosParaBotaoAprovar
+    // teste5.ordem = ordem
+    // teste5.nota = notateste5.anexoLink = anexoLink
 
     return renderView('home/solicitacoes/Detail', {
       solicitacao,
@@ -195,8 +148,25 @@ module.exports = {
       ordem,
       nota,
       anexoLink
-      // dateTime
     });
+    } catch (error) {
+    return redirect('/home');
+
+    // console.log('testandooooooooooooooo',teste5)
+    // return renderView('home/solicitacoes/Detail', {
+    //   solicitacao: teste5.solicitacao,
+    //   retornoUser:  teste5.retornoUser,
+    //   nome: teste5.nome,
+    //   codigoUsuario:  teste5.codigoUsuario,
+    //   dadosParaViewDeCompra:  teste5.dadosParaViewDeCompra,
+    //   dadosParaBotaoAprovar:  teste5.dadosParaBotaoAprovar,
+    //   ordem: teste5.ordem,
+    //   nota:  teste5.nota,
+    //   anexoLink:  teste5.anexoLink
+    // });
+
+    }
+
   },
 
   async Create(request) {
@@ -302,7 +272,6 @@ module.exports = {
       );
 
       const ordemAprovadores = aprovadores.recordset[0].aprovadores.split(',');
-      console.log(ordemAprovadores[0]);
       let contador = 1;
 
       for (let index = 0; index < ordemAprovadores.length; index++) {
@@ -322,11 +291,11 @@ module.exports = {
           COD_USUARIO: ordemAprovadores[0]
         })
         .execute();
-      console.log(firstEmail);
 
-      const token = tokenAdapter({ Codigo, aprovador: ordemAprovadores[0] });
+      const token = tokenAdapter({ Codigo, aprovador: ordemAprovadores[0], id: ordemAprovadores[0], router: `/solicitacoes/${Codigo}/edit`  });
 
-      const link = `${domain}/solicitacoes/detalhar?token=${token}`;
+      const link = `${domain}/solicitacoes/${Codigo}/edit?token=${token}`;
+
 
       const emailOptions = {
         to: firstEmail.data[0].EMAIL_USUARIO,
@@ -340,7 +309,6 @@ module.exports = {
       const corpo = {
         codigo: Codigo
       };
-      console.log(corpo)
       return renderJson(corpo);
     } catch (error) {
       console.log('error ', error);
@@ -356,7 +324,6 @@ module.exports = {
 
   async Aprovar(request) {
     const { codigoSolicitacao } = request;
-    console.log('olaaaaa', codigoSolicitacao);
     const codigoAprovador = request.session.get('user').codigo;
 
     const conexao = await sql.connect(db);
@@ -381,10 +348,12 @@ module.exports = {
 
     const token = tokenAdapter({
       Codigo: codigoSolicitacao,
-      aprovador: codigoUsuario
+      aprovador: codigoUsuario,
+      router: `/solicitacoes/${codigoSolicitacao}/edit`
     });
 
-    const link = `${domain}/solicitacoes/detalhar?token=${token}`;
+    const link = `${domain}/solicitacoes/${codigoSolicitacao}/edit?token=${token}`;
+
 
     const descricao = await SolicitacaoService.buscarDescricao(
       codigoSolicitacao
@@ -434,110 +403,4 @@ module.exports = {
     return renderView('home/solicitacoes/Create', { nome: user.nome, message });
   },
 
-  async Detail(request) {
-    const { usuario, senha } = request;
-    const tokenRecebido = request.token;
-    const type = 'warning';
-
-    if (!usuario) {
-      request.session.message({
-        type,
-        text: 'Usuário não informado!'
-      });
-      return renderView('login/loginEmail',{tokenRecebido, message});
-    }
-
-    if (!senha) {
-      request.session.message({
-        type,
-        text: 'Senha não informada!'
-      });
-      return renderView('login/loginEmail',{tokenRecebido, message});
-    }
-
-    const user = await SolicitacaoServiceLogin.verifyUser(usuario, senha);
-    if (!user.recordset[0]) {
-      request.session.message({
-        type,
-        text: 'Usuário ou senha inválidos!'
-      });
-      const message = await request.session.message();
-      return renderView('login/loginEmail',{tokenRecebido, message});
-    }
-
-    if (user.recordset[0].VALIDACAO_SENHA == 'N') {
-      request.session.message({
-        type,
-        text: 'Acesso negado!'
-      });
-      return renderView('login/loginEmail',{tokenRecebido, message});
-    }
-
-    const dadosUsuario = await SolicitacaoServiceLogin.obterDadosUser(
-      user.recordset[0].COD_USUARIO
-    );
-
-    request.session.set('user', dadosUsuario.dadosUserSolicitacao);
-
-    const dadosDecodificados = jwt.verify(tokenRecebido, Keytoken.secret);
-    const solicitacao = await SolicitacaoService.obterServicoPorCodigo(
-      dadosDecodificados.Codigo
-    );
-    let dadosParaBotaoAprovar = {
-      Status: null
-    };
-
-    const conexao = await sql.connect(db);
-
-    let status = await conexao
-      .request()
-      .query(
-        `select Status from Aprovacoes where Codigo_Aprovador = ${dadosUsuario.dadosUserSolicitacao.codigo} and Codigo_Solicitacao = ${solicitacao.Codigo}`
-      );
-
-    if (status.recordset[0]) {
-      dadosParaBotaoAprovar = status.recordset[0];
-    }
-
-    let ordem = await SolicitacaoService.verifyAprovador(
-      dadosUsuario.dadosUserSolicitacao.codigo,
-      solicitacao.Codigo
-    );
-
-    let dadosParaViewDeCompra = null;
-    if (solicitacao.Status_Compra == 'C') {
-      const conexao = await sql.connect(db);
-      let datas = await conexao
-        .request()
-        .query(
-          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
-        );
-      dadosParaViewDeCompra = datas.recordset[0];
-    }
-    const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
-
-    // const dateTime = await SolicitacaoService.verificaData('2023-01-10' , new Date())
-
-    const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
-
-
-    return renderView('home/solicitacoes/Detail', {
-      solicitacao,
-      retornoUser: dadosUsuario.dadosUserSolicitacao.permissaoCompras,
-      nome: dadosUsuario.dadosUserSolicitacao.nome,
-      codigoUsuario: dadosUsuario.dadosUserSolicitacao.codigo,
-      dadosParaBotaoAprovar,
-      dadosParaViewDeCompra,
-      ordem,
-      nota,
-      anexoLink
-      // dateTime
-    });
-  },
-
-  async Login(request) {
-    const tokenRecebido = request.token;
-    const message = await request.session.message();
-    return renderView('login/loginEmail', {tokenRecebido, message});
-  }
 };

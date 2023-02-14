@@ -10,8 +10,6 @@ module.exports = {
 
       const aprovadores = await SolicitacaoService.getAprovadores(user.codigo)
 
-      console.log(aprovadores)
-
       const codigosAprovadores = aprovadores.recordset[0].aprovadores.split(',');
 
       const nomes = await SolicitacaoService.getNameAprovadores(codigosAprovadores)

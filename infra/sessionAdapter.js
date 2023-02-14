@@ -15,6 +15,9 @@ module.exports = (request) => ({
       request.session[key] = { ...request.session[key], ...value };
     }
   },
+  destroy() {
+    request.session.destroy()
+  },
   message: ({ text = null, type = null, title = null } = {}) => {
     if (!text) {
       if (!request.session.flash) {
