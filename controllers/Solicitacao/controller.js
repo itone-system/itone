@@ -8,7 +8,6 @@ const enviarEmail = require('../../infra/emailAdapter');
 const { Keytoken, domain } = require('../../config/env');
 const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente');
 const tokenAdapter = require('../../infra/tokenAdapter');
-let teste5 = {}
 
 const model = require('../../infra/dbAdapter');
 
@@ -80,7 +79,6 @@ module.exports = {
   },
 
   async Edit(request) {
-    // teste5 = {}
     try {
       const user = request.session.get('user');
 
@@ -115,7 +113,6 @@ module.exports = {
       .query(
         `select Status from Aprovacoes where Codigo_Aprovador = '${user.codigo}' and Codigo_Solicitacao = '${solicitacao.Codigo}'`
       );
-        console.log('olasssssssss')
     let ordem = await SolicitacaoService.verifyAprovador(
       user.codigo,
       solicitacao.Codigo
@@ -128,15 +125,6 @@ module.exports = {
     const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
 
     const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
-
-    // teste5.solicitacao = solicitacao
-    // teste5.retornoUser = user.permissaoCompras
-    // teste5.nome = user.nome
-    // teste5.codigoUsuario = user.codigo
-    // teste5.dadosParaViewDeCompra = dadosParaViewDeCompra
-    // teste5.dadosParaBotaoAprovar = dadosParaBotaoAprovar
-    // teste5.ordem = ordem
-    // teste5.nota = notateste5.anexoLink = anexoLink
 
     return renderView('home/solicitacoes/Detail', {
       solicitacao,
@@ -151,19 +139,6 @@ module.exports = {
     });
     } catch (error) {
     return redirect('/home');
-
-    // console.log('testandooooooooooooooo',teste5)
-    // return renderView('home/solicitacoes/Detail', {
-    //   solicitacao: teste5.solicitacao,
-    //   retornoUser:  teste5.retornoUser,
-    //   nome: teste5.nome,
-    //   codigoUsuario:  teste5.codigoUsuario,
-    //   dadosParaViewDeCompra:  teste5.dadosParaViewDeCompra,
-    //   dadosParaBotaoAprovar:  teste5.dadosParaBotaoAprovar,
-    //   ordem: teste5.ordem,
-    //   nota:  teste5.nota,
-    //   anexoLink:  teste5.anexoLink
-    // });
 
     }
 
@@ -378,6 +353,37 @@ module.exports = {
       'Solicitação N° ' + codigoSolicitacao + ' aprovada com sucesso';
 
     return renderJson(corpo);
+  },
+
+  async Reprovar(request) {
+    const { codigoSolicitacao } = request;
+    const codigoAprovador = request.session.get('user').codigo;
+    const conexao = await sql.connect(db);
+
+    const result = await conexao
+    .request()
+    .query(
+      `UPDATE Aprovacoes SET Status = 'R' WHERE Codigo_Solicitacao = ${codigoSolicitacao}`
+    );
+
+    await conexao
+      .request()
+      .query(
+        `update Solicitacao_Item set Status_Compra = 'R' where Codigo = ${codigoSolicitacao}`
+      );
+
+      await conexao
+      .request()
+      .query(
+        `update Solicitacao_Item set Reprovador = ${codigoAprovador} where Codigo = ${codigoSolicitacao}`
+      );
+
+      const corpo =
+      'Solicitação N° ' + codigoSolicitacao + ' foi reprovada';
+
+    return renderJson(corpo);
+
+
   },
 
   async Update(request) {

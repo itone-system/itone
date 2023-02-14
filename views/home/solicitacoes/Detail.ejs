@@ -167,11 +167,12 @@
 
                                 <!-- <button type="submit" name="inserir" id="botao-solicitar" class=" button"
                                   onclick="aprovarSolicitacao()">Aprovar</button> -->
-                                  <button class="buttonAprov buttonAprovHover" onclick="aprovarSolicitacao()">Aprovar</button>
+                                  <button class="btn btn-success text-white" onclick="aprovarSolicitacao()">Aprovar</button>
+                                  <button class="btn btn-danger text-white" onclick="reprovarSolicitacao()">Reprovar</button>
 
                                 <% } %>
 
-                                <% if(anexoLink == 'anexo' &&  solicitacao.Status_Compra=='A') { %>
+                                <% if(anexoLink == 'anexo') { %>
                                 </div>
                                 <div style="margin-left: 70%; margin-top: 3%;  font-size:13px">
                                   <i class='bx bx-download bx-flip-horizontal' undefined></i>
@@ -189,7 +190,7 @@
 
                                   <% } %>
 
-                                  <% if(anexoLink == 'link' &&  solicitacao.Status_Compra=='A') { %>
+                                  <% if(anexoLink == 'link') { %>
 
 
 

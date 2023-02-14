@@ -14,9 +14,10 @@ solicitacaoRouter.get('/listar', expressAdapter(SolicitacaoController.Listar));
 solicitacaoRouter.post('/criar', expressAdapter(SolicitacaoController.Create));
 solicitacaoRouter.get('/:Codigo/edit', expressAdapter(SolicitacaoController.Edit));
 solicitacaoRouter.post('/aprovar', expressAdapter(SolicitacaoController.Aprovar));
+solicitacaoRouter.post('/reprovar', expressAdapter(SolicitacaoController.Reprovar));
 solicitacaoRouter.put('/atualizar', expressAdapter(SolicitacaoController.Update));
 solicitacaoRouter.get('/criar', expressAdapter(SolicitacaoController.Criar));
-solicitacaoRouter.get('/detailAprovador', expressAdapter(SolicitacaoController.Detail));
-solicitacaoRouter.get('/detalhar', expressAdapter(SolicitacaoController.Login))
+// solicitacaoRouter.get('/detailAprovador', expressAdapter(SolicitacaoController.Detail));
+// solicitacaoRouter.get('/detalhar', expressAdapter(SolicitacaoController.Login))
 
 module.exports = solicitacaoRouter;

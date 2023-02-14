@@ -81,6 +81,34 @@ function aprovarSolicitacao() {
     });
 };
 
+function reprovarSolicitacao() {
+  const codigoSolicitacao = document.getElementById('codigoSolicitacao').value;
+
+  const corpo = {
+    codigoSolicitacao: codigoSolicitacao
+  };
+
+  fetch(endpoints.ReprovarSolicitacao, {
+    method: 'POST',
+    body: JSON.stringify(corpo),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+    .then((dados) => {
+      return dados.json();
+    })
+    .then((dados) => {
+  console.log(dados)
+
+      if (dados) {
+        alert(dados);
+      }
+      window.location.reload();
+    });
+}
+
 function insertCompra (codigo) {
   let quantidadeDeParcelas = null;
   let dataDaPrimeiraParcela = null;

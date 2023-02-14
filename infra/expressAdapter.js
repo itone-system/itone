@@ -10,17 +10,19 @@ exports.expressAdapter = (controller) => {
     };
 
     const controllerResult = await controller(data);
-    return verifyCallback(controllerResult, response);
+    return verifyCallback(controllerResult, data, response);
   };
 };
 
-const verifyCallback = (data, response) => {
+const verifyCallback = (data, request, response) => {
+
   if (data.tipo === 'redirect') {
     return response.redirect(data.caminho);
   }
 
   if (data.tipo === 'render') {
-    return response.render(data.caminho, data?.params);
+    const message = request.session.message();
+    return response.render(data.caminho, {...data?.params, message });
   }
 
   if (data.tipo === 'json') {

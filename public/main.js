@@ -13,7 +13,8 @@ const endpoints = {
   ListarUsuarios: URL_APP + '/users/listar',
   ListarItens: URL_APP + '/itens',
   AprovarSolicitacao: URL_APP + '/solicitacoes/aprovar',
-  editarSolicitacao: URL_APP + '/solicitacoes/atualizar'
+  editarSolicitacao: URL_APP + '/solicitacoes/atualizar',
+  ReprovarSolicitacao: URL_APP + '/solicitacoes/reprovar'
 };
-// http://itonerdp06:5051
+// http://itonerdp06:5052/solicitacoes/reprovar
 

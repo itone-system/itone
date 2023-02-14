@@ -4,8 +4,7 @@ const SolicitacaoService = require('./service');
 
 module.exports = {
   async Index(request) {
-    const message = await request.session.message();
-    return renderView('login/Index', { message });
+    return renderView('login/Index', {name: 'Marcos'});
   },
 
   async Auth(request) {
