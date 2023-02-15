@@ -5,6 +5,8 @@ const enviarEmail = require('../../infra/emailAdapter');
 const { db } = require('../../config/env');
 const sql = require('mssql');
 const solicitacaoAprovada = require('../../template-email/solicitacao_aprovada');
+const aguardandoCompra = require('../../template-email/solicitacao_aprovada');
+const tokenAdapter = require('../../infra/tokenAdapter');
 
 exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
   const { Descricao, Solicitante, statusItem, centroCustoFiltro, User } = data;
@@ -141,6 +143,21 @@ exports.buscarProximoAprovador = async (codigo) => {
       }),
       isHtlm: true
     };
+    // const token = tokenAdapter({
+    //   codigo,
+    //   aprovador:1010 ,
+    //   router: `/solicitacoes/${codigo}/edit`
+    // });
+
+    // const emailOptionsComprador = {
+    //   to: 'pollyanna.costa@itone.com.br',
+    //   subject: 'Aguardando Compra',
+    //   content: aguardandoCompra({
+    //     descricao: queryDesc.recordset[0].Descricao,
+    //     codigo
+    //   }),
+    //   isHtlm: true
+    // }
     enviarEmail(emailOptions);
     return;
   }

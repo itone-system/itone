@@ -56,7 +56,7 @@ module.exports = {
 async listarNotas(request, res) {
 
    const conexao = await sql.connect(db)
-   
+
    const user = request.session.get('user');
    console.log(user)
    const message = await request.session.message();
@@ -89,8 +89,8 @@ async listarNotas(request, res) {
    listacondicoes = {
       Descricao: requ.Descricao,
       Fornecedor: requ.Fornecedor,
-      Solicitante:  user.Perfil == 2? user.nome: requ.Solicitante, 
-      CentroCusto: user.Perfil == 3? user.departamento: requ.CentroCusto 
+      Solicitante:  user.Perfil == 2? user.nome: requ.Solicitante,
+      CentroCusto: user.Perfil == 3? user.departamento: requ.CentroCusto
    }
 
    condicaoGeral = ''
@@ -113,7 +113,7 @@ async listarNotas(request, res) {
       requ.pagina  = 1
    }
 
-  
+
 
    const obterTotalSolicitacoes = await conexao.query(`SELECT COUNT (Codigo) as total FROM notaFiscal ${condicaoGeral} `)
 
@@ -205,7 +205,7 @@ async listarNotas(request, res) {
       codigoToken
     });
 
-    
+
 
 
    // return ({ notasRecebidas, notaUnica, totalPaginas, paginate, descricaoSalva, fornecedorSalva, solicitanteSalva, centroCustoExtensoSalva})
@@ -240,7 +240,7 @@ async atualizarStatusNota(req, res) {
 
 
 
-       href = 'http://itonerdp06:5052/notafiscal/buscarNotas?token='+token
+       href = 'http://itonerdp06:5050/notafiscal/buscarNotas?token='+token
 
       ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v1.0\\itone-compras\\views\\home\\NotaFiscal\\retornoEmail.ejs',{req, href}, function(err, data){
          if(err){
