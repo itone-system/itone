@@ -1,5 +1,5 @@
 const SolicitacaoService = require('./service');
-const SolicitacaoServiceLogin = require('../Login/service')
+const SolicitacaoServiceLogin = require('../Login/service');
 const { renderView, renderJson, redirect } = require('../../helpers/render');
 const jwt = require('jsonwebtoken');
 const { db } = require('../../config/env');
@@ -7,6 +7,7 @@ const sql = require('mssql');
 const enviarEmail = require('../../infra/emailAdapter');
 const { Keytoken, domain } = require('../../config/env');
 const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente');
+const solicitacaoReprovadaTemplate = require('../../template-email/solicitacao_reprovada');
 const tokenAdapter = require('../../infra/tokenAdapter');
 
 const model = require('../../infra/dbAdapter');
@@ -82,66 +83,66 @@ module.exports = {
     try {
       const user = request.session.get('user');
 
-    const solicitacao = await SolicitacaoService.obterServicoPorCodigo(
-      request.Codigo
-    );
+      const solicitacao = await SolicitacaoService.obterServicoPorCodigo(
+        request.Codigo
+      );
 
-    let dadosParaViewDeCompra = null;
+      let dadosParaViewDeCompra = null;
 
-    if (solicitacao.Status_Compra == 'C') {
+      if (solicitacao.Status_Compra == 'C') {
+        const conexao = await sql.connect(db);
+        let datas = await conexao
+          .request()
+          .query(
+            `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega,valorDaCompra as valor from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
+          );
+        dadosParaViewDeCompra = datas.recordset[0];
+      }
+
+      let dadosParaBotaoAprovar = {
+        // Status: null,
+        ordem: null
+      };
+
       const conexao = await sql.connect(db);
-      let datas = await conexao
+
+      // const statusPesquisa = await SolicitacaoService.buscarStatus(user.codigo, solicitacao.Codigo)
+      // const status = statusPesquisa.data[0].Status
+      // console.log(status)
+      let status = await conexao
         .request()
         .query(
-          `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega,valorDaCompra as valor from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
+          `select Status from Aprovacoes where Codigo_Aprovador = '${user.codigo}' and Codigo_Solicitacao = '${solicitacao.Codigo}'`
         );
-      dadosParaViewDeCompra = datas.recordset[0];
-    }
-
-    let dadosParaBotaoAprovar = {
-      // Status: null,
-      ordem: null
-    };
-
-    const conexao = await sql.connect(db);
-
-    // const statusPesquisa = await SolicitacaoService.buscarStatus(user.codigo, solicitacao.Codigo)
-    // const status = statusPesquisa.data[0].Status
-    // console.log(status)
-    let status = await conexao
-      .request()
-      .query(
-        `select Status from Aprovacoes where Codigo_Aprovador = '${user.codigo}' and Codigo_Solicitacao = '${solicitacao.Codigo}'`
+      let ordem = await SolicitacaoService.verifyAprovador(
+        user.codigo,
+        solicitacao.Codigo
       );
-    let ordem = await SolicitacaoService.verifyAprovador(
-      user.codigo,
-      solicitacao.Codigo
-    );
 
-    if (status.recordset[0]) {
-      dadosParaBotaoAprovar = status.recordset[0];
-      dadosParaBotaoAprovar.ordem = 0;
-    }
-    const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
+      if (status.recordset[0]) {
+        dadosParaBotaoAprovar = status.recordset[0];
+        dadosParaBotaoAprovar.ordem = 0;
+      }
+      const nota = await SolicitacaoService.verificaNota(solicitacao.Codigo);
 
-    const anexoLink = await SolicitacaoService.verificaArquivoElink(solicitacao.Codigo)
+      const anexoLink = await SolicitacaoService.verificaArquivoElink(
+        solicitacao.Codigo
+      );
 
-    return renderView('home/solicitacoes/Detail', {
-      solicitacao,
-      retornoUser: user.permissaoCompras,
-      nome: user.nome,
-      codigoUsuario: user.codigo,
-      dadosParaViewDeCompra,
-      dadosParaBotaoAprovar,
-      ordem,
-      nota,
-      anexoLink
-    });
+      return renderView('home/solicitacoes/Detail', {
+        solicitacao,
+        retornoUser: user.permissaoCompras,
+        nome: user.nome,
+        codigoUsuario: user.codigo,
+        dadosParaViewDeCompra,
+        dadosParaBotaoAprovar,
+        ordem,
+        nota,
+        anexoLink
+      });
     } catch (error) {
-    return redirect('/home');
-
+      return redirect('/home');
     }
-
   },
 
   async Create(request) {
@@ -156,9 +157,6 @@ module.exports = {
       arquivo,
       linkk
     } = request;
-
-
-
 
     try {
       const user = request.session.get('user');
@@ -267,15 +265,23 @@ module.exports = {
         })
         .execute();
 
-      const token = tokenAdapter({ Codigo, aprovador: ordemAprovadores[0], id: ordemAprovadores[0], router: `/solicitacoes/${Codigo}/edit`  });
+      const token = tokenAdapter({
+        Codigo,
+        aprovador: ordemAprovadores[0],
+        id: ordemAprovadores[0],
+        router: `/solicitacoes/${Codigo}/edit`
+      });
 
       const link = `${domain}/solicitacoes/${Codigo}/edit?token=${token}`;
-
 
       const emailOptions = {
         to: firstEmail.data[0].EMAIL_USUARIO,
         subject: 'Solicitação de Aprovação',
-        content: aprovacaoPendenteTemplate({ link, codigoSolicitacao:Codigo, descricao }),
+        content: aprovacaoPendenteTemplate({
+          link,
+          codigoSolicitacao: Codigo,
+          descricao
+        }),
         isHtlm: true
       };
 
@@ -329,7 +335,6 @@ module.exports = {
 
     const link = `${domain}/solicitacoes/${codigoSolicitacao}/edit?token=${token}`;
 
-
     const descricao = await SolicitacaoService.buscarDescricao(
       codigoSolicitacao
     );
@@ -361,10 +366,10 @@ module.exports = {
     const conexao = await sql.connect(db);
 
     const result = await conexao
-    .request()
-    .query(
-      `UPDATE Aprovacoes SET Status = 'R' WHERE Codigo_Solicitacao = ${codigoSolicitacao}`
-    );
+      .request()
+      .query(
+        `UPDATE Aprovacoes SET Status = 'R' WHERE Codigo_Solicitacao = ${codigoSolicitacao}`
+      );
 
     await conexao
       .request()
@@ -372,18 +377,25 @@ module.exports = {
         `update Solicitacao_Item set Status_Compra = 'R' where Codigo = ${codigoSolicitacao}`
       );
 
-      await conexao
+    await conexao
       .request()
       .query(
         `update Solicitacao_Item set Reprovador = ${codigoAprovador} where Codigo = ${codigoSolicitacao}`
       );
 
-      const corpo =
-      'Solicitação N° ' + codigoSolicitacao + ' foi reprovada';
+    const corpo = 'Solicitação N° ' + codigoSolicitacao + ' foi reprovada';
+    const email = await SolicitacaoService.buscarEmail(codigoSolicitacao);
+    const descricao = await SolicitacaoService.buscarDescricao(codigoSolicitacao)
+    const emailOptions = {
+      to: email,
+      subject: 'Solicitação De Compra reprovada',
+      content: solicitacaoReprovadaTemplate({ codigo: codigoSolicitacao, descricao }),
+      isHtlm: true
+    };
+
+    enviarEmail(emailOptions);
 
     return renderJson(corpo);
-
-
   },
 
   async Update(request) {
@@ -409,13 +421,14 @@ module.exports = {
     return renderView('home/solicitacoes/Create', { nome: user.nome, message });
   },
 
-  async downloadItem (request, response){
-    response.download('U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Itens Compra\\'+request.params.path)
- },
+  async downloadItem(request, response) {
+    response.download(
+      'U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Itens Compra\\' +
+        request.params.path
+    );
+  },
 
- async uploadItem (request, response){
-  response.send('Arquivo Recebido')
-
-},
-
+  async uploadItem(request, response) {
+    response.send('Arquivo Recebido');
+  }
 };
