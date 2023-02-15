@@ -158,7 +158,7 @@ const insert = () => {
 function adicionarCampoArquivo() {
   document.getElementById('anexo').innerHTML = '';
   let campoArquivo = document.querySelector('#anexo');
-  campoArquivo.innerHTML = `  <div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+  campoArquivo.innerHTML = `  <div class="form-group anexo" style="margin-top: 1%; font-size: 13px">
   <label for="exampleFormControlFile1">Anexar Arquivo</label>
   <input type="file" name="file" class="form-control-file" id="fileInput">
 </div>`;
@@ -220,7 +220,7 @@ function adicionarCampoArquivo() {
 function adicionarCampoLink() {
   document.getElementById('anexo').innerHTML = '';
   let campoLink = document.querySelector('#anexo');
-  campoLink.innerHTML = `<div class="form-group anexo" style="margin-top: 3%; font-size: 13px">
+  campoLink.innerHTML = `<div class="form-group anexo" style="margin-top: 1%; font-size: 13px">
 <label for="exampleFormControlFile1">Anexar Link</label>
 <input type="text"  id="linkInput">
 </div>`;
