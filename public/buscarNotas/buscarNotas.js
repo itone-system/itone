@@ -603,16 +603,17 @@ async function gerarDadosModal(codigo){
         document.getElementById('Colaborador').value  = data[0].Colaborador
         document.getElementById('NomeAnexo').innerText  = data[0].Anexo
         retornarNFUser = document.getElementById('retornarNFUser').innerText
+        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
 
-        if(data[0].StatusNF == 'E'){
-            localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
-    } else if(retornarNFUser) {
-        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+    //     if(data[0].StatusNF == 'E'){
+    //         localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
+    // } else if(retornarNFUser) {
+    //     localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
 
-    }else{
-        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+    // }else{
+    //     localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
 
-    }
+    // }
 
     })
 

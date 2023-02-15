@@ -45,11 +45,11 @@ function adicionarCampoParcelas() {
   campoColaborador.innerHTML = `
 
     <div class="row g-3">
-    <div class="col">
+    <div class="col-lg-2 ">
         <label for="fname">Quantidade de Parcelas:</label>
         <input id="quantidadeDeParcelas" class="form-control" style="margin-bottom: 10%;" type="number" name="quantidadeDeParcelas">
     </div>
-    <div class="col">
+    <div class="col-lg-2">
          <label for="fname">Data da primeira parcela:</label>
         <input id="dataDaPrimeiraParcela" class="form-control" style="margin-bottom: 10%;" type="date" name="dataDaPrimeiraParcela">
     </div>

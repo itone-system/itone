@@ -1,21 +1,7 @@
 <form action="/compras/comprar" method="get"></form>
-<div class="row g-3">
-  <div class="col DtCompra">
-    <label for="fname">Data da Compra:</label>
-    <input id="dataDaCompra" class="form-control" type="date">
-  </div>
 
-  <div class="col prevEntrega">
-    <label for="fname">Previsão de Entrega:</label>
-    <input id="previsaoDeEntrega" class="form-control" style="margin-bottom: 10%;" type="date"
-      value="<%= solicitacao.Deal %>">
-
-
-  </div>
-</div>
-
-<div class="row g-3">
-  <div class="col Valor">
+<div class="row g-3" style="margin-bottom: 1%;">
+  <div class="col-lg-2  Valor">
     <label for="fname">Valor:</label>
     <input id="valorDaCompra" class="form-control" type="text">
     <!-- <label for="fname">Anexo:</label>
@@ -23,7 +9,7 @@
 
   </div>
 
-  <div class="col metPagamento">
+  <div class="col-lg-2  metPagamento">
     <label for="fname">Metodo de Pagamento:</label>
     <select name="" id="metPagamento" class="form-control">
       <option value="Cartão Corporativo">Cartão Corporativo</option>
@@ -37,8 +23,25 @@
   </div>
 </div>
 
+<div class="row g-3">
+  <div class="col-lg-2 DtCompra">
+    <label for="fname">Data da Compra:</label>
+    <input id="dataDaCompra" class="form-control" type="date">
+  </div>
 
-<label for="cars">Possui Parcelas?</label>
+  <div class="col-lg-2 prevEntrega">
+    <label for="fname">Previsão de Entrega:</label>
+    <input id="previsaoDeEntrega" class="form-control" style="margin-bottom: 1%;" type="date"
+      value="<%= solicitacao.Deal %>">
+
+
+  </div>
+</div>
+
+
+
+
+<label for="cars" style="margin-top: 1.5%;">Possui Parcelas?</label>
 <div>
     <input onclick="adicionarCampoParcelas()" type="radio" id="Sim" name="fav_language" value="Sim">
     <label for="Sim">Sim</label><br>
@@ -49,14 +52,56 @@
 <div id="divParcela"></div>
 
 
-<% if(retornoUser.RETORNAR && solicitacao.Status_Compra=='A' ) { %>
+<% if(anexoLink=='anexo' ) { %>
+  </div>
+  <div style="margin-top: 1%;   margin-bottom: 1%;font-size:13px">
+    <i class='bx bx-download bx-flip-horizontal' undefined></i>
 
-  <button type="submit" name="inserir" id="botao-solicitar" class="button2" onclick="insertCompra('<%= solicitacao.Codigo  %>')">Salvar Compra</button>
+    <label id="NomeAnexo">
+      <%= solicitacao.anexo %>
+    </label>
+
+    <a id="baixar" download><button id="baixararq" href="google.com" class="btn btn-secondary"
+        style="margin-left: 1%; font-size:12px"> Baixar
+        Anexo</button></a>
+
+  </div>
+
 
   <% } %>
 
+    <% if(anexoLink=='link' ) { %>
+
+      <div class="row g-3">
+
+        <div class="col-lg-4 prevEntrega">
+
+          <label for="">Link</label>
+          <input style="margin-bottom: 2.5%" id="linkcompra" type="text" class="form-control"
+            value="<%= solicitacao.Link %>">
+        </div>
+
+        <div class="col-lg-4 prevEntrega">
+
+          <a id="baixar" href="<%= solicitacao.Link %>" target="_blank"> <button id="abrirArq" class="btn btn-secondary"
+              style="margin-top: 9%; font-size:12px"> Abrir link</button></a>
+        </div>
+      </div>
+
+
+      <% } %>
 
 
 
-    <p> </p>
-    </form>
+        <% if(retornoUser.RETORNAR && solicitacao.Status_Compra=='A' ) { %>
+
+          <button type="submit" name="inserir" id="botao-solicitar" class="button2"
+            onclick="insertCompra('<%= solicitacao.Codigo  %>')">Salvar Compra</button>
+
+          <% } %>
+
+
+
+
+            <p> </p>
+            </form>

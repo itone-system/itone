@@ -126,7 +126,7 @@ const insert = () => {
     solicitante: solicitante,
     dataCriacao: new Date(),
     dataAtualizacao: new Date(),
-    arquivo: arquivo,
+    arquivo: NomeArquivoSemAcento,
     linkk: link
   };
 

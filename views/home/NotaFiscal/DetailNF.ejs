@@ -97,7 +97,7 @@
               
                         <tbody style="font-size: 13px" class="table-line" id="tbody">
                           <% dados.forEach(socilitacao=> { %>
-                              <tr id="tabelaNF">
+                              <tr id="tabelaNF" style="text-align: center;">
                                   <td>
                                       <%=socilitacao.Codigo%>
                                   </td>
@@ -114,12 +114,9 @@
                                       <%=socilitacao.Descricao%>
                                   </td>
                                   <td>
-                                     <% if (socilitacao.StatusNF == 'E'){ %> 
-                                      <a class="btn btn-secondary text-white  rounded" style="  height: 27px;  font-size: 11px"  >Enviado para pagamento</a>
-                                     <% } else {%> 
-                                      <a class="btn btn-primary text-white  rounded" style=" height: 27px; width: 168px; font-size: 11px"  >Aguardando envio</a>
-                                      <% } %>
-                                                                    </td>
+                                    
+                                      <a class="btn btn-primary text-white  rounded" style="  height: 27px;  font-size: 11px"  >Enviado para pagamento</a>
+                                              </td>
                                   <td>
                                       <%=socilitacao.Tipo_Contrato%>
                                   </td>
