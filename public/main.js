@@ -1,5 +1,5 @@
 // const URL_APP = 'http://localhost:5051';
-const URL_APP = 'http://itonerdp06:5052';
+const URL_APP = 'http://itonerdp06:5053';
 const endpoints = {
   trocarSenha: URL_APP + '/trocar_senha',
   login: URL_APP + '/',

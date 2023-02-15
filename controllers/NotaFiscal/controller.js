@@ -55,7 +55,11 @@ module.exports = {
 
 async listarNotas(request, res) {
 
-   //let { pagina, limite = 10, usuario , usuarioSolicitante, centroCustoUsuario, Descricao, Solicitante, centroCustoFiltro, Fornecedor } = request
+   const conexao = await sql.connect(db)
+   
+   const user = request.session.get('user');
+   console.log(user)
+   const message = await request.session.message();
 
    let { paginate, limite = 10, Descricao, Fornecedor, Solicitante, CentroCusto, filtroAplicado, codigoNF} = request
 
@@ -85,8 +89,8 @@ async listarNotas(request, res) {
    listacondicoes = {
       Descricao: requ.Descricao,
       Fornecedor: requ.Fornecedor,
-      Solicitante: requ.Solicitante,
-      CentroCusto: requ.CentroCusto
+      Solicitante:  user.Perfil == 2? user.nome: requ.Solicitante, 
+      CentroCusto: user.Perfil == 3? user.departamento: requ.CentroCusto 
    }
 
    condicaoGeral = ''
@@ -109,7 +113,7 @@ async listarNotas(request, res) {
       requ.pagina  = 1
    }
 
-   const conexao = await sql.connect(db)
+  
 
    const obterTotalSolicitacoes = await conexao.query(`SELECT COUNT (Codigo) as total FROM notaFiscal ${condicaoGeral} `)
 
@@ -162,25 +166,21 @@ async listarNotas(request, res) {
 
    const notasRecebidas = obterSolicitacoes.recordsets[0]
 
-
-   const user = request.session.get('user');
-   console.log(user)
-   const message = await request.session.message();
-
    itens = obterSolicitacoes.recordsets[0]
 
+   var dados  = itens
 
-   switch(user.Perfil){
-      case 1:
-         var dados  = itens
-      break
-      case 2:
-         var dados  = itens.filter(x=> x.Solicitante === user.nome)
-      break
-      case 3:
-         var dados  = itens.filter(x => x.Primeiro_Codigo_CC === user.departamento.substr(0,1))
-      break
-   }
+   // switch(user.Perfil){
+   //    case 1:
+   //       var dados  = itens
+   //    break
+   //    case 2:
+   //       var dados  = itens.filter(x=> x.Solicitante === user.nome)
+   //    break
+   //    case 3:
+   //       var dados  = itens.filter(x => x.Primeiro_Codigo_CC === user.departamento.substr(0,1))
+   //    break
+   // }
 
    if (request.token) {
       const tokenRecebido = request.token;
