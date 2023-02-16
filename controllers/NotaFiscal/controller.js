@@ -19,7 +19,7 @@ module.exports = {
 
    async insertNotas(req, res) {
 
-      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao =''} = req.body;
+      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao =''} = req;
       const conexao = await sql.connect(db)
 
       let result = await conexao.request()
@@ -38,10 +38,55 @@ module.exports = {
          .input('Anexo', sql.VarChar, Anexo)
          .input('CodigoSolicitacao', sql.Int, codigoSolicitacao)
 
-         .query('INSERT INTO NotaFiscal (Solicitante, CentroCusto, Fornecedor, Descricao, TipoContrato, valorNF, DataPagamento, Deal, Observacao, PossuiColaborador, Colaborador, Anexo, CodigoSolicitacao )    OUTPUT Inserted.Codigo VALUES (@solicitante, @centroCusto, @fornecedor, @Descricao, @tipoContrato, @valorNF, @dataPagamento, @deal, @Observacao, @possuiColaborador, @Colaborador, @Anexo, @codigoSolicitacao)')
-
+         .query('INSERT INTO NotaFiscal (Solicitante, CentroCusto, Fornecedor, Descricao, TipoContrato, valorNF, DataPagamento, Deal, Observacao, PossuiColaborador, Colaborador, Anexo, CodigoSolicitacao )    OUTPUT Inserted.Descricao, Inserted.Fornecedor, Inserted.Solicitante VALUES (@solicitante, @centroCusto, @fornecedor, @Descricao, @tipoContrato, @valorNF, @dataPagamento, @deal, @Observacao, @possuiColaborador, @Colaborador, @Anexo, @codigoSolicitacao)')
 
       const codigo = result.recordset[0].Codigo
+
+      console.log(result)
+
+      const dadosEmail  = {
+         codigoEmail: result.recordset[0].Codigo,
+         descricao: result.recordset[0].Descricao,
+         fornecedor: result.recordset[0].Fornecedor,
+         solicitante: result.recordset[0].Solicitante
+      }
+
+      // console.log(dadosEmail)
+
+      const token = jwt.sign(
+         {
+           Codigo: codigo
+
+         },
+         Keytoken.secret,
+         {
+           expiresIn: '100d'
+         }
+       );
+   
+       href = 'http://itonerdp06:5053/notafiscal/buscarNotas?token='+token
+   
+   
+      ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v2.0\\itone\\views\\home\\NotaFiscal\\retornoEmail.ejs',{dadosEmail, href}, function(err, data){
+         if(err){
+             console.log(err);
+         }else{
+   
+             console.log(data)
+   
+             var emailFinanceiro = 'wesley.silva@itone.com.br'
+   
+             const emailOptions = {
+               to: emailFinanceiro,
+               subject: 'Recebimento de Nota Fiscal',
+               content: data,
+               isHtlm: true
+            }
+   
+            enviarEmail(emailOptions);
+   
+         }
+     })
 
       // console.log(codigo)
 
@@ -192,6 +237,7 @@ async listarNotas(request, res) {
       let = codigoToken = ''
    }
 
+
    return renderView('home/notafiscal/DetailNF', {
       dados,
       notaUnica,
@@ -236,7 +282,6 @@ async atualizarStatusNota(req, res) {
            expiresIn: '100d'
          }
        );
-
 
 
 

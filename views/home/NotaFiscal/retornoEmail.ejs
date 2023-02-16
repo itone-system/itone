@@ -27,10 +27,10 @@
                                     <td>
                                         <center><h3 >Você recebeu um novo documento!</h3></center><br></br>
 
-                                        <span><%= req.Solicitante%>  informou que o documento abaixo foi enviado para o pagamento.</span> <br></br>
-                                        <span><b>Solicitação n°:</b> <%= req.Codigo%> </span><br></br>
-                                        <span><b>Descrição: </b> <%= req.Descricao%> </span><br></br>
-                                        <span><b>Fornecedor:</b>  <%= req.Fornecedor%> </span>
+                                        <span><%= dadosEmail.solicitante%>  informou que o documento abaixo foi enviado para o pagamento.</span> <br></br>
+                                        <span><b>Solicitação n°:</b> <%= dadosEmail.codigoEmail%> </span><br></br>
+                                        <span><b>Descrição: </b> <%= dadosEmail.descricao%> </span><br></br>
+                                        <span><b>Fornecedor:</b>  <%= dadosEmail.fornecedor%> </span>
                                     </td>
                                 </tr>
                             </table>
