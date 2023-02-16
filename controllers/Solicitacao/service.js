@@ -149,15 +149,15 @@ exports.buscarProximoAprovador = async (codigo) => {
     //   router: `/solicitacoes/${codigo}/edit`
     // });
 
-    // const emailOptionsComprador = {
-    //   to: 'pollyanna.costa@itone.com.br',
-    //   subject: 'Aguardando Compra',
-    //   content: aguardandoCompra({
-    //     descricao: queryDesc.recordset[0].Descricao,
-    //     codigo
-    //   }),
-    //   isHtlm: true
-    // }
+    const emailOptionsComprador = {
+      to: 'pollyanna.costa@itone.com.br',
+      subject: 'Aguardando Compra',
+      content: aguardandoCompra({
+        descricao: queryDesc.recordset[0].Descricao,
+        codigo
+      }),
+      isHtlm: true
+    }
     enviarEmail(emailOptions);
     return;
   }
