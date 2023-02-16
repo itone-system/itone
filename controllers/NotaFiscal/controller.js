@@ -19,7 +19,7 @@ module.exports = {
 
    async insertNotas(req, res) {
 
-      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao =''} = req;
+      const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao =''} = req.body;
       const conexao = await sql.connect(db)
 
       let result = await conexao.request()
@@ -38,18 +38,19 @@ module.exports = {
          .input('Anexo', sql.VarChar, Anexo)
          .input('CodigoSolicitacao', sql.Int, codigoSolicitacao)
 
-         .query('INSERT INTO NotaFiscal (Solicitante, CentroCusto, Fornecedor, Descricao, TipoContrato, valorNF, DataPagamento, Deal, Observacao, PossuiColaborador, Colaborador, Anexo, CodigoSolicitacao )    OUTPUT Inserted.Descricao, Inserted.Fornecedor, Inserted.Solicitante VALUES (@solicitante, @centroCusto, @fornecedor, @Descricao, @tipoContrato, @valorNF, @dataPagamento, @deal, @Observacao, @possuiColaborador, @Colaborador, @Anexo, @codigoSolicitacao)')
+         .query('INSERT INTO NotaFiscal (Solicitante, CentroCusto, Fornecedor, Descricao, TipoContrato, valorNF, DataPagamento, Deal, Observacao, PossuiColaborador, Colaborador, Anexo, CodigoSolicitacao )    OUTPUT Inserted.Codigo,  Inserted.Descricao, Inserted.Fornecedor, Inserted.Solicitante VALUES (@solicitante, @centroCusto, @fornecedor, @Descricao, @tipoContrato, @valorNF, @dataPagamento, @deal, @Observacao, @possuiColaborador, @Colaborador, @Anexo, @codigoSolicitacao)')
 
       const codigo = result.recordset[0].Codigo
 
-      console.log(result)
 
       const dadosEmail  = {
          codigoEmail: result.recordset[0].Codigo,
-         descricao: result.recordset[0].Descricao,
-         fornecedor: result.recordset[0].Fornecedor,
-         solicitante: result.recordset[0].Solicitante
+         descricao: Descricao,
+         fornecedor: fornecedor,
+         solicitante: solicitante
       }
+
+      console.log(dadosEmail)
 
       // console.log(dadosEmail)
 
@@ -101,7 +102,7 @@ module.exports = {
 async listarNotas(request, res) {
 
    const conexao = await sql.connect(db)
-   
+
    const user = request.session.get('user');
    console.log(user)
    const message = await request.session.message();
@@ -134,8 +135,8 @@ async listarNotas(request, res) {
    listacondicoes = {
       Descricao: requ.Descricao,
       Fornecedor: requ.Fornecedor,
-      Solicitante:  user.Perfil == 2? user.nome: requ.Solicitante, 
-      CentroCusto: user.Perfil == 3? user.departamento: requ.CentroCusto 
+      Solicitante:  user.Perfil == 2? user.nome: requ.Solicitante,
+      CentroCusto: user.Perfil == 3? user.departamento: requ.CentroCusto
    }
 
    condicaoGeral = ''
@@ -158,7 +159,7 @@ async listarNotas(request, res) {
       requ.pagina  = 1
    }
 
-  
+
 
    const obterTotalSolicitacoes = await conexao.query(`SELECT COUNT (Codigo) as total FROM notaFiscal ${condicaoGeral} `)
 
@@ -251,7 +252,7 @@ async listarNotas(request, res) {
       codigoToken
     });
 
-    
+
 
 
    // return ({ notasRecebidas, notaUnica, totalPaginas, paginate, descricaoSalva, fornecedorSalva, solicitanteSalva, centroCustoExtensoSalva})
@@ -284,8 +285,7 @@ async atualizarStatusNota(req, res) {
        );
 
 
-
-       href = 'http://itonerdp06:5052/notafiscal/buscarNotas?token='+token
+       href = 'http://itonerdp06:5053/notafiscal/buscarNotas?token='+token
 
       ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v1.0\\itone-compras\\views\\home\\NotaFiscal\\retornoEmail.ejs',{req, href}, function(err, data){
          if(err){

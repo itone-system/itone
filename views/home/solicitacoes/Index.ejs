@@ -131,7 +131,7 @@
                             <a class="btn btn-primary text-white buttonStatus" style=" height: 27px; font-size: 11px">Aguardando Compra</a>
                             <% } %>
                             <% if(socilitacao.Status_Compra == 'P') { %>
-                              <a class="btn btn-warning text-white buttonStatus" style=" height: 27px; font-size: 11px">Pendente Aprovação</a>
+                              <a class="btn btn-warning text-white buttonStatus"  style=" height: 27px; font-size: 11px" data-toggle="tooltip" data-placement="top" title="Tooltip na parte superior">Pendente Aprovação</a>
                               <% } %>
                               <% if(socilitacao.Status_Compra == 'C') { %>
                                 <a class="btn btn-success text-white buttonStatus" style=" height: 27px; font-size: 11px">Comprado</a>

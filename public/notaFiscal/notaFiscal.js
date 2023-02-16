@@ -11,7 +11,7 @@ let dataAtualConf = '';
 let dataAtualConfPadrao = '';
 let erroDataMenor = false;
 let campos = ["Solicitante",'CentroCusto','Fornecedor' , 'DescServico', 'TipoContrato','valorNF','Deal','Observacao', 'fileInput']
-
+let colaboradorNome = ''
 
 
 
