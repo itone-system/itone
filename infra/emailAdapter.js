@@ -14,7 +14,7 @@ module.exports = ({ to, subject, content, isHtlm = true}) => {
 
       const mailOptions = {
           from: emailProvider.user,
-          to: emailProvider.fakeEmail || to,
+          to:  to,
           subject,
       };
 
