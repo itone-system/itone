@@ -21,7 +21,7 @@ if (isProd && !DOMAIN) {
   throw new Error('O domínio deve ser informado!')
 }
 
-const domain = DOMAIN || (port !== 80 ? `http://itonerdp06:${port}` : 'http://itonerdp06')
+const domain = DOMAIN || (port !== 80 ? `http://localhost:${port}` : 'http://localhost')
 
 module.exports = {
   enviroment: ENVIRONMENT,

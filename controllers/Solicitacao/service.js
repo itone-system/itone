@@ -159,6 +159,7 @@ exports.buscarProximoAprovador = async (codigo) => {
       isHtlm: true
     }
     enviarEmail(emailOptions);
+    enviarEmail(emailOptionsComprador)
     return;
   }
 

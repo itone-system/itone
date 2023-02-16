@@ -64,28 +64,28 @@ module.exports = {
            expiresIn: '100d'
          }
        );
-   
-       href = 'http://itonerdp06:5053/notafiscal/buscarNotas?token='+token
-   
-   
+
+       href = 'http://itonepe01:5050/notafiscal/buscarNotas?token='+token
+
+
       ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v2.0\\itone\\views\\home\\NotaFiscal\\retornoEmail.ejs',{dadosEmail, href}, function(err, data){
          if(err){
              console.log(err);
          }else{
-   
+
              console.log(data)
-   
+
              var emailFinanceiro = 'wesley.silva@itone.com.br'
-   
+
              const emailOptions = {
                to: emailFinanceiro,
                subject: 'Recebimento de Nota Fiscal',
                content: data,
                isHtlm: true
             }
-   
+
             enviarEmail(emailOptions);
-   
+
          }
      })
 
