@@ -13,8 +13,10 @@ module.exports = (table) => {
   let query = null;
   let queryToCount = query;
   let hasWhere = false;
+  let associations = [];
+
   return {
-    select (columns = '*') {
+    select(columns = '*') {
       if (Array.isArray(columns)) {
         columns = columns.join(', ');
       }
@@ -22,11 +24,61 @@ module.exports = (table) => {
       queryToCount = query;
       return this;
     },
-    innnerJoin (tableJoin, fieldJoin, fieldTable) {
-      query += ` INNER JOIN ${tableJoin} ON ${tableJoin}.${fieldJoin} = ${table}.${fieldTable}`;
-      return this
+    associate({
+      type = 'hasMany',
+      table = null,
+      localKey = null,
+      foreignKey = null,
+      select = '*',
+      conditions = null,
+      join = null,
+      as = null
+    } = {}) {
+      if (type !== 'hasMany') {
+        throw new Error('Put the type in association fields!');
+      }
+
+      const hasAllFields = table && localKey && foreignKey;
+
+      if (!hasAllFields) {
+        throw new Error('Put the association fields!');
+      }
+
+      let newAssociation = {
+        table,
+        localKey,
+        foreignKey
+      };
+      newAssociation[type] = true;
+      newAssociation.select = select;
+
+
+      if (conditions) {
+        newAssociation.conditions = conditions;
+      }
+
+      newAssociation.as = as || table
+
+      if (join) {
+
+        const { type = 'INNER', tableJoin = null, fieldJoin = null, fieldTable = null } = join
+
+        if (!tableJoin && !fieldJoin && !fieldTable) {
+          throw new Error('Put all association join fields!');
+        }
+
+        newAssociation.join = `${type} JOIN ${tableJoin} ON ${tableJoin}.${fieldJoin} = ${table}.${fieldTable}`;
+      }
+
+      associations.push(newAssociation)
+
+      return this;
     },
-    andWhere (filter) {
+    innnerJoin(tableJoin, fieldJoin, fieldTable) {
+      query += ` INNER JOIN ${tableJoin} ON ${tableJoin}.${fieldJoin} = ${table}.${fieldTable}`;
+      return this;
+    },
+    andWhere(filter) {
       const symbolRegex = /[<>]|like/gm;
       let symbol = '=';
 
@@ -60,7 +112,7 @@ module.exports = (table) => {
 
       return this;
     },
-    orWhere (filter) {
+    orWhere(filter) {
       const symbolRegex = /[<>]|like/gm;
       let symbol = '=';
 
@@ -94,7 +146,7 @@ module.exports = (table) => {
 
       return this;
     },
-    async insert (params = {}, returnField = null) {
+    async insert(params = {}, returnField = null) {
       const keys = Object.keys(params);
 
       if (keys.length === 0) {
@@ -107,7 +159,7 @@ module.exports = (table) => {
 
       for (let index = 0; index < keys.length; index++) {
         const key = keys[index];
-        const comma = (index + 1) === keys.length ? ')' : ',';
+        const comma = index + 1 === keys.length ? ')' : ',';
         query += `${key}${comma}`;
       }
 
@@ -119,7 +171,7 @@ module.exports = (table) => {
 
       for (let index = 0; index < values.length; index++) {
         const value = values[index];
-        const comma = (index + 1) === values.length ? ')' : ',';
+        const comma = index + 1 === values.length ? ')' : ',';
         query += `'${value}'${comma}`;
       }
 
@@ -127,38 +179,84 @@ module.exports = (table) => {
       const result = await instance.query(query);
 
       if (!returnField) {
-        return result?.rowsAffected[0] === 1
+        return result?.rowsAffected[0] === 1;
       }
 
-
-      return result?.recordset[0]
+      return result?.recordset[0];
     },
-    orderBy (byField, sort = 'asc') {
+    orderBy(byField, sort = 'asc') {
       query += ` ORDER BY ${byField} ${sort}`;
       return this;
     },
-    paginate (offset, limit) {
+    paginate(offset, limit) {
       query += ` OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`;
       return this;
     },
-    async count (alias = 'total', filed = '*') {
+    async count(alias = 'total', filed = '*') {
       const instance = await initDb();
-      const result = await instance.query(`SELECT COUNT (${filed}) as ${alias} FROM ${table}`);
+      const result = await instance.query(
+        `SELECT COUNT (${filed}) as ${alias} FROM ${table}`
+      );
       return result.recordsets[0] ? result.recordsets[0][0] : null;
     },
-    async execute () {
+    async execute() {
       const instance = await initDb();
       const result = await instance.query(query);
       query = null;
       hasWhere = false;
+      let data = null;
 
       if (!result?.recordsets) {
         return null;
       }
 
+      if (Array.isArray(result?.recordsets[0])) {
+        data = result?.recordsets[0];
+
+        if (associations.length > 0 ) {
+          for await (const association of associations) {
+            for (let index = 0; index < data.length; index++) {
+              const key = data[index][association.localKey];
+              if (association.hasMany) {
+                let query = `SELECT ${association.select} from ${association.table}`
+
+                if (association.join) {
+                  query += ` ${association.join}`
+                }
+
+                query += ` where ${association.table}.${association.foreignKey} = ${key}`;
+
+                if (association.conditions) {
+                  query += ` ${association.conditions}`
+                }
+                const resultAssociation = await instance.query(query);
+
+                if (resultAssociation?.recordsets) {
+                  data[index][association.as] = resultAssociation?.recordsets[0];
+                }
+              }
+            }
+          }
+        }
+      } else {
+        data = result.recordsets[0][0];
+
+        for (const association of associations) {
+          const key = data[association.localKey];
+          if (association.hasMany) {
+            const query = `SELECT ${association.filter} from ${association.table} where ${association.foreignKey} = ${key}`
+            const resultAssociation = await instance.query(query);
+            if(resultAssociation?.recordsets) {
+              data[associationarguments.as] = resultAssociation?.recordsets[0]
+            }
+          }
+        }
+      }
+
+      associations = []
       return {
-        data: Array.isArray(result?.recordsets[0]) ? result?.recordsets[0] : result?.recordsets[0][0],
-        async count (alias = 'count', fields = '*') {
+        data,
+        async count(alias = 'count', fields = '*') {
           const splitQuery = queryToCount.split(/from/);
           const countQuery = `select count(${fields}) as ${alias} from ${splitQuery[1]}`;
           const resultCount = await instance.query(countQuery);

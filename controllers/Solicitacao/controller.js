@@ -14,69 +14,89 @@ const model = require('../../infra/dbAdapter');
 
 module.exports = {
   async Listar(request) {
-    const user = request.session.get('user');
 
-    let body = ({
-      pagina = 1,
-      Descricao,
-      Solicitante,
-      statusItem,
-      centroCustoFiltro
-    } = request);
-    const centroCustoNormal = centroCustoFiltro;
+    try {
+      const user = request.session.get('user');
 
-    if (centroCustoFiltro) {
-      const centroCustoSplit = centroCustoFiltro.split('. ');
-      centroCustoFiltro = centroCustoSplit[0];
-    }
-
-    let limite = 10;
-
-    limite = Math.min(10, limite);
-
-    let offset = 0;
-
-    if (pagina > 1) {
-      offset = pagina * limite - limite;
-    }
-
-    const result = await SolicitacaoService.buscarSolicitacoesPorFiltro({
-      data: {
+      let body = ({
+        pagina = 1,
         Descricao,
         Solicitante,
         statusItem,
-        centroCustoFiltro,
-        User: user
-      },
-      pagina: {
-        limite,
-        offset
+        centroCustoFiltro
+      } = request);
+      const centroCustoNormal = centroCustoFiltro;
+
+      if (centroCustoFiltro) {
+        const centroCustoSplit = centroCustoFiltro.split('. ');
+        centroCustoFiltro = centroCustoSplit[0];
       }
-    });
 
-    const contarSolicitacoes = await result.count('total');
+      let limite = 10;
 
-    const paginas = {
-      total: Math.ceil(contarSolicitacoes.total / limite),
-      corrente: pagina
-    };
+      limite = Math.min(10, limite);
 
-    const filtros = {
-      Descricao: Descricao,
-      Solicitante: Solicitante,
-      statusItem: statusItem,
-      centroCustoFiltro: centroCustoNormal
-    };
+      let offset = 0;
 
-    return renderView('home/solicitacoes/index', {
-      solicitacoes: result.data,
-      paginas,
-      retornoUser: user.permissaoCompras,
-      filtros: filtros,
-      nome: user.nome,
-      codigoUsuario: user.codigo,
-      perfil: user.Perfil
-    });
+      if (pagina > 1) {
+        offset = pagina * limite - limite;
+      }
+
+      let result = await SolicitacaoService.buscarSolicitacoesPorFiltro({
+        data: {
+          Descricao,
+          Solicitante,
+          statusItem,
+          centroCustoFiltro,
+          User: user
+        },
+        pagina: {
+          limite,
+          offset
+        }
+      });
+
+      const contarSolicitacoes = await result.count('total');
+
+      const paginas = {
+        total: Math.ceil(contarSolicitacoes.total / limite),
+        corrente: pagina
+      };
+
+      const filtros = {
+        Descricao: Descricao,
+        Solicitante: Solicitante,
+        statusItem: statusItem,
+        centroCustoFiltro: centroCustoNormal
+      };
+
+      let contador = 0
+      let listaAprovadores = ''
+
+      for (const resultado of result.data) {
+        if (resultado.aprovadores[0]) {
+          for (const dado of resultado.aprovadores) {
+            listaAprovadores += dado.NOME_USUARIO + ', '
+          }
+          result.data[contador].listaAprovadores = listaAprovadores.slice(0, -2);
+          contador++
+          listaAprovadores = ''
+        }
+      }
+
+      return renderView('home/solicitacoes/index', {
+        solicitacoes: result.data,
+        paginas,
+        retornoUser: user.permissaoCompras,
+        filtros: filtros,
+        nome: user.nome,
+        codigoUsuario: user.codigo,
+        perfil: user.Perfil
+      });
+    } catch (error) {
+      return redirect('/home');
+    }
+
   },
 
   async Edit(request) {
@@ -88,6 +108,7 @@ module.exports = {
       );
 
       let dadosParaViewDeCompra = null;
+      let Comprador = null;
 
       if (solicitacao.Status_Compra == 'C') {
         const conexao = await sql.connect(db);
@@ -97,6 +118,13 @@ module.exports = {
             `select FORMAT(dataDaCompra, 'yyyy-MM-dd') as dataCompra, FORMAT(previsaoDeEntrega, 'yyyy-MM-dd') as dataEntrega,valorDaCompra as valor from Compras where codigo_solicitacao = ${solicitacao.Codigo}`
           );
         dadosParaViewDeCompra = datas.recordset[0];
+
+        let comprador = await conexao.request().query(`SELECT u.NOME_USUARIO
+        FROM Usuarios u
+        INNER JOIN COMPRAS p
+        ON u.COD_USUARIO = p.id_Comprador
+        WHERE p.codigo_solicitacao = ${solicitacao.Codigo}`);
+        Comprador = comprador.recordset[0].NOME_USUARIO;
       }
 
       let dadosParaBotaoAprovar = {
@@ -128,7 +156,7 @@ module.exports = {
       const anexoLink = await SolicitacaoService.verificaArquivoElink(
         solicitacao.Codigo
       );
-
+      console.log(user.Perfil)
       return renderView('home/solicitacoes/Detail', {
         solicitacao,
         retornoUser: user.permissaoCompras,
@@ -138,7 +166,9 @@ module.exports = {
         dadosParaBotaoAprovar,
         ordem,
         nota,
-        anexoLink
+        anexoLink,
+        Comprador,
+        perfil: user.Perfil
       });
     } catch (error) {
       return redirect('/home');
@@ -161,61 +191,25 @@ module.exports = {
     try {
       const user = request.session.get('user');
 
-      // if (!descricao) {
-      //   return renderJson('1s')
-      // }
-      // if (!quantidade) {
-      //   return renderJson('2s')
-      // }
-      // if (!deal) {
-      //   return renderJson('3s')
-      // }
-      // if (centroCusto == 'Selecionar...') {
-      //   return renderJson('4s')
-      // }
-      // if (!observacao) {
-      //   return renderJson('5s')
-      // }
-      // if (arquivo == '' && linkk == '' ) {
-      //   return renderJson('6s')
-      // }
       let CodigoObject = null;
 
-      if (linkk != '') {
-        CodigoObject = await SolicitacaoService.create(
-          {
-            Descricao: descricao,
-            Quantidade: quantidade,
-            Centro_de_Custo: centroCusto.split('. ')[0],
-            Deal: deal,
-            Observacao: observacao,
-            Solicitante: user.nome,
-            DataCriacao: dataCriacao,
-            DataAtualizacao: dataAtualizacao,
-            Status_Compra: 'P',
-            Link: linkk
-          },
-          'Codigo'
-        );
-      }
+      CodigoObject = await SolicitacaoService.create(
+        {
+          Descricao: descricao,
+          Quantidade: quantidade,
+          Centro_de_Custo: centroCusto.split('. ')[0],
+          Deal: deal,
+          Observacao: observacao,
+          Solicitante: user.nome,
+          DataCriacao: dataCriacao,
+          DataAtualizacao: dataAtualizacao,
+          Status_Compra: 'P',
+          Link: linkk,
+          anexo: arquivo
+        },
+        'Codigo'
+      );
 
-      if (arquivo != '') {
-        CodigoObject = await SolicitacaoService.create(
-          {
-            Descricao: descricao,
-            Quantidade: quantidade,
-            Centro_de_Custo: centroCusto.split('. ')[0],
-            Deal: deal,
-            Observacao: observacao,
-            Solicitante: user.nome,
-            DataCriacao: dataCriacao,
-            DataAtualizacao: dataAtualizacao,
-            Status_Compra: 'P',
-            anexo: arquivo
-          },
-          'Codigo'
-        );
-      }
       const Codigo = CodigoObject.Codigo;
 
       const conexao = await sql.connect(db);
@@ -361,7 +355,7 @@ module.exports = {
   },
 
   async Reprovar(request) {
-    const { codigoSolicitacao } = request;
+    const { codigoSolicitacao, motivoReprovacao } = request;
     const codigoAprovador = request.session.get('user').codigo;
     const conexao = await sql.connect(db);
 
@@ -383,13 +377,32 @@ module.exports = {
         `update Solicitacao_Item set Reprovador = ${codigoAprovador} where Codigo = ${codigoSolicitacao}`
       );
 
+    await conexao
+      .request()
+      .query(
+        `update Solicitacao_Item set MotivoReprovacao = '${motivoReprovacao}' where Codigo = ${codigoSolicitacao}`
+      );
+
     const corpo = 'Solicitação N° ' + codigoSolicitacao + ' foi reprovada';
     const email = await SolicitacaoService.buscarEmail(codigoSolicitacao);
-    const descricao = await SolicitacaoService.buscarDescricao(codigoSolicitacao)
+    const descricao = await SolicitacaoService.buscarDescricao(
+      codigoSolicitacao
+    );
+
+    const reprovador = await conexao.request().query(`SELECT u.NOME_USUARIO
+    FROM Usuarios u
+    INNER JOIN Solicitacao_Item p ON p.Reprovador= u.COD_USUARIO
+    WHERE p.Codigo = ${codigoSolicitacao} `);
+
     const emailOptions = {
       to: email,
       subject: 'Solicitação De Compra reprovada',
-      content: solicitacaoReprovadaTemplate({ codigo: codigoSolicitacao, descricao }),
+      content: solicitacaoReprovadaTemplate({
+        codigo: codigoSolicitacao,
+        descricao,
+        reprovador: reprovador.recordset[0].NOME_USUARIO,
+        motivo: motivoReprovacao
+      }),
       isHtlm: true
     };
 

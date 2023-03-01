@@ -47,23 +47,43 @@ body.dark{
 
 
 body.dark .table-line {
-    background-color: rgb(71, 70, 70);
+    background-color: #242526;
     color: rgb(243, 243, 243);
-   
-    
+    border: none;
+
+
 }
 
 body.dark th {
-    background-color: rgb(43, 40, 40);
+    background-color: #4b4d4e;
     color: rgb(243, 243, 243);
-     
+    border: none;
+
 }
+
+body.dark td {
+
+    border-color: #18191a;
+
+}
+
+
+
 body.dark input,
 body.dark select {
     background-color: rgb(43, 40, 40);
     color: rgb(255, 255, 255);
+    border-color: #18191a;
     }
 
+
+    body.dark .form-control {
+        /* color: #ccc; */
+        background-color: #242526;
+        color: white;
+        border-color: black;
+
+      }
 
 
     .button {
@@ -101,11 +121,11 @@ body.dark select {
   .button:focus {
     outline: none;
   }
-  
+
   .button:hover {
     background-position: -20px -20px;
   }
-  
+
   .button:focus:not(:active) {
     box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
   }
@@ -148,11 +168,11 @@ body.dark select {
   .button2:focus {
     outline: none;
   }
-  
+
   .button2:hover {
     background-position: -20px -20px;
   }
-  
+
   .button2:focus:not(:active) {
     box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
   }
@@ -170,7 +190,7 @@ body.dark select {
     padding: 10px 14px;
     background: var(--barraLateral-color);
     transition: var(--tran-05);
-    z-index: 100;  
+    z-index: 100;
 }
 .barraLateral.fechado{
     width: 88px;
@@ -537,5 +557,29 @@ img#foto {
 th, td {
     min-width: auto;
     white-space: nowrap;
-  
+
   }
+
+
+body.dark .modal-content {
+    background-color: rgb(51, 51, 51);
+
+}
+
+body.dark label {
+    color: rgb(255, 255, 255);
+
+}
+
+/* body.dark #StatusNF, #NumeroSolicitacaoModal, #ModSolicitante, #ModFornecedor, #ModDescricao, #TipoContrato, #Deal, #TipoPagamento, #DataPagamento, #Observacao, #Colaborador{
+    background-color: rgb(51, 51, 51);
+    color: rgb(255, 255, 255);
+
+} */
+
+body.dark .modal-title {
+    color: rgb(255, 255, 255);
+
+}
+
+

@@ -56,7 +56,7 @@
                     <div class="col">
                       <% if (centroCustoExtensoSalva && centroCustoExtensoSalva != 'Centro de Custo'){ %>
                         <select class="form-control is-valid" id="CentroCusto" name="CentroCusto" style="font-size: 13px">
-                          <option selected readonly><%= centroCustoExtensoSalva %></option>
+                          <option selected readonly><%= centroCustoExtensoSalva %> </option>
                           <option readonly>Centro de Custo</option>
 
                         </select>
@@ -78,17 +78,17 @@
                   
                             <table class="table table-sm table-hover" id="myTable"  >
               
-                        <thead style="background-color: #cbcbce; color: rgb(36, 26, 9);   font-size: 13px">
+                        <thead style="background-color: #cbcbce; color: rgb(36, 26, 9);   font-size: 13px; text-align: center">
               
-                          <th class="center"> ID do Envio</th>
+                          <th class="center" > ID do Envio</th>
                           <th> Solicitante</th>
                           <th> Centro de Custo</th>
                           <th> Fornecedor</th>
                           <th> Descrição do Serviço</th>
                           <th> Status</th>
                           <th> Tipo de Contrato </th>
-                          <th> Tipo de Pagamento </th>
-                          <th> Dados Bancários </th>
+
+
                           <th> Data de Pagamento </th>
                           <th> Deal </th>
                           <th> Colaborador </th>
@@ -96,7 +96,7 @@
               
                         </thead>
               
-                        <tbody style="font-size: 13px" class="table-line" id="tbody">
+                        <tbody style="font-size: 13px; " class="table-line" id="tbody">
                           <% dados.forEach(socilitacao=> { %>
                               <tr id="tabelaNF" style="text-align: center;">
                                   <td>
@@ -114,19 +114,17 @@
                                   <td>
                                       <%=socilitacao.Descricao%>
                                   </td>
-                                  <td>
-                                    
-                                      <a class="btn btn-primary text-white  rounded" style="  height: 27px;  font-size: 11px"  >Enviado para pagamento</a>
-                                              </td>
-                                  <td>
-                                      <%=socilitacao.Tipo_Contrato%>
+                                        <td>
+                                     <% if (socilitacao.StatusNF == 'E'){ %> 
+                                      <a class="btn btn-secondary text-white  rounded" style="  height: 27px;  font-size: 11px"  >Enviado para pagamento</a>
+                                     <% } else {%> 
+                                      <a class="btn btn-primary text-white  rounded" style=" height: 27px; width: 168px; font-size: 11px"  >Aguardando envio</a>
+                                      <% } %>
+                                        </td>
+                                        <td>
+                                        <%=socilitacao.Tipo_Contrato%>
                                   </td>
-                                  <td>
-                                    <%=socilitacao.Tipo_Pagamento %>
-                                </td>
-                                <td>
-                                    <%=socilitacao.DadosBanc%>
-                                </td>
+                                 
                                 <td>
                                     <%=socilitacao.Data%>
                                 </td>

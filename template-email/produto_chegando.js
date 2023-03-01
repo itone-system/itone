@@ -1,4 +1,4 @@
-module.exports = ({codigo, descricao, previsaoDeEntrega }) => {
+module.exports = ({codigo, descricao, motivo, previsaoDeEntrega, solicitante, link}) => {
   return `<body style="margin: 0; padding:0; font-family: Arial, Helvetica, sans-serif;" >
   <table border="0" width="100%" cellpadding="0" cellspacing="0">
       <tr>
@@ -19,8 +19,10 @@ module.exports = ({codigo, descricao, previsaoDeEntrega }) => {
                                       <center><h3 >Você Recebeu um Aviso</h3></center><br></br>
 
                                       <span>Gestão Compras informou que o Produto abaixo já tem previsão de entrega</span> <br></br>
-                                      <span>Solicitação n° ${codigo}</span><br></br>
+                                      <span>Solicitação n°: ${codigo}</span><br></br>
+                                      <span>Solicitante: ${solicitante}</span><br></br>
                                       <span>Descrição: ${descricao}</span><br></br>
+                                      <span>Motivo: ${motivo}</span><br></br>
                                       <span>Previsão de Entrega: ${previsaoDeEntrega}</span><br></br>
                                   </td>
                               </tr>
@@ -36,6 +38,7 @@ module.exports = ({codigo, descricao, previsaoDeEntrega }) => {
                           <table border="0" width="600px" cellpadding="0" cellspacing="0">
                               <tr>
                                   <td width="85%">
+                                  <center>  <a href="${link}" style="color:#ffffff; "  type="button">Acessar Plataforma</a></center>
                           </table>
                       </td>
                   </tr>

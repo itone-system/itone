@@ -3,8 +3,8 @@ const { Keytoken } = require('../config/env');
 
 exports.auth = (request, response, next) => {
   const userInSession = request.session.user;
-  const query =  new URLSearchParams(request.query).toString()
-  const loginRouter = query ? `/?${query}` : '/'
+  const query = new URLSearchParams(request.query).toString();
+  const loginRouter = query ? `/?${query}` : '/';
 
   if (!userInSession) {
     request.session.flash = {
@@ -15,20 +15,31 @@ exports.auth = (request, response, next) => {
     return response.redirect(loginRouter);
   }
 
-  const { token } = request.query
+  const { token } = request.query;
 
   if (token) {
-    try {
-      const user = jwt.verify(token, Keytoken.secret)
-
-      if (user.aprovador != userInSession.codigo) {
-        return response.redirect('/home');
+    const user = jwt.verify(token, Keytoken.secret);
+    if (user.aprovador) {
+      try {
+        if (user.aprovador != userInSession.codigo) {
+          return response.redirect('/home');
+        }
+        return response.redirect(user.router);
+      } catch (error) {
+        request.session.destroy();
+        return response.redirect(loginRouter);
       }
-      return response.redirect(user.router)
-    } catch (error) {
-      request.session.destroy();
-      return response.redirect(loginRouter);
+    }
+    if (user.logistica) {
+      try {
+        return response.redirect(user.router);
+      } catch (error) {
+        request.session.destroy();
+        return response.redirect(loginRouter);
+      }
     }
   }
+
+
   next();
 };

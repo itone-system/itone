@@ -4,6 +4,8 @@ const { emailProvider } = require('../config/env');
 
 module.exports = ({ to, subject, content, isHtlm = true}) => {
 
+    to = emailProvider.fakeEmail || to
+
     const transporter = nodemailer.createTransport({
         service: 'Outlook365',
         auth: {

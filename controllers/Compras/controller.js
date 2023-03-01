@@ -5,6 +5,17 @@ const sql = require('mssql');
 const enviarEmail = require('../../infra/emailAdapter');
 const produtoAcaminho = require('../../template-email/produto_chegando');
 const produtoComprado = require('../../template-email/solicitacao_comprada')
+const tokenAdapter = require('../../infra/tokenAdapter');
+const { Keytoken, domain } = require('../../config/env');
+
+function formatDate(dateString) {
+  const parts = dateString.split("-");
+  const year = parts[0];
+  const month = parts[1];
+  const day = parts[2];
+  return `${day}-${month}-${year}`;
+}
+
 module.exports = {
   async Create(request) {
     const {
@@ -17,6 +28,7 @@ module.exports = {
       metodoDePagamento,
       comprador
     } = request;
+    console.log(previsaoDeEntrega)
 
     const conexao = await sql.connect(db);
 
@@ -28,7 +40,7 @@ module.exports = {
         set Status_Compra = 'C'
         where Codigo = ${codigo}`);
 
-    const solicitacao = await conexao.request().query(`select Descricao from Solicitacao_Item where Codigo = ${codigo}`)
+    const solicitacao = await conexao.request().query(`select * from Solicitacao_Item where Codigo = ${codigo}`)
 
     const query = await conexao.request().query(`SELECT usuarios.EMAIL_USUARIO
     FROM usuarios
@@ -48,13 +60,23 @@ module.exports = {
       isHtlm: true
     };
 
+    const token = tokenAdapter({
+      logistica: true,
+      router: `/solicitacoes/${codigo}/edit`
+    })
+
+    const link = `${domain}/solicitacoes/${codigo}/edit?token=${token}`;
+
     const emailOptionsLogistica = {
       to: 'logistica@itone.com.br',
       subject: 'Compra a Caminho',
       content: produtoAcaminho({
         descricao: solicitacao.recordset[0].Descricao,
-        previsaoDeEntrega,
-        codigo
+        previsaoDeEntrega: formatDate(previsaoDeEntrega) ,
+        codigo,
+        motivo: solicitacao.recordset[0].Observacao,
+        solicitante: solicitacao.recordset[0].Solicitante,
+        link: link
       }),
       isHtlm: true
     }

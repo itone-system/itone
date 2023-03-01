@@ -86,9 +86,22 @@ const sair = () => {
 
 const dropdownToggle = document.querySelector('.dropdown-toggle');
 const subMenu = document.querySelector('.sub-menu');
-// const acompanhar2 = document.querySelector('acompanhar2')
+const acompanhar2 = document.querySelector('acompanhar2')
+const relative = document.getElementById('relative')
 
 dropdownToggle.addEventListener('click', () => {
   subMenu.classList.toggle('show');
+  relative.classList.toggle('teste');
+  // acompanhar2.style.marginTop = "20px";
+});
+
+const dropdownToggle2 = document.querySelector('.dropdown-toggle2');
+const subMenu2 = document.querySelector('.sub-menu2');
+const acompanhar3 = document.querySelector('acompanhar3')
+const relatives = document.getElementById('relatives2')
+
+dropdownToggle2.addEventListener('click', () => {
+  subMenu2.classList.toggle('show');
+  relatives.classList.toggle('teste2');
   // acompanhar2.style.marginTop = "20px";
 });

@@ -17,18 +17,6 @@ $(document).ready(function () {
   }
   conveniaCentroCusto()
 
-  function formatAsCurrency(input) {
-    let formattedValue = parseFloat(input.val().replace(/,/g, ''))
-      .toFixed(2)
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    input.val(formattedValue);
-  }
-
-  $('#valorDaCompra').on('input', function() {
-    formatAsCurrency($(this));
-  });
 
 
   const downloadArquivoNF = document.getElementById("baixararq");
@@ -39,6 +27,29 @@ $(document).ready(function () {
   });
 
 });
+
+window.onload = () => {
+  const toggle = body.querySelector(".toggle")
+  const clickEvent = new MouseEvent('click');
+  toggle.dispatchEvent(clickEvent);
+};
+
+function formatarMoeda() {
+  var elemento = document.getElementById('valor');
+  var valor = elemento.value;
+
+  valor = valor + '';
+  valor = parseInt(valor.replace(/[\D]+/g, ''));
+  valor = valor + '';
+  valor = valor.replace(/([0-9]{2})$/g, ",$1");
+
+  if (valor.length > 6) {
+      valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+  }
+
+  elemento.value = valor;
+  if(valor == 'NaN') elemento.value = '';
+}
 
 function adicionarCampoParcelas() {
   var campoColaborador = document.querySelector('#divParcela');
@@ -91,9 +102,23 @@ function aprovarSolicitacao() {
 
 function reprovarSolicitacao() {
   const codigoSolicitacao = document.getElementById('codigoSolicitacao').value;
+  const motivo = document.getElementById('motivoRep').value;
+
+  if (motivo.length == 0) {
+    document.getElementById('descricaoObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
+    return;
+  }
+
+  if (motivo.length < 5) {
+    document.getElementById('descricaoObrigatorio').innerHTML =
+      '<h1 style="color: red; font-size: 12px;">* Detalhe um motivo válido</h1>';
+    return;
+  }
 
   const corpo = {
-    codigoSolicitacao: codigoSolicitacao
+    codigoSolicitacao: codigoSolicitacao,
+    motivoReprovacao: motivo
   };
 
   fetch(endpoints.ReprovarSolicitacao, {
@@ -134,7 +159,7 @@ function insertCompra (codigo) {
   }
 
   const dataDaCompra = document.getElementById('dataDaCompra').value;
-  const valorDaCompra = document.getElementById('valorDaCompra').value;
+  const valorDaCompra = document.getElementById('valor').value;
   const previsaoDeEntrega = document.getElementById('previsaoDeEntrega').value;
   const codigo2 = codigo;
   const metodoDePagamento = document.getElementById('metPagamento').value;

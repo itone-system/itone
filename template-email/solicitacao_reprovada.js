@@ -1,4 +1,4 @@
-module.exports = ({ codigo, descricao }) => {
+module.exports = ({ codigo, descricao, reprovador, motivo }) => {
   return `<body style="margin: 0; padding:0; font-family: Arial, Helvetica, sans-serif;" >
   <table border="0" width="100%" cellpadding="0" cellspacing="0">
       <tr>
@@ -21,6 +21,8 @@ module.exports = ({ codigo, descricao }) => {
                                       <span>A solicitação abaixo foi reprovada</span> <br></br>
                                       <span>Solicitação n° ${codigo}</span><br></br>
                                       <span>Descrição: ${descricao}</span><br></br>
+                                      <span>Reprovador: ${reprovador}</span><br></br>
+                                      <span>Motivo: ${motivo}</span><br></br>
                                   </td>
                               </tr>
                           </table>

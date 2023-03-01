@@ -1,11 +1,13 @@
 const model = require('../../infra/dbAdapter');
+
 const TableSolicitacao = model('Solicitacao_Item');
+
 const TableAprovacoes = model('Aprovacoes');
 const enviarEmail = require('../../infra/emailAdapter');
 const { db } = require('../../config/env');
 const sql = require('mssql');
 const solicitacaoAprovada = require('../../template-email/solicitacao_aprovada');
-const aguardandoCompra = require('../../template-email/solicitacao_aprovada');
+const aguardandoCompra = require('../../template-email/aguardando_compra');
 const tokenAdapter = require('../../infra/tokenAdapter');
 
 exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
@@ -13,7 +15,19 @@ exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
 
   TableSolicitacao.select(
     "Codigo, Descricao, DataCriacao, FORMAT(DataAtualizacao, 'dd/MM/yyyy') as DataAtualizacao, Quantidade, Status_Compra, Solicitante"
-  );
+  ).associate({
+      table: 'Aprovacoes',
+      localKey: 'Codigo',
+      foreignKey: 'Codigo_Solicitacao',
+      select: 'Usuarios.NOME_USUARIO, Aprovacoes.Ordem',
+      join:  {
+        tableJoin: 'Usuarios',
+        fieldJoin: 'COD_USUARIO',
+        fieldTable: 'Codigo_Aprovador'
+      },
+      conditions: `and Aprovacoes.Status = 'N'`,
+      as: 'aprovadores',
+  })
 
   // aprovador
   if (User.Perfil === 3) {
@@ -154,7 +168,7 @@ exports.buscarProximoAprovador = async (codigo) => {
       subject: 'Aguardando Compra',
       content: aguardandoCompra({
         descricao: queryDesc.recordset[0].Descricao,
-        codigo
+        codigo: codigo
       }),
       isHtlm: true
     }
@@ -372,11 +386,11 @@ exports.verificaArquivoElink = async (codigoSolicitacao) => {
 
   const objeto = result.recordset[0];
 
-  if (objeto.anexo == null) {
+  if (objeto.anexo == '') {
     return 'link';
   }
 
-  if (objeto.Link == null) {
+  if (objeto.Link == '') {
     return 'anexo';
   }
 };

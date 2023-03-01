@@ -16,6 +16,9 @@ let colaboradorNome = ''
 
 
 $(document).ready(function () {
+  const toggle = body.querySelector(".toggle")
+  const clickEvent = new MouseEvent('click');
+  toggle.dispatchEvent(clickEvent);
     dataAtual()
     const fileInput = document.querySelector("#fileInput");
     const enviarNF = document.querySelector("#enviarNF");
@@ -72,7 +75,7 @@ function adicionarCampoColaborador(){
     campoColaborador.innerHTML = '<div class="col Colaborador"> <label id="labelColaborador">Colaborador:</label>    <select name="Colaborador" id="Colaborador" class="form-control">      <option selected></option>    </select></div>'
     campos.push('Colaborador')
     trueColaborador = true
-    campos.push('Colaborador')  
+    campos.push('Colaborador')
     conveniaColaborares()
 
 }
@@ -173,7 +176,7 @@ function buscarValoresCampos(){
     if(trueColaborador){
         colaboradorNome =  document.getElementById("Colaborador").value+""
         setColaborador = "Y"
-       
+
     }else if (busca){
         campos.splice(campos.indexOf('Colaborador'),1)
     }
@@ -272,9 +275,9 @@ function validarCamposBackup() {
         var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
         const busca = lista.find(element => element == campos[i])
-        
+
         if (document.getElementById(campos[i]).value == '' && !busca) {
-            
+
             const campoObrigatorio = campos[i] == 'valorNF' ? document.querySelector('.col-lg-2.' + campos[i]) : document.querySelector('.col.' + campos[i])
             var labelObrigatorio = document.createElement('label')
             labelObrigatorio.setAttribute('ID', 'obrigatorio');
@@ -283,14 +286,14 @@ function validarCamposBackup() {
             campoObrigatorio.appendChild(labelObrigatorio)
             listaErros.push(campos[i])
             lista = listaErros
-            
+
         }
-       
+
         else if(camposObr && document.getElementById(campos[i]).value != '')  {
             camposObr.remove()
-            
+
             listaErros.splice(listaErros.indexOf(campos[i]), 1);
-            
+
         }
 
         const dadosCompleto = {
@@ -306,13 +309,13 @@ function validarCamposBackup() {
 
     if(listaErros == '' || listaErros == undefined ){
         this.insertNota()
-        
-    } 
+
+    }
 
 };
 
 function validarCampos() {
-  
+
     buscarValoresCampos()
 
     validarCampoData(document.getElementById('DataPagamento').value)
@@ -322,9 +325,9 @@ function validarCampos() {
         var camposObr = document.querySelector('.obrigatorio-'+campos[i])
 
         const busca = listaErros.find(element => element == campos[i])
-        
+
         if (document.getElementById(campos[i]).value == '' && !busca) {
-            
+
             const campoObrigatorio = campos[i] == 'valorNF' ? document.querySelector('.col-lg-2.' + campos[i]) : document.querySelector('.col.' + campos[i])
             var labelObrigatorio = document.createElement('label')
             labelObrigatorio.setAttribute('ID', 'obrigatorio');
@@ -333,20 +336,20 @@ function validarCampos() {
             campoObrigatorio.appendChild(labelObrigatorio)
             listaErros.push(campos[i])
         }
-       
+
         else if(camposObr && document.getElementById(campos[i]).value != '')  {
             camposObr.remove()
-            
+
             listaErros.splice(listaErros.indexOf(campos[i]), 1);
-            
+
         }
 
     }
 
     if(listaErros == '' || listaErros == undefined ){
         this.insertNota()
-        
-    } 
+
+    }
 
 };
 
@@ -388,16 +391,22 @@ function validarCampoData(valorCampoDataPagamento){
     }
 }
 
-// function formatAsCurrency(input) {
-//     let formattedValue = parseFloat(input.val().replace(/,/g, ''))
-//       .toFixed(2)
-//       .toString()
-//       .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+function formatarMoeda() {
+  var elemento = document.getElementById('valorNF');
+  var valor = elemento.value;
 
-//     input.val(formattedValue);
-//   }
+  valor = valor + '';
+  valor = parseInt(valor.replace(/[\D]+/g, ''));
+  valor = valor + '';
+  valor = valor.replace(/([0-9]{2})$/g, ",$1");
 
- 
+  if (valor.length > 6) {
+      valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+  }
+
+  elemento.value = valor;
+  if(valor == 'NaN') elemento.value = '';
+}
 
 conveniaCentroCusto()
 

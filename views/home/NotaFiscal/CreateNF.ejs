@@ -88,7 +88,7 @@
                         <label>Tipo Contrato:</label>
                         <select name="TipoContrato"  id="TipoContrato" class="form-control">
                           <option selected></option>
-                          <option >Pagamento Único</option>
+                          <option >Pagamento Avulso</option>
                           <option>Recorrente</option>
                         </select>
                       </div>
@@ -123,17 +123,16 @@
                         <label>Valor:</label>
                         <% if(dados.valor) { %>
 
-                          <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="valor" value="<%= dados.valor%>">
-
+                          <input name="valorNF" maxlength="9" onkeyup="formatarMoeda()" id="valorNF" type="text" class="form-control" placeholder="valor" value="<%= dados.valor%>">
                           <% } else {%>
 
 
-                            <input name="valorNF" min="0" step="any" id="valorNF" for="valorNF" type="number" class="form-control" placeholder="0,0">
+                            <input name="valorNF" maxlength="9" onkeyup="formatarMoeda()" id="valorNF" type="text" class="form-control" placeholder="0,0">
 
                             <%}%>
 
                       </div>
-                      
+
                       <p> </p>
                       <div class="col-lg-2  DataPagamento"  >
                         <label>Data de Pagamento:</label>
@@ -151,8 +150,8 @@
                     <p> </p>
 
 
-                    <div class="row g-3" style="margin-right: 85.5%;">
-                      <div class="col Deal">
+                    <div class="row g-3" style="margin-right: 5%;">
+                      <div class="col-lg-2 Deal">
                         <label>Deal:</label>
                         <% if(dados.deal) { %>
                           <input min="0" name="Deal" id="Deal" for="Deal" type="number" class="form-control" placeholder="deal" value="<%= dados.deal%>">
@@ -165,6 +164,12 @@
 
                             <%}%>
                       </div>
+
+                      <div class="col" style="margin-top: 3%;">
+
+                       <a style="font-size: 10.5px; "> Identifique a oportunidade no SAP para esta solicitação ou utilize 1 caso não haja referência   </a>
+
+                    </div>
 
                   </div>
                   <p> </p>

@@ -8,6 +8,9 @@ let codigoRetornoNF = ''
 let tokenAtivo = false
 
 $(document).ready(function () {
+  const toggle = body.querySelector(".toggle")
+  const clickEvent = new MouseEvent('click');
+  toggle.dispatchEvent(clickEvent);
     // $('#prev').css("display", "none")
     // $('#prev').css("visibility", "hidden")
     conveniaCentroCusto()
@@ -543,6 +546,7 @@ const atualizarStatusNF = () => {
 
 }
 
+
 const conveniaCentroCusto = () => {
 
     fetch("https://public-api.convenia.com.br/api/v3/companies/cost-centers", {
@@ -557,18 +561,25 @@ const conveniaCentroCusto = () => {
         return response.json()
     }).then(result => {
         var dados = result.data
+        let listaCC = []
 
         dados.forEach(element => {
+            if(element.name.substr(0,1) <= 9){
+            listaCC.push(element.name)
+            listaCC.sort()
+        }});
+
+        listaCC.forEach(element => {
             var localCC = document.getElementById('CentroCusto')
             var option = document.createElement('option');
-            option.textContent = element.name;
+            option.textContent = element;
             localCC.appendChild(option);
 
-        });
-    })
+
+    });
+})
 
 }
-
 async function gerarDadosModal(codigo){
 
     localRetorno =  document.getElementById('RetornoStatusNF')
@@ -591,29 +602,29 @@ async function gerarDadosModal(codigo){
     }).then(dados => {
         let data = dados
 
+        var tipoContr = data[0].TipoContrato == 'P'? 'Pagamento Avulso': 'Recorrente'
         document.getElementById('NumeroSolicitacaoModal').value  = data[0].Codigo
         document.getElementById('ModSolicitante').value  = data[0].Solicitante
         document.getElementById('ModFornecedor').value  = data[0].Fornecedor
         document.getElementById('ModDescricao').value  = data[0].Descricao
-        document.getElementById('TipoContrato').value  = data[0].TipoContrato
+        document.getElementById('TipoContrato').value  = tipoContr
         document.getElementById('Deal').value  = data[0].Deal
-        document.getElementById('TipoPagamento').value  = data[0].TipoPagamento
-        document.getElementById('DataPagamento').value  = data[0].DataPagamento
+        document.getElementById('DataPagamento').value  = data[0].Data_Pagamento
         document.getElementById('Observacao').value  = data[0].Observacao
         document.getElementById('Colaborador').value  = data[0].Colaborador
         document.getElementById('NomeAnexo').innerText  = data[0].Anexo
         retornarNFUser = document.getElementById('retornarNFUser').innerText
-        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
+        // localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px; margin-bottom: 3%"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
 
-    //     if(data[0].StatusNF == 'E'){
-    //         localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
-    // } else if(retornarNFUser) {
-    //     localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+        if(data[0].StatusNF == 'E'){
+            localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
+    } else if(retornarNFUser) {
+        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
 
-    // }else{
-    //     localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+    }else{
+        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
 
-    // }
+    }
 
     })
 

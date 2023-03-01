@@ -13,7 +13,7 @@
 </div>
 <form action="<%=locals.endpoints.inserirNota%>" method="get">
 
-  <input type="text" name="solicitante" value="<%= solicitacao.Solicitante  %>" hidden>
+  <input type="text" name="solicitante" value="<%= Comprador  %>" hidden>
   <input type="text" name="descricao" value="<%= solicitacao.Descricao  %>" hidden>
   <input type="text" name="observacao" value="<%= solicitacao.Observacao %>" hidden>
   <input type="text" name="centroCusto" value="<%= solicitacao.Centro_de_Custo %>" hidden>
@@ -22,8 +22,10 @@
   <input type="text" name="valor" value="<%= dadosParaViewDeCompra.valor  %>" hidden>
   <% if(nota == false) { %>
 
+    <% if(perfil == 1) { %>
 
-    <button type="submit" class="button">Incluir Nota</button>
+      <button type="submit" class="button">Incluir Nota</button>
+      <% } %>
 
     <% }%>
 

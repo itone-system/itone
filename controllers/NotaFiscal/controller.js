@@ -1,4 +1,4 @@
-const { db } = require('../../config/env');
+const { db, domain } = require('../../config/env');
 const ejs = require('ejs')
 const sql = require('mssql')
 const enviarEmail = require('../../infra/emailAdapter');
@@ -20,6 +20,7 @@ module.exports = {
    async insertNotas(req, res) {
 
       const { solicitante, CentroCusto, fornecedor, Descricao, tipoContrato, valorNF, dataPagamento, deal, Observacao, possuiColaborador, Colaborador, Anexo, codigoSolicitacao =''} = req.body;
+
       const conexao = await sql.connect(db)
 
       let result = await conexao.request()
@@ -65,7 +66,7 @@ module.exports = {
          }
        );
 
-       href = 'http://itonepe01:5050/notafiscal/buscarNotas?token='+token
+       href = domain + '/notafiscal/buscarNotas?tokenReceive='+token
 
 
       ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v2.0\\itone\\views\\home\\NotaFiscal\\retornoEmail.ejs',{dadosEmail, href}, function(err, data){
@@ -75,7 +76,7 @@ module.exports = {
 
              console.log(data)
 
-             var emailFinanceiro = 'wesley.silva@itone.com.br'
+             var emailFinanceiro = 'financeiro@itone.com.br'
 
              const emailOptions = {
                to: emailFinanceiro,
@@ -107,7 +108,8 @@ async listarNotas(request, res) {
    console.log(user)
    const message = await request.session.message();
 
-   let { paginate, limite = 10, Descricao, Fornecedor, Solicitante, CentroCusto, filtroAplicado, codigoNF} = request
+   let { paginate, limite = 10, Descricao, Fornecedor, Solicitante, CentroCusto, filtroAplicado, tokenReceive, codigoNF} = request
+
 
    CentroCusto =  CentroCusto == 'Centro de Custo' || CentroCusto == undefined ?  '' : CentroCusto.split('. ')
 
@@ -121,7 +123,7 @@ async listarNotas(request, res) {
        CentroCustoExtenso: CentroCusto,
        filtroAplicado: request.buscar == undefined ? false : true,
        codigoNFUnic: codigoNF == undefined ? 1 : codigoNF
-   }
+         }
 
    console.log(requ)
 
@@ -228,8 +230,8 @@ async listarNotas(request, res) {
    //    break
    // }
 
-   if (request.token) {
-      const tokenRecebido = request.token;
+   if (tokenReceive) {
+      const tokenRecebido = request.tokenReceive;
 
       dadosToken = jwt.verify(tokenRecebido, Keytoken.secret);
       // console.log('teste obter serviço', dadosToken);
@@ -237,7 +239,6 @@ async listarNotas(request, res) {
    } else{
       let = codigoToken = ''
    }
-
 
    return renderView('home/notafiscal/DetailNF', {
       dados,
@@ -285,16 +286,16 @@ async atualizarStatusNota(req, res) {
        );
 
 
-       href = 'http://itonerdp06:5053/notafiscal/buscarNotas?token='+token
+       href = domain + '/notafiscal/buscarNotas?tokenReceive='+token
 
-      ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v1.0\\itone-compras\\views\\home\\NotaFiscal\\retornoEmail.ejs',{req, href}, function(err, data){
+      ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v1.0\\itone-main\\views\\home\\NotaFiscal\\retornoEmail.ejs',{req, href}, function(err, data){
          if(err){
              console.log(err);
          }else{
 
              console.log(data)
 
-             var emailFinanceiro = 'felippe.gangana@itone.com.br'
+             var emailFinanceiro = 'financeiro@itone.com.br'
 
              const emailOptions = {
                to: emailFinanceiro,
@@ -361,7 +362,7 @@ async notaUnica(request, res) {
 
    const conexao = await sql.connect(db)
 
-   const obterNFUnica = await conexao.query(`SELECT * FROM	notaFiscal  where Codigo = '${codigoNFInt}'`)
+   const obterNFUnica = await conexao.query(`SELECT concat(format(datapagamento,'dd'),'/',format(datapagamento,'MM'),'/',year(datapagamento)) as [Data_Pagamento],* FROM	notaFiscal  where Codigo = '${codigoNFInt}'`)
 
    const dados = obterNFUnica.recordsets[0]
 

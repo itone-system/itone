@@ -3,7 +3,9 @@
 <div class="row g-3" style="margin-bottom: 1%;">
   <div class="col-lg-2  Valor">
     <label for="fname">Valor:</label>
-    <input id="valorDaCompra" class="form-control" type="text">
+    <!-- <input id="valorDaCompra" class="form-control" type="text"> -->
+    <!-- <input  min="0" step="any" id="valorDaCompra" for="valorNF" type="number" class="form-control" placeholder="0,0"> -->
+    <input type="text" maxlength="9" id="valor" onkeyup="formatarMoeda()" placeholder="0,0" class="form-control">
     <!-- <label for="fname">Anexo:</label>
     <input id="valorDaCompra" class="form-control" type="number"> -->
 
@@ -52,44 +54,9 @@
 <div id="divParcela"></div>
 
 
-<% if(anexoLink=='anexo' ) { %>
-  </div>
-  <div style="margin-top: 1%;   margin-bottom: 1%;font-size:13px">
-    <i class='bx bx-download bx-flip-horizontal' undefined></i>
-
-    <label id="NomeAnexo">
-      <%= solicitacao.anexo %>
-    </label>
-
-    <a id="baixar" download><button id="baixararq" href="google.com" class="btn btn-secondary"
-        style="margin-left: 1%; font-size:12px"> Baixar
-        Anexo</button></a>
-
-  </div>
 
 
-  <% } %>
 
-    <% if(anexoLink=='link' ) { %>
-
-      <div class="row g-3">
-
-        <div class="col-lg-4 prevEntrega">
-
-          <label for="">Link</label>
-          <input style="margin-bottom: 2.5%" id="linkcompra" type="text" class="form-control"
-            value="<%= solicitacao.Link %>">
-        </div>
-
-        <div class="col-lg-4 prevEntrega">
-
-          <a id="baixar" href="<%= solicitacao.Link %>" target="_blank"> <button id="abrirArq" class="btn btn-secondary"
-              style="margin-top: 9%; font-size:12px"> Abrir link</button></a>
-        </div>
-      </div>
-
-
-      <% } %>
 
 
 

@@ -2,6 +2,10 @@ let arquivoAnexo;
 let NomeArquivoSemAcento;
 
 $(document).ready(function () {
+
+  const toggle = body.querySelector(".toggle")
+  const clickEvent = new MouseEvent('click');
+  toggle.dispatchEvent(clickEvent);
   conveniaCentroCusto();
   listar();
 
@@ -100,6 +104,7 @@ const insert = () => {
       '<h1 style="color: red; font-size: 12px;">* Campo obrigatório</h1>';
     return;
   }
+
   let arquivo = '';
   if (!document.querySelector('#fileInput')) {
     arquivo = '';
@@ -126,11 +131,11 @@ const insert = () => {
     solicitante: solicitante,
     dataCriacao: new Date(),
     dataAtualizacao: new Date(),
-    arquivo: NomeArquivoSemAcento,
+    arquivo: NomeArquivoSemAcento == undefined? '' : NomeArquivoSemAcento,
     linkk: link
   };
 
-  fetch(endpoints.NovaSolicitacao, {
+  fetch('http://itonerdp06:5050/solicitacoes/criar', {
     method: 'POST',
     body: JSON.stringify(bodyContent),
     headers: {
