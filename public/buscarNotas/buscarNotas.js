@@ -619,10 +619,10 @@ async function gerarDadosModal(codigo){
         if(data[0].StatusNF == 'E'){
             localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control" style="font-size:13px"  disabled>        <option selected >Enviado para pagamento</option>      </select>'
     } else if(retornarNFUser) {
-        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  >        <option selected>Aguardando lançamento no SAP</option>        <option>Enviado para pagamento</option>      </select>'
 
     }else{
-        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando envio para pagamento</option>        <option>Enviado para pagamento</option>      </select>'
+        localRetorno.innerHTML = '<select type="submit" id="StatusNF" name="StatusNF"  class="form-control"  style="font-size:13px"  disabled>        <option selected>Aguardando lançamento no SAP</option>        <option>Enviado para pagamento</option>      </select>'
 
     }
 
