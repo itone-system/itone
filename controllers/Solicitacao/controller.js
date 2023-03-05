@@ -156,7 +156,7 @@ module.exports = {
       const anexoLink = await SolicitacaoService.verificaArquivoElink(
         solicitacao.Codigo
       );
-      console.log(user.Perfil)
+      const aprovacao = await SolicitacaoService.verificarSeHouveAprovacao(solicitacao.Codigo)
       return renderView('home/solicitacoes/Detail', {
         solicitacao,
         retornoUser: user.permissaoCompras,
@@ -168,7 +168,8 @@ module.exports = {
         nota,
         anexoLink,
         Comprador,
-        perfil: user.Perfil
+        perfil: user.Perfil,
+        aprovacao
       });
     } catch (error) {
       return redirect('/home');
