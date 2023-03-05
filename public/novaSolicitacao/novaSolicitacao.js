@@ -135,7 +135,7 @@ const insert = () => {
     linkk: link
   };
 
-  fetch('http://itonerdp06:5050/solicitacoes/criar', {
+  fetch(endpoints.NovaSolicitacao, {
     method: 'POST',
     body: JSON.stringify(bodyContent),
     headers: {

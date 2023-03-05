@@ -14,7 +14,7 @@ exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
   const { Descricao, Solicitante, statusItem, centroCustoFiltro, User } = data;
 
   TableSolicitacao.select(
-    "Codigo, Descricao, DataCriacao, FORMAT(DataAtualizacao, 'dd/MM/yyyy') as DataAtualizacao, Quantidade, Status_Compra, Solicitante"
+    "Codigo, Descricao, DataCriacao, Quantidade, Status_Compra, Solicitante"
   ).associate({
       table: 'Aprovacoes',
       localKey: 'Codigo',

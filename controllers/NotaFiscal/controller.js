@@ -240,7 +240,7 @@ async listarNotas(request, res) {
       let = codigoToken = ''
    }
 
-   return renderView('home/notafiscal/DetailNF', {
+   return renderView('home/NotaFiscal/DetailNF', {
       dados,
       notaUnica,
       descricaoSalva,

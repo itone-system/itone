@@ -84,7 +84,7 @@ module.exports = {
         }
       }
 
-      return renderView('home/solicitacoes/index', {
+      return renderView('home/solicitacoes/Index', {
         solicitacoes: result.data,
         paginas,
         retornoUser: user.permissaoCompras,
@@ -94,6 +94,7 @@ module.exports = {
         perfil: user.Perfil
       });
     } catch (error) {
+      console.log(error)
       return redirect('/home');
     }
 
@@ -182,7 +183,6 @@ module.exports = {
       deal,
       observacao,
       dataCriacao = new Date(),
-      dataAtualizacao = new Date(),
       centroCusto,
       arquivo,
       linkk
@@ -202,7 +202,6 @@ module.exports = {
           Observacao: observacao,
           Solicitante: user.nome,
           DataCriacao: dataCriacao,
-          DataAtualizacao: dataAtualizacao,
           Status_Compra: 'P',
           Link: linkk,
           anexo: arquivo
