@@ -3,12 +3,13 @@ const notasFiscalRouter = express.Router()
 const notas = require('../NotaFiscal/controller')
 const { expressAdapter } = require('../../infra/expressAdapter');
 const multer = require('multer')
+const {pathNf} = require('../../config/env')
 
 
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null,'U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Nota Fiscal')
+        cb(null,`${pathNf}`)
     },
     filename: function(req, file, cb){
         cb(null,  'DCT-'+ req.params.codigoNF +' '+req.params.nomeArquivo)

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { db } = require('../../config/env');
 const sql = require('mssql');
 const enviarEmail = require('../../infra/emailAdapter');
-const { Keytoken, domain } = require('../../config/env');
+const { Keytoken, domain, pathCmP } = require('../../config/env');
 const aprovacaoPendenteTemplate = require('../../template-email/aprovacao_pendente');
 const solicitacaoReprovadaTemplate = require('../../template-email/solicitacao_reprovada');
 const tokenAdapter = require('../../infra/tokenAdapter');
@@ -439,7 +439,7 @@ module.exports = {
 
   async downloadItem(request, response) {
     response.download(
-      'U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Itens Compra\\' +
+      `${pathCmP}` +
         request.params.path
     );
   },

@@ -3,6 +3,7 @@ const solicitacaoRouter = express.Router();
 const SolicitacaoController = require('../Solicitacao/controller');
 const { expressAdapter } = require('../../infra/expressAdapter');
 const multer = require('multer')
+const {pathCmP} = require('../../config/env')
 
 /*
  *  GET / - lista tudo
@@ -14,7 +15,7 @@ const multer = require('multer')
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null,'U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Itens Compra')
+        cb(null,`${pathCmP}`)
     },
     filename: function(req, file, cb){
         cb(null,  'SLT-'+ req.params.codigoNF +' '+req.params.nomeArquivo)

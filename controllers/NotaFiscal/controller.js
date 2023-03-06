@@ -1,4 +1,4 @@
-const { db, domain } = require('../../config/env');
+const { db, domain, pathNf } = require('../../config/env');
 const ejs = require('ejs')
 const sql = require('mssql')
 const enviarEmail = require('../../infra/emailAdapter');
@@ -69,9 +69,9 @@ module.exports = {
        href = domain + '/notafiscal/buscarNotas?tokenReceive='+token
 
 
-      ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v2.0\\itone\\views\\home\\NotaFiscal\\retornoEmail.ejs',{dadosEmail, href}, function(err, data){
-         if(err){
-             console.log(err);
+      ejs.renderFile('template-email\\retornoEmail.ejs',{dadosEmail, href}, function(err, data){
+        if(err){
+          console.log(err);
          }else{
 
              console.log(data)
@@ -288,7 +288,7 @@ async atualizarStatusNota(req, res) {
 
        href = domain + '/notafiscal/buscarNotas?tokenReceive='+token
 
-      ejs.renderFile('C:\\Users\\18061634\\Documents\\Projeto 2023 v1.0\\itone-main\\views\\home\\NotaFiscal\\retornoEmail.ejs',{req, href}, function(err, data){
+      ejs.renderFile('template-email\\retornoEmail.ejs',{req, href}, function(err, data){
          if(err){
              console.log(err);
          }else{
@@ -351,7 +351,7 @@ return renderView('home/NotaFiscal/CreateNF', { nome: user.nome, message, dados 
 },
 
 async downloadNF (request, response){
-   response.download('U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Nota Fiscal\\'+request.params.path)
+   response.download(`${pathNf}`+request.params.path)
 },
 
 async notaUnica(request, res) {
@@ -375,7 +375,7 @@ async notaUnica(request, res) {
 },
 
 async downloadNF (request, response){
-   response.download('U:\\@TI\\Sistemas\\Arquivos-ADM-WEB\\Nota Fiscal\\'+request.params.path)
+   response.download(`${pathNf}`+request.params.path)
 },
 
 

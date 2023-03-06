@@ -11,7 +11,9 @@ const {
   SECRET,
   PORT,
   DOMAIN,
-  EMAIL
+  EMAIL,
+  PATHNF,
+  PATHCMP
 } = process.env;
 
 const port = parseInt(PORT || 5050)
@@ -27,6 +29,8 @@ module.exports = {
   enviroment: ENVIRONMENT,
   isProd,
   port,
+  pathNf: PATHNF,
+  pathCmP: PATHCMP,
   domain,
   db: {
     user: USUARIO,
