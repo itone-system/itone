@@ -4,7 +4,7 @@ const SolicitacaoService = require('./service');
 
 module.exports = {
   async Index(request) {
-    return renderView('login/Index', {name: 'Marcos'});
+    return renderView('login/Index');
   },
 
   async Auth(request) {

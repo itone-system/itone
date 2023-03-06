@@ -7,6 +7,7 @@ module.exports = {
 
   async Index (request) {
     const user = request.session.get('user');
+    console.log(user)
     // const usuario = await SolicitacaoService.obterDadosUser(request.codigo);
     return renderView('home/Index', { nome: user.nome });
   }
