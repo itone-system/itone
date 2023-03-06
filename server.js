@@ -6,8 +6,8 @@ const setupSession = require('./config/setup-session');
 const setupGlobal = require('./config/setup-global');
 const express = require('express');
 const { port } = require('./config/env')
-const dbAdapter = require('./infra/dbAdapter')
-const model = dbAdapter('Users')
+// const dbAdapter = require('./infra/dbAdapter')
+// const model = dbAdapter('Users')
 
 const app = express();
 

@@ -14,20 +14,20 @@ exports.buscarSolicitacoesPorFiltro = async ({ data, pagina = {} }) => {
   const { Descricao, Solicitante, statusItem, centroCustoFiltro, User } = data;
 
   TableSolicitacao.select(
-    "Codigo, Descricao, DataCriacao, Quantidade, Status_Compra, Solicitante"
+    "Codigo, Descricao, FORMAT(DataCriacao, 'dd/MM/yyyy') as DataCriacao, Quantidade, Status_Compra, Solicitante"
   ).associate({
-    table: 'Aprovacoes',
-    localKey: 'Codigo',
-    foreignKey: 'Codigo_Solicitacao',
-    select: 'Usuarios.NOME_USUARIO, Aprovacoes.Ordem',
-    join: {
-      tableJoin: 'Usuarios',
-      fieldJoin: 'COD_USUARIO',
-      fieldTable: 'Codigo_Aprovador'
-    },
-    conditions: `and Aprovacoes.Status = 'N'`,
-    as: 'aprovadores'
-  });
+      table: 'Aprovacoes',
+      localKey: 'Codigo',
+      foreignKey: 'Codigo_Solicitacao',
+      select: 'Usuarios.NOME_USUARIO, Aprovacoes.Ordem',
+      join:  {
+        tableJoin: 'Usuarios',
+        fieldJoin: 'COD_USUARIO',
+        fieldTable: 'Codigo_Aprovador'
+      },
+      conditions: `and Aprovacoes.Status = 'N'`,
+      as: 'aprovadores',
+  })
 
   // aprovador
   if (User.Perfil === 3) {
@@ -171,9 +171,9 @@ exports.buscarProximoAprovador = async (codigo) => {
         codigo: codigo
       }),
       isHtlm: true
-    };
+    }
     enviarEmail(emailOptions);
-    enviarEmail(emailOptionsComprador);
+    enviarEmail(emailOptionsComprador)
     return;
   }
 
@@ -398,17 +398,19 @@ exports.verificaArquivoElink = async (codigoSolicitacao) => {
 exports.buscarEmail = async (codigoSolicitacao) => {
   const conexao = await sql.connect(db);
 
-  const result = await conexao.request().query(
-    `SELECT u.EMAIL_USUARIO
+  const result = await conexao
+    .request()
+    .query(
+      `SELECT u.EMAIL_USUARIO
       FROM Usuarios u
       INNER JOIN Solicitacao_Item t ON u.NOME_USUARIO = t.Solicitante
       where t.Codigo = ${codigoSolicitacao}`
-  );
+    );
 
-  const email = result.recordset[0].EMAIL_USUARIO;
+  const email = result.recordset[0].EMAIL_USUARIO
 
-  return email;
-};
+  return email
+}
 
 exports.verificarSeHouveAprovacao = async (codigoSolicitacao) => {
   const conexao = await sql.connect(db);

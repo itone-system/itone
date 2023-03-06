@@ -83,6 +83,7 @@ module.exports = {
           listaAprovadores = ''
         }
       }
+      console.log(user)
 
       return renderView('home/solicitacoes/Index', {
         solicitacoes: result.data,
@@ -173,6 +174,7 @@ module.exports = {
         aprovacao
       });
     } catch (error) {
+      console.log(error)
       return redirect('/home');
     }
   },
@@ -251,6 +253,7 @@ module.exports = {
           );
         contador++;
       }
+      console.log('ordem',ordemAprovadores)
 
       const firstEmail = await model('Usuarios')
         .select('EMAIL_USUARIO')
@@ -267,7 +270,7 @@ module.exports = {
       });
 
       const link = `${domain}/solicitacoes/${Codigo}/edit?token=${token}`;
-
+      console.log('email', firstEmail.data[0].EMAIL_USUARIO)
       const emailOptions = {
         to: firstEmail.data[0].EMAIL_USUARIO,
         subject: 'Solicitação de Aprovação',

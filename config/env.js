@@ -4,14 +4,14 @@ const {
   SENHA,
   DATABASE,
   SERVER,
-  USER,
   PASS,
   EMAILTEST,
   SESSION_SECRET,
   ENVIRONMENT,
   SECRET,
   PORT,
-  DOMAIN
+  DOMAIN,
+  EMAIL
 } = process.env;
 
 const port = parseInt(PORT || 5050)
@@ -39,7 +39,7 @@ module.exports = {
     }
   },
   emailProvider: {
-    user: USER,
+    user: EMAIL,
     pass: PASS,
     fakeEmail: EMAILTEST
   },
